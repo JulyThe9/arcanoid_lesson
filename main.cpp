@@ -12,7 +12,7 @@ int main()
         return EXIT_FAILURE;
     sf::Sprite sprite(texture);
 
-    sf::CircleShape shape(50);
+    sf::CircleShape shape(20);
     shape.setFillColor(sf::Color(100, 250, 50));
     float posX = 50;
     float posY = 50;
