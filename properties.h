@@ -3,7 +3,7 @@ using namespace std;
 //----
 //BALL
 //----
-float ball_speed = 5;
+float ball_speed = 0.1;
 int plat_speed = 60;
 int ball_size = 10;
 int plat_width = 100;
@@ -36,10 +36,6 @@ float temp_x = 0;
 
 float alpha_x = 0;
 float alpha_y = 0;
-
-
-// remember wall
-float last_wall = 0;
 
 //---------
 //RECTANGLE

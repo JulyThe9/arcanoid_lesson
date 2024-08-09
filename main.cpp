@@ -1,9 +1,13 @@
 #include <iostream>
 #include <cmath>
 #include <SFML/Graphics.hpp>
-#include <C:\Users\Master.DESKTOP-8NQ0SCM\Documents\codeblox_projects\arcanoid_lesson\properties.h>
-#include <C:\Users\Master.DESKTOP-8NQ0SCM\Documents\codeblox_projects\arcanoid_lesson\fu_ball.h>
-#include <C:\Users\Master.DESKTOP-8NQ0SCM\Documents\codeblox_projects\arcanoid_lesson\fu_platform.h>
+//#include <C:\Users\Master.DESKTOP-8NQ0SCM\Documents\codeblox_projects\arcanoid_lesson\properties.h>
+//#include <C:\Users\Master.DESKTOP-8NQ0SCM\Documents\codeblox_projects\arcanoid_lesson\fu_ball.h>
+//#include <C:\Users\Master.DESKTOP-8NQ0SCM\Documents\codeblox_projects\arcanoid_lesson\fu_platform.h>
+
+#include "properties.h"
+#include "fu_ball.h"
+#include "fu_platform.h"
 
 //-------------------------------------------------------------------
 int main()
@@ -34,21 +38,18 @@ int main()
             {
                 if(event.key.code == sf::Keyboard::A)
                 {
-                    if (platX > left_wall)
+                    if(platX - plat_speed > left_wall)
                     {
-                        if(platX - plat_speed > left_wall)
-                        {
-                            platX -= plat_speed;
-                        }
-                        else
-                        {
-                            platX = left_wall;
-                        }
+                        platX -= plat_speed;
+                    }
+                    else
+                    {
+                        platX = left_wall;
                     }
                 }
                 else if(event.key.code == sf::Keyboard::D)
                 {
-                    if (platX + plat_width + plat_speed < right_wall))
+                    if (platX + plat_width + plat_speed < right_wall)
                     {
                         platX += plat_speed;
                     }
@@ -81,26 +82,28 @@ int main()
         temp_y = ballY;
         temp_x = ballX;
 
+
+        // ---------------------------------
+        // WALL COLLISION DETECTION HERE
+        // ---------------------------------
+
         if(temp_y >= bottom_wall - ball_size * 2)
         {
             //cout << "======= Collision detected bottom wall! ========" << endl;
             //cout << ">temp_x: " << temp_x << "; temp_y: " << temp_y << endl;
             handle_collision('b');
-            last_wall = 'b';
         }
         else if(temp_x >= right_wall - ball_size * 2)
         {
             //cout << "======= Collision detected right wall! ========" << endl;
             //cout << ">temp_x: " << temp_x << "; temp_y: " << temp_y << endl;
             handle_collision('r');
-            last_wall = 'r';
         }
         else if(temp_y <= top_wall)
         {
             //cout << "======= Collision detected top wall! ========" << endl;
             //cout << ">temp_x: " << temp_x << "; temp_y: " << temp_y << endl;
             handle_collision('t');
-            last_wall = 't';
         }
         else if(temp_x <= left_wall)
         {
@@ -108,7 +111,6 @@ int main()
             //cout << ">temp_x: " << temp_x << "; temp_y: " << temp_y << endl;
             //cout << "left wall + ball size: " << left_wall + ball_size << endl;
             handle_collision('l');
-            last_wall = 'l';
         }
 
 
