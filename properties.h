@@ -3,11 +3,8 @@ using namespace std;
 //----
 //BALL
 //----
-float ball_speed = 0.1;
-int plat_speed = 60;
+float ball_speed = 0.06;
 int ball_size = 10;
-int plat_width = 100;
-int plat_len = 12;
 
 // current ball position
 float ballX = 500;
@@ -41,7 +38,32 @@ float alpha_y = 0;
 //RECTANGLE
 //---------
 
-float platX = 450;
+int plat_speed = 60;
+
+int plat_width = 100;
+int plat_len = 12;
+
+float platX = screensizeX / 2 - plat_width / 2;
 float platY = 800;
 
 float rest = 0;
+
+//---------
+//BLOCKS
+//---------
+
+int block_width = 500;
+int block_len = 250;
+
+int blockX = screensizeX / 2 - block_width / 2;
+int blockY = 200;
+
+int top_bside = blockY;
+int left_bside = blockX;
+int right_bside = blockX + block_width;
+int bottom_bside = blockY + block_len;
+int counter = 0;
+float offset = 2;
+
+
+

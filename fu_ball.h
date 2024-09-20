@@ -92,5 +92,24 @@ void handle_collision(char wall_side)
                 ballY2 = ballY;
                 return;
             }
+            /*
+        case 'p':
+            if (ballX > ballX2)
+            {
+                alpha_y = alpha_y * (-1);
+                ballX2 = ballX;
+                ballY2 = ballY;
+                return;
+            }
+            else
+            {
+                alpha_x = alpha_x * (-1);
+                alpha_y = alpha_y * (-1);
+                ballX2 = ballX;
+                ballY2 = ballY;
+                return;
+            }
+            */
+
     }
 }
