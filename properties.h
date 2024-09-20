@@ -7,12 +7,12 @@ float ball_speed = 0.06;
 int ball_size = 10;
 
 // current ball position
-float ballX = 500;
-float ballY = 500;
+float recent_posX = 500;
+float recent_posY = 500;
 
 //current ball position variable
-float ballX2 = ballX;
-float ballY2 = ballY;
+float curret_posX = recent_posX;
+float current_posY = recent_posY;
 
 // size of screen
 float screensizeX = 1000;
@@ -62,8 +62,7 @@ int top_bside = blockY;
 int left_bside = blockX;
 int right_bside = blockX + block_width;
 int bottom_bside = blockY + block_len;
-int counter = 0;
-float offset = 2;
+int i_frame = 0;
 
 
 

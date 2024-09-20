@@ -4,7 +4,7 @@ sf::CircleShape init_ball()
 
     ball.setFillColor(sf::Color(150, 250, 50));
 
-    ball.setPosition(ballX, ballY);
+    ball.setPosition(recent_posX, recent_posY);
 
     return ball;
 }
@@ -30,86 +30,67 @@ void handle_collision(char wall_side)
     switch (wall_side)
     {
         case 'b':
-            if (ballX > ballX2)
+            if (recent_posX > curret_posX)
             {
                 alpha_y = alpha_y * (-1);
-                ballX2 = ballX;
-                ballY2 = ballY;
+                curret_posX = recent_posX;
+                current_posY = recent_posY;
                 return;
             }
             else
             {
                 alpha_x = alpha_x * (-1);
                 alpha_y = alpha_y * (-1);
-                ballX2 = ballX;
-                ballY2 = ballY;
+                curret_posX = recent_posX;
+                current_posY = recent_posY;
                 return;
             }
 
         case 'r':
-            if (ballY < ballY2)
+            if (recent_posY < current_posY)
             {
                 alpha_x = alpha_x * (-1);
                 alpha_y = alpha_y * (-1);
-                ballX2 = ballX;
-                ballY2 = ballY;
+                curret_posX = recent_posX;
+                current_posY = recent_posY;
                 return;
             }
             else
             {
                 alpha_x = alpha_x * (-1);
-                ballX2 = ballX;
-                ballY2 = ballY;
+                curret_posX = recent_posX;
+                current_posY = recent_posY;
                 return;
             }
 
         case 't':
-            if (ballX < ballX2)
+            if (recent_posX < curret_posX)
             {
                 alpha_x = alpha_x * (-1);
-                ballX2 = ballX;
-                ballY2 = ballY;
+                curret_posX = recent_posX;
+                current_posY = recent_posY;
                 return;
             }
             else
             {
-                ballX2 = ballX;
-                ballY2 = ballY;
+                curret_posX = recent_posX;
+                current_posY = recent_posY;
                 return;
             }
 
         case 'l':
-            if (ballY > ballY2)
+            if (recent_posY > current_posY)
             {
-                ballX2 = ballX;
-                ballY2 = ballY;
+                curret_posX = recent_posX;
+                current_posY = recent_posY;
                 return;
             }
             else
             {
                 alpha_y = alpha_y * (-1);
-                ballX2 = ballX;
-                ballY2 = ballY;
+                curret_posX = recent_posX;
+                current_posY = recent_posY;
                 return;
             }
-            /*
-        case 'p':
-            if (ballX > ballX2)
-            {
-                alpha_y = alpha_y * (-1);
-                ballX2 = ballX;
-                ballY2 = ballY;
-                return;
-            }
-            else
-            {
-                alpha_x = alpha_x * (-1);
-                alpha_y = alpha_y * (-1);
-                ballX2 = ballX;
-                ballY2 = ballY;
-                return;
-            }
-            */
-
     }
 }

@@ -9,6 +9,7 @@
 #include "fu_ball.h"
 #include "fu_platform.h"
 #include "blocks.h"
+#include "fu_collision_handler.h"
 
 //-------------------------------------------------------------------
 int main()
@@ -78,96 +79,29 @@ cout << "block_len: " << block_len << endl;
         if (alpha_y == 0 && alpha_x == 0)
         {
             // default movement at the start of the game
-            ballX += get_new_x(curr_degrees);
-            ballY += get_new_y(curr_degrees);
+            recent_posX += get_new_x(curr_degrees);
+            recent_posY += get_new_y(curr_degrees);
         }
         else
         {
             // all other movement
             //cout << "alpha_x: " << alpha_x << "; alpha_y: " << alpha_y << endl;
-            ballX += alpha_x;
-            ballY += alpha_y;
+            recent_posX += alpha_x;
+            recent_posY += alpha_y;
         }
 
-        temp_y = ballY;
-        temp_x = ballX;
+        temp_y = recent_posY;
+        temp_x = recent_posX;
 
 
-        // ---------------------------------
-        // WALL COLLISION DETECTION HERE
-        // ---------------------------------
-        if(temp_y >= bottom_wall - ball_size * 2)
-        {
-            //cout << "======= Collision detected bottom wall! ========" << endl;
-            //cout << ">temp_x: " << temp_x << "; temp_y: " << temp_y << endl;
-            handle_collision('b');
-        }
-        else if(temp_x >= right_wall - ball_size * 2)
-        {
-            //cout << "======= Collision detected right wall! ========" << endl;
-            //cout << ">temp_x: " << temp_x << "; temp_y: " << temp_y << endl;
-            handle_collision('r');
-        }
-        else if(temp_y <= top_wall)
-        {
-            //cout << "======= Collision detected top wall! ========" << endl;
-            //cout << ">temp_x: " << temp_x << "; temp_y: " << temp_y << endl;
-            handle_collision('t');
-        }
-        else if(temp_x <= left_wall)
-        {
-            //cout << "======= Collision detected left wall! ========" << endl;
-            //cout << ">temp_x: " << temp_x << "; temp_y: " << temp_y << endl;
-            //cout << "left wall + ball size: " << left_wall + ball_size << endl;
-            handle_collision('l');
-        }
-        else if(temp_y + ball_size >= platY - plat_len && temp_y + ball_size < platY + 0.01)
+        //MAIN COLLISIONS
+        handle_collision_walls();
+        handle_collision_walls();
+        handle_collision_block();
 
-        {
-            if(temp_x + ball_size * 2 >= platX && temp_x + ball_size <= platX + plat_width)
-            {
-                cout << "PLAT temp_x: " << temp_x << " temp_y: " << temp_y << endl;
-                handle_collision('b');
-            }
-        }
-        else if(temp_y + ball_size * 2 >= top_bside && temp_y < top_bside + 0.1)
-        {
-            if(temp_x > blockX && temp_x < blockX + block_width)
-            {
-                cout << "TOP temp_x: " << temp_x << " temp_y: " << temp_y << endl;
-                handle_collision('b');
-            }
-        }
-        else if(temp_x + ball_size * 2 >= left_bside && temp_x < left_bside + 0.1)
-        {
-            if(temp_y > top_bside && temp_y < bottom_bside)
-            {
-                cout << "LEFT temp_x: " << temp_x << " temp_y: " << temp_y << endl;
-                handle_collision('l');
-            }
-        }
-        else if(temp_y <= bottom_bside && temp_y > bottom_bside - 0.1)
-        {
-            if(temp_x > left_bside + ball_size && temp_x < right_bside)
-            {
-                cout << "BOTTOM temp_x: " << temp_x << " temp_y: " << temp_y << endl;
-                handle_collision('t');
-            }
-        }
-        else if(temp_x <= right_bside && temp_x > right_bside - 0.1)
-        {
-            if(temp_y >= top_bside && temp_y <= bottom_bside)
-            {
-                ball_speed = 0;
-                cout << "RIGHT temp_x: " << temp_x << " temp_y: " << temp_y << endl;
-                handle_collision('r');
-            }
-        }
 
-        //cout << "PosX: " << ballX << "; PosY: " << ballY << endl;
-        //cout << "AlpX: " << alpha_x << "; AlpY: " << alpha_y << endl;
 
-        ball.setPosition(ballX, ballY);
+        ball.setPosition(recent_posX, recent_posY);
         plat.setPosition(platX, platY);
 
         app.draw(ball);
