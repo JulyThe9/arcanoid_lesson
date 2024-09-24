@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ignore all
 *
 #except for .cpp and .h files
@@ -5,3 +6,10 @@
 !*.cpp
 !*.h
 !*.gitignore
+=======
+*
+
+!*.cpp
+!*.h
+!.gitignore
+>>>>>>> e0db269 (git stuff)
