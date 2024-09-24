@@ -1,6 +1,7 @@
 <<<<<<< HEAD
 #ignore all
 *
+
 #except for .cpp and .h files
 # and .gitignore
 !*.cpp
