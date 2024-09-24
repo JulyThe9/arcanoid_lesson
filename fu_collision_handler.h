@@ -30,9 +30,9 @@ void handle_collision_walls()
 // ---------------------------------
 void handle_collision_platform()
 {
-    if(temp_y + ball_size * 2 >= top_bside && temp_y < top_bside + 0.1)
+    if(temp_y + ball_size * 2 >= platY && temp_y + ball_size * 2 < platY + 0.1)
     {
-        if(temp_x > blockX && temp_x < blockX + block_width)
+        if(temp_x + ball_size * 2 > platX && temp_x < platX + plat_width)
         {
             handle_collision('b');
         }
