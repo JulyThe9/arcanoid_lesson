@@ -9,9 +9,80 @@
 #include "fu_ball.h"
 #include "fu_platform.h"
 #include "blocks.h"
-#include "fu_collision_handler.h"
+//#include "fu_collision_handler.h"
 
 //-------------------------------------------------------------------
+int handle_collision_walls()
+{
+    if(temp_y >= bottom_wall - ball_size * 2)
+        {
+            handle_collision('b');
+        }
+        else if(temp_x >= right_wall - ball_size * 2)
+        {
+            handle_collision('r');
+        }
+        else if(temp_y <= top_wall)
+        {
+            handle_collision('t');
+        }
+        else if(temp_x <= left_wall)
+        {
+            handle_collision('l');
+        }
+    cout << "Arthurs" << endl;
+}
+
+
+// ---------------------------------
+// PLATFORM COLLISION DETECTION HERE
+// ---------------------------------
+int handle_collision_platform()
+{
+    if(temp_y + ball_size * 2 >= top_bside && temp_y < top_bside + 0.1)
+    {
+        if(temp_x > blockX && temp_x < blockX + block_width)
+        {
+            handle_collision('b');
+        }
+    }
+}
+
+
+// ---------------------------------
+// BLOCK COLLISION DETECTION HERE
+// ---------------------------------
+int handle_collision_block()
+{
+    if(temp_y + ball_size * 2 >= top_bside && temp_y < top_bside + 0.1)
+    {
+        if(temp_x > blockX && temp_x < blockX + block_width)
+        {
+            handle_collision('b');
+        }
+    }
+    else if(temp_x + ball_size * 2 >= left_bside && temp_x < left_bside + 0.1)
+    {
+        if(temp_y > top_bside && temp_y < bottom_bside)
+        {
+            handle_collision('r');
+        }
+    }
+    else if(temp_y <= bottom_bside && temp_y > bottom_bside - 0.1)
+    {
+        if(temp_x > left_bside + ball_size && temp_x < right_bside)
+        {
+            handle_collision('t');
+        }
+    }
+    else if(temp_x <= right_bside && temp_x > right_bside - 0.1)
+    {
+        if(temp_y >= top_bside && temp_y <= bottom_bside)
+        {
+            handle_collision('l');
+        }
+    }
+}
 int main()
 {
     // Create the main window
@@ -24,13 +95,6 @@ int main()
     sf::RectangleShape block = init_block();
 
 	// Start the game loop
-cout << "left_bside: " << left_bside << endl;
-cout << "top_bside: " << top_bside << endl;
-cout << "bottom_bside: " << bottom_bside << endl;
-cout << "right_bside: " << right_bside << endl;
-cout << "block_width: " << block_width << endl;
-cout << "block_len: " << block_len << endl;
-
     while (app.isOpen())
     {
         // ---------------------------------
@@ -96,9 +160,11 @@ cout << "block_len: " << block_len << endl;
 
         //MAIN COLLISIONS
         handle_collision_walls();
+        cout << "1111111111" << endl;
         handle_collision_walls();
+        cout << "2222222222" << endl;
         handle_collision_block();
-
+        cout << "3333333333" << endl;
 
 
         ball.setPosition(recent_posX, recent_posY);
@@ -118,4 +184,3 @@ cout << "block_len: " << block_len << endl;
 
     return EXIT_SUCCESS;
 }
-

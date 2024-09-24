@@ -1,3 +1,5 @@
+
+
 // ---------------------------------
 // WALL COLLISION DETECTION HERE
 // ---------------------------------
@@ -71,5 +73,4 @@ int handle_collision_block()
             handle_collision('l');
         }
     }
-
 }

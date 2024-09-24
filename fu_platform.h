@@ -1,4 +1,5 @@
 
+
 sf::RectangleShape init_platform()
 {
     cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;

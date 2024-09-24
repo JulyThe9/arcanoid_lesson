@@ -1,3 +1,5 @@
+
+
 sf::CircleShape init_ball()
 {
     sf::CircleShape ball(ball_size);
@@ -32,6 +34,7 @@ void handle_collision(char wall_side)
         case 'b':
             if (recent_posX > curret_posX)
             {
+
                 alpha_y = alpha_y * (-1);
                 curret_posX = recent_posX;
                 current_posY = recent_posY;
