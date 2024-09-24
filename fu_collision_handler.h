@@ -4,7 +4,7 @@
 // WALL COLLISION DETECTION HERE
 // ---------------------------------
 
-int handle_collision_walls()
+void handle_collision_walls()
 {
     if(temp_y >= bottom_wall - ball_size * 2)
         {
@@ -28,7 +28,7 @@ int handle_collision_walls()
 // ---------------------------------
 // PLATFORM COLLISION DETECTION HERE
 // ---------------------------------
-int handle_collision_platform()
+void handle_collision_platform()
 {
     if(temp_y + ball_size * 2 >= top_bside && temp_y < top_bside + 0.1)
     {
@@ -43,7 +43,7 @@ int handle_collision_platform()
 // ---------------------------------
 // BLOCK COLLISION DETECTION HERE
 // ---------------------------------
-int handle_collision_block()
+void handle_collision_block()
 {
     if(temp_y + ball_size * 2 >= top_bside && temp_y < top_bside + 0.1)
     {
