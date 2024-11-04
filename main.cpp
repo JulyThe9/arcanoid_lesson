@@ -21,7 +21,8 @@ int main()
 
     sf::RectangleShape plat = init_platform();
 
-    sf::RectangleShape block = init_block();
+    init_block();
+
 
 	// Start the game loop
     while (app.isOpen())
@@ -78,7 +79,6 @@ int main()
         else
         {
             // all other movement
-            //cout << "alpha_x: " << alpha_x << "; alpha_y: " << alpha_y << endl;
             recent_posX += alpha_x;
             recent_posY += alpha_y;
         }
@@ -96,9 +96,9 @@ int main()
         ball.setPosition(recent_posX, recent_posY);
         plat.setPosition(platX, platY);
 
+        app.draw(block);
         app.draw(ball);
         app.draw(plat);
-        app.draw(block);
 
 
         app.display();

@@ -1,5 +1,3 @@
-
-
 // ---------------------------------
 // WALL COLLISION DETECTION HERE
 // ---------------------------------
@@ -39,38 +37,65 @@ void handle_collision_platform()
     }
 }
 
+void hit_block()
+{
+    main_block.active = false;
+}
 
 // ---------------------------------
 // BLOCK COLLISION DETECTION HERE
 // ---------------------------------
 void handle_collision_block()
 {
-    if(temp_y + ball_size * 2 >= top_bside && temp_y < top_bside + 0.1)
+    if(temp_y + ball_size * 2 >= main_block.top_bside && temp_y < main_block.top_bside + 0.1)
     {
-        if(temp_x > blockX && temp_x < blockX + block_width)
+        if(temp_x > main_block.blockX && temp_x < main_block.blockX + main_block.block_width)
         {
-            handle_collision('b');
+            if (main_block.active == true)
+            {
+                handle_collision('b');
+                block.setFillColor(sf::Color(0, 0, 0));
+                hit_block();
+            }
         }
     }
-    else if(temp_x + ball_size * 2 >= left_bside && temp_x < left_bside + 0.1)
+    else if(temp_x + ball_size * 2 >= main_block.left_bside && temp_x < main_block.left_bside + 0.1)
     {
-        if(temp_y > top_bside && temp_y < bottom_bside)
+        if(temp_y > main_block.top_bside && temp_y < main_block.bottom_bside)
         {
-            handle_collision('r');
+            if (main_block.active == true)
+            {
+                handle_collision('r');
+                block.setFillColor(sf::Color(0, 0, 0));
+                hit_block();
+            }
         }
     }
-    else if(temp_y <= bottom_bside && temp_y > bottom_bside - 0.1)
+    else if(temp_y <= main_block.bottom_bside && temp_y > main_block.bottom_bside - 0.1)
     {
-        if(temp_x > left_bside + ball_size && temp_x < right_bside)
+        if(temp_x > main_block.left_bside + ball_size && temp_x < main_block.right_bside)
         {
-            handle_collision('t');
+            if (main_block.active == true)
+            {
+                handle_collision('t');
+                block.setFillColor(sf::Color(0, 0, 0));
+                hit_block();
+            }
         }
     }
-    else if(temp_x <= right_bside && temp_x > right_bside - 0.1)
+    else if(temp_x <= main_block.right_bside && temp_x > main_block.right_bside - 0.1)
     {
-        if(temp_y >= top_bside && temp_y <= bottom_bside)
+        if(temp_y >= main_block.top_bside && temp_y <= main_block.bottom_bside)
         {
-            handle_collision('l');
+            if (main_block.active == true)
+            {
+                handle_collision('l');
+                block.setFillColor(sf::Color(0, 0, 0));
+                hit_block();
+            }
         }
     }
 }
+
+
+

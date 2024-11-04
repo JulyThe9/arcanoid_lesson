@@ -1,19 +1,8 @@
-
-
-sf::RectangleShape init_block()
+void init_block()
 {
-    cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
-
-    sf::RectangleShape block(sf::Vector2f(block_width, block_len));
+    block = sf::RectangleShape(sf::Vector2f(main_block.block_width, main_block.block_len));
 
     block.setFillColor(sf::Color(500, 30, 320));
 
-    block.setPosition(blockX, blockY);
-
-    return block;
+    block.setPosition(main_block.blockX, main_block.blockY);
 }
-
-//void conditions(char block_side)
-//{
-
-//}

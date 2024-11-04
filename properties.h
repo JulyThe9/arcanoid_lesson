@@ -51,18 +51,41 @@ float rest = 0;
 //---------
 //BLOCKS
 //---------
+int block_WIDTH = 500;
+int block_LEN = 200;
+sf::RectangleShape block;
 
-int block_width = 500;
-int block_len = 250;
+struct block_type
+{
+    //fields
+    int block_width;
+    int block_len;
 
-int blockX = screensizeX / 2 - block_width / 2;
-int blockY = 200;
+    int blockX;
+    int blockY;
 
-int top_bside = blockY;
-int left_bside = blockX;
-int right_bside = blockX + block_width;
-int bottom_bside = blockY + block_len;
-int i_frame = 0;
+    int top_bside;
+    int left_bside;
+    int right_bside;
+    int bottom_bside;
+    bool active;
 
+    //constructor
+    block_type(int block_widthPar, int block_lenPar, int blockXPar, int blockYPar)
+    {
+        block_width = block_widthPar;
+        block_len = block_lenPar;
+        blockX = blockXPar;
+        blockY = blockYPar;
+        top_bside = blockY;
+        left_bside = blockX;
+        right_bside =  blockX + block_width;
+        bottom_bside = blockY + block_len;
+        active = true;
+    }
+};
+//instantiating an object of type block type
+block_type main_block(block_WIDTH, block_LEN, screensizeX / 2 - block_WIDTH / 2, 200);
 
+block_type secondary_block(block_LEN, block_LEN, 800, 700);
 
