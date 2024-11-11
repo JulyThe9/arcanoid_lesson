@@ -39,8 +39,8 @@ void handle_collision_platform()
 
 void hit_block()
 {
-    vect1[0].active = false;
-    block.setFillColor(sf::Color(0, 0, 0));
+    vector_data[0].active = false;
+    //block.setFillColor(sf::Color(0, 0, 0));
 }
 
 // ---------------------------------
@@ -48,44 +48,44 @@ void hit_block()
 // ---------------------------------
 void handle_collision_block()
 {
-    if(temp_y + ball_size * 2 >= vect1[0].top_bside && temp_y < vect1[0].top_bside + 0.1)
+    if(temp_y + ball_size * 2 >= vector_data[0].top_bside && temp_y < vector_data[0].top_bside + 0.1)
     {
-        if(temp_x > vect1[0].blockX && temp_x < vect1[0].blockX + vect1[0].block_width)
+        if(temp_x > vector_data[0].blockX && temp_x < vector_data[0].blockX + vector_data[0].block_width)
         {
-            if (vect1[0].active == true)
+            if (vector_data[0].active == true)
             {
                 handle_collision('b');
                 hit_block();
             }
         }
     }
-    else if(temp_x + ball_size * 2 >= vect1[0].left_bside && temp_x < vect1[0].left_bside + 0.1)
+    else if(temp_x + ball_size * 2 >= vector_data[0].left_bside && temp_x < vector_data[0].left_bside + 0.1)
     {
-        if(temp_y > vect1[0].top_bside && temp_y < vect1[0].bottom_bside)
+        if(temp_y > vector_data[0].top_bside && temp_y < vector_data[0].bottom_bside)
         {
-            if (vect1[0].active == true)
+            if (vector_data[0].active == true)
             {
                 handle_collision('r');
                 hit_block();
             }
         }
     }
-    else if(temp_y <= vect1[0].bottom_bside && temp_y > vect1[0].bottom_bside - 0.1)
+    else if(temp_y <= vector_data[0].bottom_bside && temp_y > vector_data[0].bottom_bside - 0.1)
     {
-        if(temp_x > vect1[0].left_bside + ball_size && temp_x < vect1[0].right_bside)
+        if(temp_x > vector_data[0].left_bside + ball_size && temp_x < vector_data[0].right_bside)
         {
-            if (vect1[0].active == true)
+            if (vector_data[0].active == true)
             {
                 handle_collision('t');
                 hit_block();
             }
         }
     }
-    else if(temp_x <= vect1[0].right_bside && temp_x > vect1[0].right_bside - 0.1)
+    else if(temp_x <= vector_data[0].right_bside && temp_x > vector_data[0].right_bside - 0.1)
     {
-        if(temp_y >= vect1[0].top_bside && temp_y <= vect1[0].bottom_bside)
+        if(temp_y >= vector_data[0].top_bside && temp_y <= vector_data[0].bottom_bside)
         {
-            if (vect1[0].active == true)
+            if (vector_data[0].active == true)
             {
                 handle_collision('l');
                 hit_block();
@@ -93,3 +93,4 @@ void handle_collision_block()
         }
     }
 }
+

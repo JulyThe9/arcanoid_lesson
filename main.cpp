@@ -23,7 +23,9 @@ int main()
 
     sf::RectangleShape plat = init_platform();
 
-    mult_block();
+    create_blocks_data();
+
+    create_blocks_graphics();
 
 
 	// Start the game loop
@@ -98,7 +100,10 @@ int main()
         ball.setPosition(recent_posX, recent_posY);
         plat.setPosition(platX, platY);
 
-        app.draw(block);
+        for (int i = 0; i < block_amount; i++)
+        {
+            app.draw(vector_graphics[i]);
+        }
         app.draw(ball);
         app.draw(plat);
 

@@ -54,7 +54,6 @@ float rest = 0;
 //---------
 int block_WIDTH = 80;
 int block_LEN = 30;
-sf::RectangleShape block;
 
 struct block_type
 {
@@ -92,31 +91,42 @@ struct block_type
     }
 };
 
-vector<block_type> vect1;
+vector<block_type> vector_data;
+vector<sf::RectangleShape> vector_graphics;
 
 //instantiation
 int currX = 0;
 int prevX = 0;
-//block_type main_block(block_WIDTH, block_LEN, 0, 200);
+int block_amount = 8;
 
 //forward declaration: tells compiler "all good I have this covered"
-void init_block(block_type current_block);
+sf::RectangleShape init_block(block_type current_block);
 
 
-int mult_block()
+
+int create_blocks_data()
 {
     int localposX = 0;
     int localposY = 200;
 
-
-
-    for (int i = 0; i < 15; i++)
+    for (int i = 0; i < block_amount; i++)
     {
         currX = prevX + block_WIDTH + 10;
         localposX = currX;
-        vect1.push_back(block_type(block_WIDTH, block_LEN, localposX, localposY));
+        vector_data.push_back(block_type(block_WIDTH, block_LEN, localposX, localposY));
         prevX = currX;
-        cout << "INSIDE MULT_BLOCK; " << "posX: " << vect1[i].blockX << "; posY: " << vect1[i].blockY << endl;
+        cout << "INSIDE MULT_BLOCK; " << "posX: " << vector_data[i].blockX << "; posY: " << vector_data[i].blockY << endl;
+    }
+    return 0;
+}
+
+
+
+int create_blocks_graphics()
+{
+    for (int j = 0; j < block_amount; j++)
+    {
+        vector_graphics.push_back(init_block(vector_data[j]));
     }
     return 0;
 }
