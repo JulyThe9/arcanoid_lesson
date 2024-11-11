@@ -39,7 +39,8 @@ void handle_collision_platform()
 
 void hit_block()
 {
-    main_block.active = false;
+    vect1[0].active = false;
+    block.setFillColor(sf::Color(0, 0, 0));
 }
 
 // ---------------------------------
@@ -47,55 +48,48 @@ void hit_block()
 // ---------------------------------
 void handle_collision_block()
 {
-    if(temp_y + ball_size * 2 >= main_block.top_bside && temp_y < main_block.top_bside + 0.1)
+    if(temp_y + ball_size * 2 >= vect1[0].top_bside && temp_y < vect1[0].top_bside + 0.1)
     {
-        if(temp_x > main_block.blockX && temp_x < main_block.blockX + main_block.block_width)
+        if(temp_x > vect1[0].blockX && temp_x < vect1[0].blockX + vect1[0].block_width)
         {
-            if (main_block.active == true)
+            if (vect1[0].active == true)
             {
                 handle_collision('b');
-                block.setFillColor(sf::Color(0, 0, 0));
                 hit_block();
             }
         }
     }
-    else if(temp_x + ball_size * 2 >= main_block.left_bside && temp_x < main_block.left_bside + 0.1)
+    else if(temp_x + ball_size * 2 >= vect1[0].left_bside && temp_x < vect1[0].left_bside + 0.1)
     {
-        if(temp_y > main_block.top_bside && temp_y < main_block.bottom_bside)
+        if(temp_y > vect1[0].top_bside && temp_y < vect1[0].bottom_bside)
         {
-            if (main_block.active == true)
+            if (vect1[0].active == true)
             {
                 handle_collision('r');
-                block.setFillColor(sf::Color(0, 0, 0));
                 hit_block();
             }
         }
     }
-    else if(temp_y <= main_block.bottom_bside && temp_y > main_block.bottom_bside - 0.1)
+    else if(temp_y <= vect1[0].bottom_bside && temp_y > vect1[0].bottom_bside - 0.1)
     {
-        if(temp_x > main_block.left_bside + ball_size && temp_x < main_block.right_bside)
+        if(temp_x > vect1[0].left_bside + ball_size && temp_x < vect1[0].right_bside)
         {
-            if (main_block.active == true)
+            if (vect1[0].active == true)
             {
                 handle_collision('t');
-                block.setFillColor(sf::Color(0, 0, 0));
                 hit_block();
             }
         }
     }
-    else if(temp_x <= main_block.right_bside && temp_x > main_block.right_bside - 0.1)
+    else if(temp_x <= vect1[0].right_bside && temp_x > vect1[0].right_bside - 0.1)
     {
-        if(temp_y >= main_block.top_bside && temp_y <= main_block.bottom_bside)
+        if(temp_y >= vect1[0].top_bside && temp_y <= vect1[0].bottom_bside)
         {
-            if (main_block.active == true)
+            if (vect1[0].active == true)
             {
                 handle_collision('l');
-                block.setFillColor(sf::Color(0, 0, 0));
                 hit_block();
             }
         }
     }
 }
-
-
-

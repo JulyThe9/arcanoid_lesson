@@ -1,5 +1,6 @@
 using namespace std;
 
+
 //----
 //BALL
 //----
@@ -51,8 +52,8 @@ float rest = 0;
 //---------
 //BLOCKS
 //---------
-int block_WIDTH = 500;
-int block_LEN = 200;
+int block_WIDTH = 80;
+int block_LEN = 30;
 sf::RectangleShape block;
 
 struct block_type
@@ -62,6 +63,7 @@ struct block_type
     int block_len;
 
     int blockX;
+    int blockX_new;
     int blockY;
 
     int top_bside;
@@ -73,19 +75,48 @@ struct block_type
     //constructor
     block_type(int block_widthPar, int block_lenPar, int blockXPar, int blockYPar)
     {
+        //size of block
         block_width = block_widthPar;
         block_len = block_lenPar;
+        //position of block
         blockX = blockXPar;
         blockY = blockYPar;
+        //sides of block
         top_bside = blockY;
         left_bside = blockX;
         right_bside =  blockX + block_width;
         bottom_bside = blockY + block_len;
+        //block existant or not
         active = true;
+        blockX_new = blockXPar;
     }
 };
-//instantiating an object of type block type
-block_type main_block(block_WIDTH, block_LEN, screensizeX / 2 - block_WIDTH / 2, 200);
 
-block_type secondary_block(block_LEN, block_LEN, 800, 700);
+vector<block_type> vect1;
 
+//instantiation
+int currX = 0;
+int prevX = 0;
+//block_type main_block(block_WIDTH, block_LEN, 0, 200);
+
+//forward declaration: tells compiler "all good I have this covered"
+void init_block(block_type current_block);
+
+
+int mult_block()
+{
+    int localposX = 0;
+    int localposY = 200;
+
+
+
+    for (int i = 0; i < 15; i++)
+    {
+        currX = prevX + block_WIDTH + 10;
+        localposX = currX;
+        vect1.push_back(block_type(block_WIDTH, block_LEN, localposX, localposY));
+        prevX = currX;
+        cout << "INSIDE MULT_BLOCK; " << "posX: " << vect1[i].blockX << "; posY: " << vect1[i].blockY << endl;
+    }
+    return 0;
+}

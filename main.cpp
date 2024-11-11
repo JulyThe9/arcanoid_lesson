@@ -11,6 +11,8 @@
 #include "blocks.h"
 #include "fu_collision_handler.h"
 
+
+
 //-------------------------------------------------------------------
 int main()
 {
@@ -21,7 +23,7 @@ int main()
 
     sf::RectangleShape plat = init_platform();
 
-    init_block();
+    mult_block();
 
 
 	// Start the game loop
