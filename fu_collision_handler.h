@@ -37,10 +37,11 @@ void handle_collision_platform()
     }
 }
 
-void hit_block()
+void hit_block(int i)
 {
-    vector_data[0].active = false;
-    //block.setFillColor(sf::Color(0, 0, 0));
+    vector_data[i].active = false;
+    vector_graphics[i].setFillColor(sf::Color(0, 0, 0));
+    cout << "collided with block num: " << i << endl;
 }
 
 // ---------------------------------
@@ -48,47 +49,50 @@ void hit_block()
 // ---------------------------------
 void handle_collision_block()
 {
-    if(temp_y + ball_size * 2 >= vector_data[0].top_bside && temp_y < vector_data[0].top_bside + 0.1)
+    for (int i = 0; i < block_amount; i++)
     {
-        if(temp_x > vector_data[0].blockX && temp_x < vector_data[0].blockX + vector_data[0].block_width)
+        if(temp_y + ball_size * 2 >= vector_data[i].top_bside && temp_y < vector_data[i].top_bside + 0.1)
         {
-            if (vector_data[0].active == true)
+            if(temp_x > vector_data[i].blockX && temp_x < vector_data[i].blockX + vector_data[i].block_width)
             {
-                handle_collision('b');
-                hit_block();
+                if (vector_data[i].active == true)
+                {
+                    handle_collision('b');
+                    hit_block(i);
+                }
             }
         }
-    }
-    else if(temp_x + ball_size * 2 >= vector_data[0].left_bside && temp_x < vector_data[0].left_bside + 0.1)
-    {
-        if(temp_y > vector_data[0].top_bside && temp_y < vector_data[0].bottom_bside)
+        else if(temp_x + ball_size * 2 >= vector_data[i].left_bside && temp_x < vector_data[i].left_bside + 0.1)
         {
-            if (vector_data[0].active == true)
+            if(temp_y > vector_data[i].top_bside && temp_y < vector_data[i].bottom_bside)
             {
-                handle_collision('r');
-                hit_block();
+                if (vector_data[i].active == true)
+                {
+                    handle_collision('r');
+                    hit_block(i);
+                }
             }
         }
-    }
-    else if(temp_y <= vector_data[0].bottom_bside && temp_y > vector_data[0].bottom_bside - 0.1)
-    {
-        if(temp_x > vector_data[0].left_bside + ball_size && temp_x < vector_data[0].right_bside)
+        else if(temp_y <= vector_data[i].bottom_bside && temp_y > vector_data[i].bottom_bside - 0.1)
         {
-            if (vector_data[0].active == true)
+            if(temp_x > vector_data[i].left_bside + ball_size && temp_x < vector_data[i].right_bside)
             {
-                handle_collision('t');
-                hit_block();
+                if (vector_data[i].active == true)
+                {
+                    handle_collision('t');
+                    hit_block(i);
+                }
             }
         }
-    }
-    else if(temp_x <= vector_data[0].right_bside && temp_x > vector_data[0].right_bside - 0.1)
-    {
-        if(temp_y >= vector_data[0].top_bside && temp_y <= vector_data[0].bottom_bside)
+        else if(temp_x <= vector_data[i].right_bside && temp_x > vector_data[i].right_bside - 0.1)
         {
-            if (vector_data[0].active == true)
+            if(temp_y >= vector_data[i].top_bside && temp_y <= vector_data[i].bottom_bside)
             {
-                handle_collision('l');
-                hit_block();
+                if (vector_data[i].active == true)
+                {
+                    handle_collision('l');
+                    hit_block(i);
+                }
             }
         }
     }

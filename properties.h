@@ -4,7 +4,7 @@ using namespace std;
 //----
 //BALL
 //----
-float ball_speed = 0.06;
+float ball_speed = 3;
 int ball_size = 10;
 
 // current ball position
@@ -52,8 +52,9 @@ float rest = 0;
 //---------
 //BLOCKS
 //---------
-int block_WIDTH = 80;
-int block_LEN = 30;
+//80/30 is good
+int block_WIDTH = 10;
+int block_LEN = 3;
 
 struct block_type
 {
@@ -97,7 +98,7 @@ vector<sf::RectangleShape> vector_graphics;
 //instantiation
 int currX = 0;
 int prevX = 0;
-int block_amount = 8;
+int block_amount = 5000;
 
 //forward declaration: tells compiler "all good I have this covered"
 sf::RectangleShape init_block(block_type current_block);
@@ -111,11 +112,20 @@ int create_blocks_data()
 
     for (int i = 0; i < block_amount; i++)
     {
-        currX = prevX + block_WIDTH + 10;
+        cout <<"i: " <<  i << ", X: " << localposX << ", Y: "<< localposY << endl;
+
+        currX = prevX + block_WIDTH + 2;
         localposX = currX;
         vector_data.push_back(block_type(block_WIDTH, block_LEN, localposX, localposY));
         prevX = currX;
         cout << "INSIDE MULT_BLOCK; " << "posX: " << vector_data[i].blockX << "; posY: " << vector_data[i].blockY << endl;
+        if((i + 1) % 85 == 0)
+        {
+            localposX = 0;
+            currX = 0;
+            prevX = 0;
+            localposY += block_LEN + 5;
+        }
     }
     return 0;
 }
@@ -124,9 +134,9 @@ int create_blocks_data()
 
 int create_blocks_graphics()
 {
-    for (int j = 0; j < block_amount; j++)
+    for (int i = 0; i < block_amount; i++)
     {
-        vector_graphics.push_back(init_block(vector_data[j]));
+        vector_graphics.push_back(init_block(vector_data[i]));
     }
     return 0;
 }
