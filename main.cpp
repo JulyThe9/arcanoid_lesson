@@ -1,6 +1,10 @@
 #include <iostream>
 #include <cmath>
 #include <SFML/Graphics.hpp>
+#include <thread>
+#include <chrono>
+#include <vector>
+
 //#include <C:\Users\Master.DESKTOP-8NQ0SCM\Documents\codeblox_projects\arcanoid_lesson\properties.h>
 //#include <C:\Users\Master.DESKTOP-8NQ0SCM\Documents\codeblox_projects\arcanoid_lesson\fu_ball.h>
 //#include <C:\Users\Master.DESKTOP-8NQ0SCM\Documents\codeblox_projects\arcanoid_lesson\fu_platform.h>
@@ -9,6 +13,12 @@
 #include "fu_ball.h"
 #include "fu_platform.h"
 #include "blocks.h"
+#include "block_generation.h"
+#include "barriar.h"
+#include "lives.h"
+#include "lives_generation.h"
+//#include "life_animation.h"
+#include "get_new_angle.h"
 #include "fu_collision_handler.h"
 
 
@@ -16,16 +26,19 @@
 //-------------------------------------------------------------------
 int main()
 {
-    // Create the main window
-    sf::RenderWindow app(sf::VideoMode(screensizeX, screensizeY), "SFML window");
-
     sf::CircleShape ball = init_ball();
 
     sf::RectangleShape plat = init_platform();
 
-    create_blocks_data();
+    sf::RectangleShape barrier = init_barrier();
 
+    create_blocks_data();
     create_blocks_graphics();
+
+    set_life_data();
+    set_life_graphics();
+
+
 
 
 	// Start the game loop
@@ -95,17 +108,26 @@ int main()
         handle_collision_walls();
         handle_collision_block();
         handle_collision_platform();
+        handle_collision_barrier();
 
 
         ball.setPosition(recent_posX, recent_posY);
         plat.setPosition(platX, platY);
+        barrier.setPosition(barrierX, barrierY);
 
         for (int i = 0; i < block_amount; i++)
         {
-            app.draw(vector_graphics[i]);
+            app.draw(vector_graphics_block[i]);
         }
-        app.draw(ball);
+
+        for(int i = 0; i < lives_amount; i++)
+        {
+            app.draw(vector_graphics_life[i]);
+        }
+
         app.draw(plat);
+        app.draw(barrier);
+        app.draw(ball);
 
 
         app.display();
