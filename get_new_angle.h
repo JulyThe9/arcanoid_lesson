@@ -7,22 +7,27 @@ int get_new_angle()
     //percentige of plat_pos
     float plat_pos_perc = (100.0 / plat_width) * plat_pos;
     int section = plat_width / 8;
+    int deg_per_section = 90 / 5;
 
-    if(plat_pos > plat_width / 2 && plat_pos < plat_width / 2 + 35)
+    if(plat_pos > plat_width / 2 && plat_pos < plat_width / 2 + section * 1)
     {
+        curr_degrees = 90 - deg_per_section * 4;
         cout << "we are in the first section" << endl;
     }
-    else if(plat_pos >= plat_width / 2 + section && plat_pos <= plat_width / 2 + section * 2)
+    else if(plat_pos >= plat_width / 2 + section * 1 && plat_pos <= plat_width / 2 + section * 2)
     {
+        curr_degrees = 90 - deg_per_section * 3;
         cout << "we are in the second section" << endl;
     }
     else if(plat_pos > plat_width / 2 + section * 2 && plat_pos <= plat_width / 2 + section * 3)
     {
+        curr_degrees = 90 - deg_per_section * 2;
         cout << "we are in the third section" << endl;
     }
     else if(plat_pos > plat_width / 2 + section * 3 && plat_pos <= plat_width / 2 + section * 4)
     {
+        curr_degrees = 90 - deg_per_section * 1;
         cout << "we are in the fourth section" << endl;
     }
-    return 45;
+    return curr_degrees;
 }
