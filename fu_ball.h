@@ -12,14 +12,12 @@ sf::CircleShape init_ball()
 //-------------------------------------------------------------------
 float get_new_x(float agr_deg)
 {
-    cout << "agr_deg: " << agr_deg << endl;
     return ball_speed * sin(agr_deg * (M_PI / 180.0));
 }
 
 //-------------------------------------------------------------------
 float get_new_y(float agr_deg)
 {
-    cout << "agr_deg: " << agr_deg << endl;
     return ball_speed * cos(agr_deg * (M_PI / 180.0));
 }
 

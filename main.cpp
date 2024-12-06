@@ -92,6 +92,7 @@ int main()
             // default movement at the start of the game
             recent_posX += get_new_x(curr_degrees);
             recent_posY += get_new_y(curr_degrees);
+            //TODO needs to be debugged
         }
         else
         {

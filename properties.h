@@ -27,7 +27,7 @@ float top_wall = 0;
 float bottom_wall = screensizeY;
 
 // angle of flight
-float curr_degrees = -90;
+float curr_degrees = 30;
 
 float temp_y = 0;
 float temp_x = 0;
