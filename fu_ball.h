@@ -30,10 +30,10 @@ void handle_collision(char wall_side)
     switch (wall_side)
     {
         case 'b':
-            if (recent_posX >= curret_posX)
+            if (recent_posX > current_posX)
             {
                 alpha_y = alpha_y * (-1);
-                curret_posX = recent_posX;
+                current_posX = recent_posX;
                 current_posY = recent_posY;
                 return;
             }
@@ -41,7 +41,7 @@ void handle_collision(char wall_side)
             {
                 alpha_x = alpha_x * (-1);
                 alpha_y = alpha_y * (-1);
-                curret_posX = recent_posX;
+                current_posX = recent_posX;
                 current_posY = recent_posY;
                 return;
             }
@@ -51,29 +51,29 @@ void handle_collision(char wall_side)
             {
                 alpha_x = alpha_x * (-1);
                 alpha_y = alpha_y * (-1);
-                curret_posX = recent_posX;
+                current_posX = recent_posX;
                 current_posY = recent_posY;
                 return;
             }
             else
             {
                 alpha_x = alpha_x * (-1);
-                curret_posX = recent_posX;
+                current_posX = recent_posX;
                 current_posY = recent_posY;
                 return;
             }
 
         case 't':
-            if (recent_posX < curret_posX)
+            if (recent_posX < current_posX)
             {
                 alpha_x = alpha_x * (-1);
-                curret_posX = recent_posX;
+                current_posX = recent_posX;
                 current_posY = recent_posY;
                 return;
             }
             else
             {
-                curret_posX = recent_posX;
+                current_posX = recent_posX;
                 current_posY = recent_posY;
                 return;
             }
@@ -81,14 +81,52 @@ void handle_collision(char wall_side)
         case 'l':
             if (recent_posY > current_posY)
             {
-                curret_posX = recent_posX;
+                current_posX = recent_posX;
                 current_posY = recent_posY;
                 return;
             }
             else
             {
                 alpha_y = alpha_y * (-1);
-                curret_posX = recent_posX;
+                current_posX = recent_posX;
+                current_posY = recent_posY;
+                return;
+            }
+        //right side of platform
+        case 'u':
+            //ball flies right to left
+            if(recent_posX > current_posX)
+            {
+                alpha_y = alpha_y * (-1);
+                current_posX = recent_posX;
+                current_posY = recent_posY;
+                return;
+            }
+            //ball flies left to right
+            else
+            {
+                alpha_y = alpha_y * (-1);
+                current_posX = recent_posX;
+                current_posY = recent_posY;
+                return;
+            }
+        //left side of platform
+        case 'o':
+            //ball flies right to left
+            if (recent_posX > current_posX)
+            {
+                alpha_x = alpha_x * (-1);
+                alpha_y = alpha_y * (-1);
+                current_posX = recent_posX;
+                current_posY = recent_posY;
+                return;
+            }
+            //ball flies left to right
+            else
+            {
+                alpha_x = alpha_x * (-1);
+                alpha_y = alpha_y * (-1);
+                current_posX = recent_posX;
                 current_posY = recent_posY;
                 return;
             }

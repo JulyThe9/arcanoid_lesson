@@ -12,7 +12,7 @@ float recent_posX = 500;
 float recent_posY = 500;
 
 //current ball position variable
-float curret_posX = recent_posX;
+float current_posX = recent_posX;
 float current_posY = recent_posY;
 
 // size of screen

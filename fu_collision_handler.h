@@ -33,7 +33,6 @@ void handle_collision_platform()
         if(temp_x + ball_size * 2 > platX && temp_x < platX + plat_width)
         {
             curr_degrees = get_new_angle();
-            handle_collision('b');
         }
     }
 }
