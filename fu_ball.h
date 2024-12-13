@@ -30,7 +30,7 @@ void handle_collision(char wall_side)
     switch (wall_side)
     {
         case 'b':
-            if (recent_posX > curret_posX)
+            if (recent_posX >= curret_posX)
             {
                 alpha_y = alpha_y * (-1);
                 curret_posX = recent_posX;
