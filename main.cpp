@@ -20,6 +20,7 @@
 //#include "life_animation.h"
 #include "get_new_angle.h"
 #include "fu_collision_handler.h"
+#include "fu_init_misc.h"
 
 
 
@@ -31,6 +32,8 @@ int main()
     sf::RectangleShape plat = init_platform();
 
     sf::RectangleShape barrier = init_barrier();
+
+    init_textures();
 
     create_blocks_data();
     create_blocks_graphics();
@@ -129,7 +132,6 @@ int main()
         app.draw(plat);
         app.draw(barrier);
         app.draw(ball);
-
 
         app.display();
 

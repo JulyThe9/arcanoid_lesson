@@ -95,7 +95,7 @@ void handle_collision(char wall_side)
         //right side of platform
         case 'u':
             //ball flies right to left
-            if(recent_posX > current_posX)
+            if(recent_posX >= current_posX)
             {
                 alpha_y = alpha_y * (-1);
                 current_posX = recent_posX;
@@ -113,7 +113,7 @@ void handle_collision(char wall_side)
         //left side of platform
         case 'o':
             //ball flies right to left
-            if (recent_posX > current_posX)
+            if (recent_posX >= current_posX)
             {
                 alpha_x = alpha_x * (-1);
                 alpha_y = alpha_y * (-1);

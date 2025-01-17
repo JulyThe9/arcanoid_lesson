@@ -42,9 +42,9 @@ sf::RenderWindow app(sf::VideoMode(screensizeX, screensizeY), "SFML window");
 //PLATFORM
 //---------
 
-int plat_speed = 60;
+int plat_speed = 35;
 
-int plat_width = 300;
+int plat_width = 150;
 int plat_len = 12;
 
 float platX = screensizeX / 2 - plat_width / 2 - 150;
@@ -58,15 +58,16 @@ float rest = 0;
 //---------
 //BLOCKS
 //---------
-//80/30 is good
+//90/30 is good
+sf::Texture texture_ice;
+sf::Texture texture_poison;
+int counter = 0;
 int block_rows = 10;
 int block_spacing = 5;
 int block_LEN = 30;
 int block_WIDTH = 90;
 int blocks_in_row = (screensizeX - 2 * block_WIDTH) / (block_WIDTH + block_spacing);
 int block_amount = blocks_in_row * block_rows;
-
-
 
 struct block_type
 {
@@ -83,12 +84,10 @@ struct block_type
     int right_bside;
     int bottom_bside;
     bool active;
-    int colour_red_block;
-    int colour_green_block;
-    int colour_blue_block;
+    sf::Texture texture;
 
     //constructor
-    block_type(int block_widthPar, int block_lenPar, int blockXPar, int blockYPar, int colour_redPar, int colour_greenPar, int colour_bluePar)
+    block_type(int block_widthPar, int block_lenPar, int blockXPar, int blockYPar, sf::Texture texturepar)
     {
         //size of block
         block_width = block_widthPar;
@@ -97,10 +96,7 @@ struct block_type
         blockX = blockXPar;
         blockY = blockYPar;
         //colour of block
-        colour_red_block = colour_redPar;
-        colour_green_block = colour_greenPar;
-        colour_blue_block = colour_bluePar;
-
+        texture = texturepar;
         //sides of block
         top_bside = blockY;
         left_bside = blockX;

@@ -6,32 +6,25 @@ int currblockX = 0;
 int prevblockX = 0;
 
 //forward declaration: tells compiler "all good I have this covered"
-sf::RectangleShape init_block(block_type current_block);
-
+sf::RectangleShape init_block(block_type &current_block);
 
 
 int create_blocks_data()
 {
+    sf::Texture texture;
     int localblockX = 0;
     int localblockY = 100;
-    int colour_red;
-    int colour_green;
-    int colour_blue;
 
 
     for (int i = 0; i < block_amount; i++)
     {
         if(i % 2 == 0)
         {
-            colour_red = 0;
-            colour_green = 50;
-            colour_blue = 200;
+            texture = texture_ice;
         }
         else
         {
-            colour_red = 100;
-            colour_green = 250;
-            colour_blue = 50;
+            texture = texture_poison;
         }
 
         if(i == 0)
@@ -44,7 +37,7 @@ int create_blocks_data()
         }
 
         localblockX = currblockX;
-        vector_data_block.push_back(block_type(block_WIDTH, block_LEN, localblockX, localblockY, colour_red, colour_green, colour_blue));
+        vector_data_block.push_back(block_type(block_WIDTH, block_LEN, localblockX, localblockY, texture));
         prevblockX = currblockX;
 
         if((i + 1) % blocks_in_row == 0)
