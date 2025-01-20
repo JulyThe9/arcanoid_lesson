@@ -61,6 +61,7 @@ void handle_collision_block()
                 {
                     handle_collision('b');
                     hit_block(i);
+
                 }
             }
         }

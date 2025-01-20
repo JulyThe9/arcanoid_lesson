@@ -156,3 +156,11 @@ struct lives_type
         colour_blue_life = colour_blue_lifePar;
     }
 };
+
+//--------
+//SCORE
+//--------
+sf::Text score;
+sf::Font font;
+
+

@@ -21,6 +21,7 @@
 #include "get_new_angle.h"
 #include "fu_collision_handler.h"
 #include "fu_init_misc.h"
+#include "fu_score_logic.h"
 
 
 
@@ -41,6 +42,7 @@ int main()
     set_life_data();
     set_life_graphics();
 
+    init_score();
 
 
 
@@ -132,6 +134,7 @@ int main()
         app.draw(plat);
         app.draw(barrier);
         app.draw(ball);
+        app.draw(score);
 
         app.display();
 
