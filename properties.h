@@ -61,7 +61,6 @@ float rest = 0;
 //90/30 is good
 sf::Texture texture_ice;
 sf::Texture texture_poison;
-int counter = 0;
 int block_rows = 10;
 int block_spacing = 5;
 int block_LEN = 30;
@@ -85,9 +84,10 @@ struct block_type
     int bottom_bside;
     bool active;
     sf::Texture texture;
+    int texture_type;
 
     //constructor
-    block_type(int block_widthPar, int block_lenPar, int blockXPar, int blockYPar, sf::Texture texturepar)
+    block_type(int block_widthPar, int block_lenPar, int blockXPar, int blockYPar, sf::Texture texturepar, int texture_typepar)
     {
         //size of block
         block_width = block_widthPar;
@@ -105,6 +105,7 @@ struct block_type
         //block existant or not
         active = true;
         blockX_new = blockXPar;
+        texture_type = texture_typepar;
     }
 };
 
@@ -162,5 +163,7 @@ struct lives_type
 //--------
 sf::Text score;
 sf::Font font;
+string score_number = "10";
+int counter = 1;
 
 

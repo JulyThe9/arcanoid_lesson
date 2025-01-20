@@ -13,8 +13,8 @@ void init_score()
     }
 
     score.setFont(font);
-    score.setInt(10);
-    score.setCharacterSize(24);
+    score.setString(score_number);
+    score.setCharacterSize(50);
     score.setFillColor(sf::Color::Red);
     score.setStyle(sf::Text::Bold);
     score.setPosition(50, 50);
