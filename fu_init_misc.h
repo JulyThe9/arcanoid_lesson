@@ -1,5 +1,15 @@
 void init_textures()
 {
+    if (!texture_ice.loadFromFile("textures/blocks/block_regular_1.png"))
+    {
+        // Handle error
+        throw std::runtime_error("Failed to load font: textures/blocks/block_regular_1.png");
+    }
+    else if (!texture_poison.loadFromFile("textures/blocks/block_regular_2.png"))
+    {
+        // Handle error
+        throw std::runtime_error("Failed to load font: textures/blocks/block_regular_2.png");
+    }
     texture_ice.loadFromFile("textures/blocks/block_regular_1.png", sf::IntRect(0, 0, 90, 30));
     texture_poison.loadFromFile("textures/blocks/block_regular_2.png", sf::IntRect(0, 0, 90, 30));
 }
