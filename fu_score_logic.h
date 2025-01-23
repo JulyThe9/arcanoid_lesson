@@ -1,9 +1,8 @@
-void score_logic()
+void score_logic(int i)
 {
-    /*
     int score_numberInt = stoi(score_number);
 
-    if (texture == texture_ice)
+    if (vector_data_block[i].texture_type == 0)
     {
         score_numberInt += 10;
     }
@@ -11,6 +10,6 @@ void score_logic()
     {
         score_numberInt += 20;
     }
-    score_number = stoi(score_numberInt);
-    */
+    score_number = to_string(score_numberInt);
+    score.setString(score_number);
 }

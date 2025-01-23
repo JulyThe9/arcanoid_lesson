@@ -43,18 +43,7 @@ void hit_block(int i)
     vector_data_block[i].active = false;
     vector_graphics_block[i].setFillColor(sf::Color(0, 0, 0));
 
-    int score_numberInt = stoi(score_number);
-
-    if (vector_data_block[i].texture_type == 0)
-    {
-        score_numberInt += 10;
-    }
-    else
-    {
-        score_numberInt += 20;
-    }
-    score_number = to_string(score_numberInt);
-    score.setString(score_number);
+    score_logic(i);
 }
 
 

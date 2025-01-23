@@ -12,11 +12,18 @@ void init_score()
         throw std::runtime_error("Failed to load font: bank-gothic-font.ttf");
     }
 
+    score_text.setFont(font);
+    score_text.setString("SCORE:");
+    score_text.setCharacterSize(50);
+    score_text.setFillColor(sf::Color::Red);
+    score_text.setStyle(sf::Text::Bold);
+    score_text.setPosition(30, 20);
+
     score.setFont(font);
     score.setString(score_number);
     score.setCharacterSize(50);
     score.setFillColor(sf::Color::Red);
     score.setStyle(sf::Text::Bold);
-    score.setPosition(50, 50);
+    score.setPosition(235, 20);
 }
 

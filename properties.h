@@ -161,6 +161,7 @@ struct lives_type
 //--------
 //SCORE
 //--------
+sf::Text score_text;
 sf::Text score;
 sf::Font font;
 string score_number = "10";

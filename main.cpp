@@ -20,9 +20,10 @@
 #include "lives_generation.h"
 //#include "life_animation.h"
 #include "get_new_angle.h"
+#include "fu_score_logic.h"
 #include "fu_collision_handler.h"
 #include "fu_init_misc.h"
-#include "fu_score_logic.h"
+
 
 
 
@@ -135,6 +136,7 @@ int main()
         app.draw(plat);
         app.draw(barrier);
         app.draw(ball);
+        app.draw(score_text);
         app.draw(score);
 
         app.display();
