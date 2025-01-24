@@ -37,13 +37,13 @@ void handle_collision_platform()
     }
 }
 
-//hit block colour black
-void hit_block(int i)
+//make block disappear
+void hit_block(int block_number)
 {
-    vector_data_block[i].active = false;
-    vector_graphics_block[i].setFillColor(sf::Color(0, 0, 0));
+    vector_data_block[block_number].active = false;
+    vector_graphics_block[block_number].setFillColor(sf::Color(0, 0, 0));
 
-    score_logic(i);
+    add_to_score(block_number);
 }
 
 

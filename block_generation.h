@@ -12,9 +12,10 @@ sf::RectangleShape init_block(block_type &current_block);
 int create_blocks_data()
 {
     sf::Texture texture;
-    int texture_type;
+    texture_types texture_type;
     int localblockX = 0;
     int localblockY = 100;
+    int block_value;
 
 
     for (int i = 0; i < block_amount; i++)
@@ -22,12 +23,14 @@ int create_blocks_data()
         if(i % 2 == 0)
         {
             texture = texture_ice;
-            texture_type = 0;
+            texture_type = TEXTURE_TYPE_ICE;
+            block_value = 10;
         }
         else
         {
             texture = texture_poison;
-            texture_type = 1;
+            texture_type = TEXTURE_TYPE_POISON;
+            block_value = 20;
         }
 
         if(i == 0)
@@ -39,8 +42,9 @@ int create_blocks_data()
             currblockX = prevblockX + block_WIDTH + block_spacing;
         }
 
+
         localblockX = currblockX;
-        vector_data_block.push_back(block_type(block_WIDTH, block_LEN, localblockX, localblockY, texture, texture_type));
+        vector_data_block.push_back(block_type(block_WIDTH, block_LEN, localblockX, localblockY, texture, texture_type, block_value));
         prevblockX = currblockX;
 
         if((i + 1) % blocks_in_row == 0)

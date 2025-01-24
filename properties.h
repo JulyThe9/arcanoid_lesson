@@ -68,6 +68,12 @@ int block_WIDTH = 90;
 int blocks_in_row = (screensizeX - 2 * block_WIDTH) / (block_WIDTH + block_spacing);
 int block_amount = blocks_in_row * block_rows;
 
+enum texture_types
+{
+    TEXTURE_TYPE_ICE,
+    TEXTURE_TYPE_POISON,
+};
+
 struct block_type
 {
     //fields
@@ -85,9 +91,10 @@ struct block_type
     bool active;
     sf::Texture texture;
     int texture_type;
+    int block_value;
 
     //constructor
-    block_type(int block_widthPar, int block_lenPar, int blockXPar, int blockYPar, sf::Texture texturepar, int texture_typepar)
+    block_type(int block_widthPar, int block_lenPar, int blockXPar, int blockYPar, sf::Texture texturepar, int texture_typepar, int block_valuepar)
     {
         //size of block
         block_width = block_widthPar;
@@ -106,6 +113,7 @@ struct block_type
         active = true;
         blockX_new = blockXPar;
         texture_type = texture_typepar;
+        block_value = block_valuepar;
     }
 };
 
