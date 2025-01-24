@@ -5,6 +5,8 @@
 #include <chrono>
 #include <vector>
 #include <string>
+#include <cstdlib>  // For rand() and srand()
+#include <ctime>    // For time()
 
 //#include <C:\Users\Master.DESKTOP-8NQ0SCM\Documents\codeblox_projects\arcanoid_lesson\properties.h>
 //#include <C:\Users\Master.DESKTOP-8NQ0SCM\Documents\codeblox_projects\arcanoid_lesson\fu_ball.h>

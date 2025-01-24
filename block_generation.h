@@ -11,26 +11,152 @@ sf::RectangleShape init_block(block_type &current_block);
 
 int create_blocks_data()
 {
-    sf::Texture texture;
-    texture_types texture_type;
     int localblockX = 0;
     int localblockY = 100;
+
+    sf::Texture texture;
+    texture_types texture_type;
     int block_value;
 
+    std::srand(std::time(0));
+
+    int random1 = (std::rand() % block_amount) + 1;
+    int random2 = (std::rand() % block_amount) + 1;
+    int random3 = (std::rand() % block_amount) + 1;
+    int random4 = (std::rand() % block_amount) + 1;
+    int random5 = (std::rand() % block_amount) + 1;
+    int random6 = (std::rand() % block_amount) + 1;
+    int random7 = (std::rand() % block_amount) + 1;
+    int random8 = (std::rand() % block_amount) + 1;
 
     for (int i = 0; i < block_amount; i++)
     {
-        if(i % 3 == 0)
+        if(i == random1)
         {
-            texture = texture_ice;
-            texture_type = TEXTURE_TYPE_ICE;
-            block_value = 10;
+            if(i % 2 == 0)
+            {
+                texture = texture_ice;
+                texture_type = TEXTURE_TYPE_ICE;
+                block_value = 10;
+            }
+            else
+            {
+                texture = texture_poison;
+                texture_type = TEXTURE_TYPE_POISON;
+                block_value = 20;
+            }
+
         }
-        else if (i % 3 == 1)
+        else if(i == random2)
         {
-            texture = texture_poison;
-            texture_type = TEXTURE_TYPE_POISON;
-            block_value = 20;
+            if(i % 2 == 0)
+            {
+                texture = texture_ice;
+                texture_type = TEXTURE_TYPE_ICE;
+                block_value = 10;
+            }
+            else
+            {
+                texture = texture_poison;
+                texture_type = TEXTURE_TYPE_POISON;
+                block_value = 20;
+            }
+        }
+        else if(i == random3)
+        {
+            if(i % 2 == 0)
+            {
+                texture = texture_ice;
+                texture_type = TEXTURE_TYPE_ICE;
+                block_value = 10;
+            }
+            else
+            {
+                texture = texture_poison;
+                texture_type = TEXTURE_TYPE_POISON;
+                block_value = 20;
+            }
+        }
+        else if(i == random4)
+        {
+            if(i % 2 == 0)
+            {
+                texture = texture_ice;
+                texture_type = TEXTURE_TYPE_ICE;
+                block_value = 10;
+            }
+            else
+            {
+                texture = texture_poison;
+                texture_type = TEXTURE_TYPE_POISON;
+                block_value = 20;
+            }
+        }
+        else if(i == random5)
+        {
+            if(i % 2 == 0)
+            {
+                texture = texture_ice;
+                texture_type = TEXTURE_TYPE_ICE;
+                block_value = 10;
+            }
+            else
+            {
+                texture = texture_poison;
+                texture_type = TEXTURE_TYPE_POISON;
+                block_value = 20;
+            }
+        }
+        else if(i == random6)
+        {
+            if(i % 2 == 0)
+            {
+                texture = texture_ice;
+                texture_type = TEXTURE_TYPE_ICE;
+                block_value = 10;
+            }
+            else
+            {
+                texture = texture_poison;
+                texture_type = TEXTURE_TYPE_POISON;
+                block_value = 20;
+            }
+        }
+        else if(i == random7)
+        {
+            if(i % 2 == 0)
+            {
+                texture = texture_ice;
+                texture_type = TEXTURE_TYPE_ICE;
+                block_value = 10;
+            }
+            else
+            {
+                texture = texture_poison;
+                texture_type = TEXTURE_TYPE_POISON;
+                block_value = 20;
+            }
+        }
+        else if(i == random8)
+        {
+            if(i % 2 == 0)
+            {
+                texture = texture_ice;
+                texture_type = TEXTURE_TYPE_ICE;
+                block_value = 10;
+            }
+            else
+            {
+                texture = texture_poison;
+                texture_type = TEXTURE_TYPE_POISON;
+                block_value = 20;
+            }
+        }
+        else if(i % 2 == 0)
+        {
+            texture = texture_dirt2;
+            texture_type = TEXTURE_TYPE_DIRT2;
+            block_value = 1;
         }
         else
         {
@@ -47,7 +173,6 @@ int create_blocks_data()
         {
             currblockX = prevblockX + block_WIDTH + block_spacing;
         }
-
 
         localblockX = currblockX;
         vector_data_block.push_back(block_type(block_WIDTH, block_LEN, localblockX, localblockY, texture, texture_type, block_value));

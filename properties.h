@@ -62,6 +62,7 @@ float rest = 0;
 sf::Texture texture_ice;
 sf::Texture texture_poison;
 sf::Texture texture_dirt;
+sf::Texture texture_dirt2;
 int block_rows = 10;
 int block_spacing = 5;
 int block_LEN = 30;
@@ -74,6 +75,7 @@ enum texture_types
     TEXTURE_TYPE_ICE,
     TEXTURE_TYPE_POISON,
     TEXTURE_TYPE_DIRT,
+    TEXTURE_TYPE_DIRT2,
 };
 
 struct block_type

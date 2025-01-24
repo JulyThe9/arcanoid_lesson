@@ -1,7 +1,3 @@
-
-
-
-
 int block_disappear()
 {
     int colour_red;

@@ -1,7 +1,6 @@
 int get_new_angle()
 {
     curr_degrees = 0;
-    cout << curr_degrees << endl;
 
     int sections_per_side = 20;
     //plat pos is the position that the ball hits on the platform. plat_pos != temp_x

@@ -13,7 +13,12 @@ void init_textures()
     else if(!texture_dirt.loadFromFile("textures/blocks/block_dirt.png", sf::IntRect(0, 0, 90, 30)))
     {
         // Handle error
-        throw std::runtime_error("Failed to load font: textures/blocks/block_regular_2.png");
+        throw std::runtime_error("Failed to load font: textures/blocks/block_dirt.png");
+    }
+    else if(!texture_dirt2.loadFromFile("textures/blocks/block_dirt2.png", sf::IntRect(0, 0, 90, 30)))
+    {
+        // Handle error
+        throw std::runtime_error("Failed to load font: textures/blocks/block_dirt2.png");
     }
 }
 
