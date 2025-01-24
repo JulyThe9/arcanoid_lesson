@@ -3,11 +3,10 @@ int get_new_angle()
     curr_degrees = 0;
     cout << curr_degrees << endl;
 
-    int sections_per_side = 15;
+    int sections_per_side = 20;
     //plat pos is the position that the ball hits on the platform. plat_pos != temp_x
     float plat_pos = temp_x - platX;
     //percentige of plat_pos
-    float plat_pos_perc = (100.0 / plat_width) * plat_pos;
     int section = plat_width / (sections_per_side * 2);
     int deg_per_section = 90 / (sections_per_side + 1);
 

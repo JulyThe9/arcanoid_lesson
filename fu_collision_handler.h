@@ -28,7 +28,7 @@ void handle_collision_walls()
 // ---------------------------------
 void handle_collision_platform()
 {
-    if(temp_y + ball_size * 2 >= platY && temp_y + ball_size * 2 < platY + 0.07)
+    if(temp_y + ball_size * 2 >= platY && temp_y + ball_size * 2 < platY + 0.2)
     {
         if(temp_x + ball_size * 2 > platX && temp_x < platX + plat_width)
         {

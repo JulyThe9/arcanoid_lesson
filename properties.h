@@ -164,7 +164,7 @@ struct lives_type
 sf::Text score_text;
 sf::Text score;
 sf::Font font;
-string score_number = "10";
+string score_number = "0";
 int counter = 1;
 
 
