@@ -20,17 +20,23 @@ int create_blocks_data()
 
     for (int i = 0; i < block_amount; i++)
     {
-        if(i % 2 == 0)
+        if(i % 3 == 0)
         {
             texture = texture_ice;
             texture_type = TEXTURE_TYPE_ICE;
             block_value = 10;
         }
-        else
+        else if (i % 3 == 1)
         {
             texture = texture_poison;
             texture_type = TEXTURE_TYPE_POISON;
             block_value = 20;
+        }
+        else
+        {
+            texture = texture_dirt;
+            texture_type = TEXTURE_TYPE_DIRT;
+            block_value = 5;
         }
 
         if(i == 0)

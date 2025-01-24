@@ -136,7 +136,6 @@ int main()
         app.draw(plat);
         app.draw(barrier);
         app.draw(ball);
-        app.draw(score_text);
         app.draw(score);
 
         app.display();

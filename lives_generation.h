@@ -16,8 +16,8 @@ int set_life_data()
     int colour_green;
     int colour_blue;
 
-    int locallifeX = screensizeX - 150;
-    int locallifeY = screensizeY - 100;
+    int locallifeX = 60;
+    int locallifeY = 20;
 
     for(int i = 0; i < lives_amount; i++)
     {

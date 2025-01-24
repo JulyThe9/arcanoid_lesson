@@ -55,7 +55,7 @@ void handle_collision_block()
 {
     for (int i = 0; i < block_amount; i++)
     {
-        if(temp_y + ball_size * 2 >= vector_data_block[i].top_bside && temp_y + ball_size * 2 < vector_data_block[i].top_bside + 0.1)
+        if(temp_y + ball_size * 2 >= vector_data_block[i].top_bside && temp_y + ball_size * 2 < vector_data_block[i].top_bside + 0.2)
         {
             if(temp_x + ball_size * 2 > vector_data_block[i].blockX && temp_x + ball_size * 2 < vector_data_block[i].blockX + vector_data_block[i].block_width)
             {
@@ -66,7 +66,7 @@ void handle_collision_block()
                 }
             }
         }
-        else if(temp_x + ball_size * 2 >= vector_data_block[i].left_bside && temp_x + ball_size * 2 < vector_data_block[i].left_bside + 0.1)
+        else if(temp_x + ball_size * 2 >= vector_data_block[i].left_bside && temp_x + ball_size * 2 < vector_data_block[i].left_bside + 0.2)
         {
             if(temp_y + ball_size * 2 > vector_data_block[i].top_bside && temp_y + ball_size * 2 < vector_data_block[i].bottom_bside)
             {
@@ -77,7 +77,7 @@ void handle_collision_block()
                 }
             }
         }
-        else if(temp_y <= vector_data_block[i].bottom_bside && temp_y > vector_data_block[i].bottom_bside - 0.1)
+        else if(temp_y <= vector_data_block[i].bottom_bside && temp_y > vector_data_block[i].bottom_bside - 0.2)
         {
             if(temp_x + ball_size * 2 > vector_data_block[i].left_bside && temp_x < vector_data_block[i].right_bside)
             {
@@ -88,7 +88,7 @@ void handle_collision_block()
                 }
             }
         }
-        else if(temp_x <= vector_data_block[i].right_bside && temp_x > vector_data_block[i].right_bside - 0.1)
+        else if(temp_x <= vector_data_block[i].right_bside && temp_x > vector_data_block[i].right_bside - 0.2)
         {
             if(temp_y + ball_size * 2 >= vector_data_block[i].top_bside && temp_y <= vector_data_block[i].bottom_bside)
             {

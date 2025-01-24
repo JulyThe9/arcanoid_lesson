@@ -61,6 +61,7 @@ float rest = 0;
 //90/30 is good
 sf::Texture texture_ice;
 sf::Texture texture_poison;
+sf::Texture texture_dirt;
 int block_rows = 10;
 int block_spacing = 5;
 int block_LEN = 30;
@@ -72,6 +73,7 @@ enum texture_types
 {
     TEXTURE_TYPE_ICE,
     TEXTURE_TYPE_POISON,
+    TEXTURE_TYPE_DIRT,
 };
 
 struct block_type
@@ -169,10 +171,8 @@ struct lives_type
 //--------
 //SCORE
 //--------
-sf::Text score_text;
 sf::Text score;
 sf::Font font;
 string score_number = "0";
-int counter = 1;
 
 

@@ -10,6 +10,11 @@ void init_textures()
         // Handle error
         throw std::runtime_error("Failed to load font: textures/blocks/block_regular_2.png");
     }
+    else if(!texture_dirt.loadFromFile("textures/blocks/block_dirt.png", sf::IntRect(0, 0, 90, 30)))
+    {
+        // Handle error
+        throw std::runtime_error("Failed to load font: textures/blocks/block_regular_2.png");
+    }
 }
 
 void init_score()
@@ -20,18 +25,11 @@ void init_score()
         throw std::runtime_error("Failed to load font: bank-gothic-font.ttf");
     }
 
-    score_text.setFont(font);
-    score_text.setString("SCORE:");
-    score_text.setCharacterSize(50);
-    score_text.setFillColor(sf::Color::Red);
-    score_text.setStyle(sf::Text::Bold);
-    score_text.setPosition(30, 20);
-
     score.setFont(font);
     score.setString(score_number);
     score.setCharacterSize(50);
     score.setFillColor(sf::Color::Red);
     score.setStyle(sf::Text::Bold);
-    score.setPosition(235, 20);
+    score.setPosition(screensizeX - 200, 20);
 }
 
