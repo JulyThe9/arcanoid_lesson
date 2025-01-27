@@ -4,17 +4,30 @@ int get_new_angle()
 
     int sections_per_side = 20;
     //plat pos is the position that the ball hits on the platform. plat_pos != temp_x
-    float plat_pos = temp_x - platX;
+    float plat_posl = temp_x - platX + ball_size * 2;
+    float plat_posr = temp_x - platX + ball_size;
     //percentige of plat_pos
-    int section = plat_width / (sections_per_side * 2);
+    double section = plat_width / (sections_per_side * 2.0);
     int deg_per_section = 90 / (sections_per_side + 1);
 
     //right side
-    if(plat_pos > (plat_width / 2))
+    if(plat_posr > (plat_width / 2))
     {
         for(int i = 0; i < sections_per_side; i++)
         {
-            if(plat_pos > (plat_width / 2) + (section * i) && plat_pos < (plat_width / 2) + ((plat_width / (sections_per_side * 2)) * (i + 1)))
+            /*
+            cout << "section: " << section << "; sections per side: " << sections_per_side << endl;
+            cout << "plat_pos: " << plat_pos << endl;
+            cout << "plat_width / 2: " << plat_width / 2 << endl;
+            cout << "section * i: " << section * i << endl;
+            cout << "calculation1: " << (plat_width / 2) + (section * i) << endl;
+            cout << "(plat_width / (sections_per_side * 2)): " << (plat_width / (sections_per_side * 2)) << endl;
+            cout << "calculation 2: " << (plat_width / 2) + ((plat_width / (sections_per_side * 2)) * (i + 1)) << endl;
+            cout << "plat_pos > (plat_width / 2) + (section * i) && plat_pos < (plat_width / 2) + ((plat_width / (sections_per_side * 2)) * (i + 1))" << endl;
+            cout << "-----------------------------" << endl;
+            */
+
+            if(plat_posr > (plat_width / 2) + (section * i) && plat_posr < (plat_width / 2) + section * (i + 1))
             {
                 curr_degrees = (deg_per_section * (i + 1));
                 handle_collision('u');
@@ -26,7 +39,18 @@ int get_new_angle()
     {
         for(int i = 0; i < sections_per_side; i++)
         {
-            if(plat_pos < (plat_width / 2) - (section * i) && plat_pos > (plat_width / 2) - ((plat_width / (sections_per_side * 2)) * (i + 1)))
+            /*
+            cout << "section: " << section << "; sections per side: " << sections_per_side << endl;
+            cout << "plat_pos: " << plat_pos << endl;
+            cout << "plat_width / 2: " << plat_width / 2 << endl;
+            cout << "section * i: " << section * i << endl;
+            cout << "calculation1: " << (plat_width / 2) - (section * i) << endl;
+            cout << "calculation 2: " << (plat_width / 2) - section * (i + 1) << endl;
+            cout << "(plat_pos < (plat_width / 2) - (section * i) && plat_pos > (plat_width / 2) - section * (i + 1))" << endl;
+            cout << "-----------------------------" << endl;
+            */
+
+            if(plat_posl < (plat_width / 2) - (section * i) && plat_posl > (plat_width / 2) - section * (i + 1))
             {
                 curr_degrees = (deg_per_section * (i + 1));
                 handle_collision('o');
@@ -35,8 +59,6 @@ int get_new_angle()
     }
     return curr_degrees;
 }
-
-
 
 /*
 cout << "plat_pos: " << plat_pos << endl;

@@ -30,7 +30,6 @@ int create_blocks_data()
     {
         int random_number = (std::rand() % block_amount) + 1;
         random_blocks.push_back(random_number);
-        cout << random_blocks[i] << endl;
     }
 
     std::sort(random_blocks.begin(), random_blocks.end());
