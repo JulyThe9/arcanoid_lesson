@@ -72,7 +72,7 @@ int create_blocks_data()
         }
         else
         {
-            currblockX = prevblockX + block_WIDTH + block_spacing;
+            currblockX = prevblockX + block_WIDTH;
         }
 
         localblockX = currblockX;
@@ -83,8 +83,8 @@ int create_blocks_data()
         {
             localblockX = 135;
             currblockX = 135;
-            prevblockX = currblockX - block_WIDTH - block_spacing;
-            localblockY += block_LEN + 5;
+            prevblockX = currblockX - block_WIDTH;
+            localblockY += block_LEN;
         }
     }
     return 0;

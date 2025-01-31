@@ -4,12 +4,15 @@ using namespace std;
 //----
 //BALL
 //----
-float ball_speed = 0.09;
+float ball_speed = 0.12;
 int ball_size = 10;
 
 // current ball position
-float recent_posX = 500;
-float recent_posY = 500;
+//float recent_posX = 500;
+//float recent_posY = 500;
+
+float recent_posX = 5;
+float recent_posY = 120;
 
 //current ball position variable
 float current_posX = recent_posX;
@@ -64,11 +67,11 @@ sf::Texture texture_poison;
 sf::Texture texture_dirt;
 sf::Texture texture_dirt2;
 int block_rows = 10;
-int block_spacing = 5;
 int block_LEN = 30;
 int block_WIDTH = 90;
-int blocks_in_row = (screensizeX - 2 * block_WIDTH) / (block_WIDTH + block_spacing);
+int blocks_in_row = (screensizeX - 2 * block_WIDTH) / block_WIDTH;
 int block_amount = blocks_in_row * block_rows;
+double collision_margin = ball_speed + 0.0001;
 
 enum texture_types
 {
