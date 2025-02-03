@@ -60,7 +60,7 @@ void handle_collision_block()
            temp_y + ball_size * 2 < vector_data_block[i].top_bside + collision_margin)
         {
             if(temp_x + ball_size * 2 > vector_data_block[i].blockX &&
-               temp_x + ball_size * 2 < vector_data_block[i].blockX + vector_data_block[i].block_width)
+               temp_x < vector_data_block[i].right_bside)
             {
                 if (vector_data_block[i].active == true)
                 {

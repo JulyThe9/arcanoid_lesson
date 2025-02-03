@@ -29,7 +29,7 @@ int create_blocks_data()
     int same_checker = 0;
 
 
-    //to generate the 12 random block numbers
+    //to generate the 12 random block numbers in order
     for (int i = 0; i < max_special_block_amount; i++)
     {
         int random_number = (std::rand() % block_amount) + 1;
@@ -38,15 +38,10 @@ int create_blocks_data()
 
         random_blocks.push_back(random_number);
 
-        /*
-        cout << "random_number: " << random_number << endl;
-        cout << "random_blocks[i]" << random_blocks[i] << endl;
-        cout << "size: " << vec_size << endl;
-        cout << "i: " << i << endl;
-        */
-
+        //if element at i is equal to a element at index same_checker the element at i gets popped back, runs as much as size of random_blocks big is in that iteration - 1
         for(int j = 0; j < vec_size; j++)
         {
+            //checks if all indexes are in scope of the size of random_blocks
             assert(i < random_blocks.size());
 
 
@@ -105,7 +100,7 @@ int create_blocks_data()
 
         if(i == 0)
         {
-            currblockX = 135;
+            currblockX = 160;
         }
         else
         {
@@ -119,7 +114,7 @@ int create_blocks_data()
         if((i + 1) % blocks_in_row == 0)
         {
             localblockX = 135;
-            currblockX = 135;
+            currblockX = 160;
             prevblockX = currblockX - block_WIDTH;
             localblockY += block_LEN;
         }

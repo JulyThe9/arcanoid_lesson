@@ -11,8 +11,8 @@ int ball_size = 10;
 //float recent_posX = 500;
 //float recent_posY = 500;
 
-float recent_posX = 5;
-float recent_posY = 120;
+float recent_posX = 750;
+float recent_posY = 50;
 
 //current ball position variable
 float current_posX = recent_posX;
@@ -79,7 +79,8 @@ sf::Texture texture_dirt2;
 int block_rows = 10;
 int block_LEN = 30;
 int block_WIDTH = 90;
-int blocks_in_row = (screensizeX - 2 * block_WIDTH) / block_WIDTH;
+//added -1 to make it uneven so there is a checkerboard and not stripes
+int blocks_in_row = (screensizeX - 2 * block_WIDTH) / block_WIDTH - 1;
 int block_amount = blocks_in_row * block_rows;
 double collision_margin = ball_speed + 0.0001;
 
