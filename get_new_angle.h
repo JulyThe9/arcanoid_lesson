@@ -41,7 +41,7 @@ int get_new_angle()
             if(plat_posr > (plat_width / 2) + (section * i) && plat_posr < (plat_width / 2) + section * (i + 1))
             {
                 curr_degrees = (deg_per_section * (i + 1));
-                handle_collision('u');
+                handle_collision(COLLISION_CASE_PLATFORM_RIGHT);
             }
         }
     }
@@ -65,7 +65,7 @@ int get_new_angle()
             if(plat_posl < (plat_width / 2) - (section * i) && plat_posl > (plat_width / 2) - section * (i + 1))
             {
                 curr_degrees = (deg_per_section * (i + 1));
-                handle_collision('o');
+                handle_collision(COLLISION_CASE_PLATFORM_LEFT);
             }
         }
     }

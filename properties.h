@@ -38,6 +38,16 @@ float temp_x = 0;
 float alpha_x = 0;
 float alpha_y = 0;
 
+enum collision_cases
+{
+    COLLISION_CASE_BOTTOM,
+    COLLISION_CASE_TOP,
+    COLLISION_CASE_LEFT,
+    COLLISION_CASE_RIGHT,
+    COLLISION_CASE_PLATFORM_RIGHT,
+    COLLISION_CASE_PLATFORM_LEFT,
+};
+
 // Create the main window
 sf::RenderWindow app(sf::VideoMode(screensizeX, screensizeY), "SFML window");
 

@@ -20,16 +20,19 @@ int create_blocks_data()
     int block_value;
 
     int random_index = 0;
-    int max_random_numbers = 12;
+    int max_special_block_amount = 12;
 
     std::srand(std::time(0));
+    int same_checker = 0;
 
 
-    //to generate the 8 random numbers
-    for (int i = 0; i < max_random_numbers; i++)
+    //to generate the 12 random block numbers
+    for (int i = 0; i < max_special_block_amount; i++)
     {
         int random_number = (std::rand() % block_amount) + 1;
+
         random_blocks.push_back(random_number);
+
     }
 
     std::sort(random_blocks.begin(), random_blocks.end());

@@ -29,7 +29,7 @@ void handle_collision(char wall_side)
 
     switch (wall_side)
     {
-        case 'b':
+        case COLLISION_CASE_BOTTOM:
             if (recent_posX > current_posX)
             {
                 alpha_y = alpha_y * (-1);
@@ -46,7 +46,7 @@ void handle_collision(char wall_side)
                 return;
             }
 
-        case 'r':
+        case COLLISION_CASE_RIGHT:
             if (recent_posY < current_posY)
             {
                 alpha_x = alpha_x * (-1);
@@ -63,7 +63,7 @@ void handle_collision(char wall_side)
                 return;
             }
 
-        case 't':
+        case COLLISION_CASE_TOP:
             if (recent_posX < current_posX)
             {
                 alpha_x = alpha_x * (-1);
@@ -78,7 +78,7 @@ void handle_collision(char wall_side)
                 return;
             }
 
-        case 'l':
+        case COLLISION_CASE_LEFT:
             if (recent_posY > current_posY)
             {
                 current_posX = recent_posX;
@@ -93,7 +93,7 @@ void handle_collision(char wall_side)
                 return;
             }
         //right side of platform
-        case 'u':
+        case COLLISION_CASE_PLATFORM_RIGHT:
             //ball flies right to left
             if(recent_posX >= current_posX)
             {
@@ -111,7 +111,7 @@ void handle_collision(char wall_side)
                 return;
             }
         //left side of platform
-        case 'o':
+        case COLLISION_CASE_PLATFORM_LEFT:
             //ball flies right to left
             if (recent_posX >= current_posX)
             {

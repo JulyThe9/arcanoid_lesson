@@ -6,19 +6,19 @@ void handle_collision_walls()
 {
     if(temp_y >= bottom_wall - ball_size * 2)
         {
-            handle_collision('b');
+            handle_collision(COLLISION_CASE_BOTTOM);
         }
         else if(temp_x >= right_wall - ball_size * 2)
         {
-            handle_collision('r');
+            handle_collision(COLLISION_CASE_RIGHT);
         }
         else if(temp_y <= top_wall)
         {
-            handle_collision('t');
+            handle_collision(COLLISION_CASE_TOP);
         }
         else if(temp_x <= left_wall)
         {
-            handle_collision('l');
+            handle_collision(COLLISION_CASE_LEFT);
         }
 }
 
@@ -64,7 +64,7 @@ void handle_collision_block()
             {
                 if (vector_data_block[i].active == true)
                 {
-                    handle_collision('b');
+                    handle_collision(COLLISION_CASE_BOTTOM);
                     hit_block(i);
                 }
             }
@@ -77,7 +77,7 @@ void handle_collision_block()
             {
                 if (vector_data_block[i].active == true)
                 {
-                    handle_collision('r');
+                    handle_collision(COLLISION_CASE_RIGHT);
                     hit_block(i);
                 }
             }
@@ -90,7 +90,7 @@ void handle_collision_block()
             {
                 if (vector_data_block[i].active == true)
                 {
-                    handle_collision('t');
+                    handle_collision(COLLISION_CASE_TOP);
                     hit_block(i);
                 }
             }
@@ -103,7 +103,7 @@ void handle_collision_block()
             {
                 if (vector_data_block[i].active == true)
                 {
-                    handle_collision('l');
+                    handle_collision(COLLISION_CASE_LEFT);
                     hit_block(i);
                 }
             }
@@ -118,7 +118,7 @@ void handle_collision_barrier()
 {
     if(temp_y + ball_size * 2 > barrierY)
     {
-        handle_collision('b');
+        handle_collision(COLLISION_CASE_BOTTOM);
         //block_disappear();
     }
 }
