@@ -1,6 +1,9 @@
+#include <cassert>
+
 vector<block_type> vector_data_block;
 vector<sf::RectangleShape> vector_graphics_block;
 vector<int> random_blocks;
+
 
 //instantiation
 int currblockX = 0;
@@ -31,8 +34,39 @@ int create_blocks_data()
     {
         int random_number = (std::rand() % block_amount) + 1;
 
+        int vec_size = random_blocks.size();
+
         random_blocks.push_back(random_number);
 
+        /*
+        cout << "random_number: " << random_number << endl;
+        cout << "random_blocks[i]" << random_blocks[i] << endl;
+        cout << "size: " << vec_size << endl;
+        cout << "i: " << i << endl;
+        */
+
+        for(int j = 0; j < vec_size; j++)
+        {
+            assert(i < random_blocks.size());
+
+
+            if (random_blocks[i] == random_blocks[same_checker])
+            {
+                random_blocks.pop_back();
+                i--;
+                same_checker = 0;
+                break;
+            }
+            else
+            {
+                same_checker++;
+            }
+        }
+    }
+
+    for(int i = 0; i < random_blocks.size(); i++)
+    {
+        cout << random_blocks[i] << endl;
     }
 
     std::sort(random_blocks.begin(), random_blocks.end());
