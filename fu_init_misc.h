@@ -31,7 +31,7 @@ void init_score()
     }
 
     score.setFont(font);
-    score.setString(score_number);
+    score.setString(gs.score_number);
     score.setCharacterSize(50);
     score.setFillColor(sf::Color::Red);
     score.setStyle(sf::Text::Bold);

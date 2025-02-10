@@ -1,18 +1,41 @@
 using namespace std;
 
+//----------
+//GameState
+//----------
+struct GameState
+{
+    //fields
+    //ball
+    float ball_speed;
 
-//----
+    //platform
+    int plat_speed;
+    int plat_width;
+
+    //score
+    string score_number;
+
+    //constructor
+    GameState(float ball_speedpar, int plat_speedpar, int plat_widthpar, string score_numberpar)
+    {
+        ball_speed = ball_speedpar;
+        plat_speed = plat_speedpar;
+        plat_width = plat_widthpar;
+        score_number = score_numberpar;
+    }
+};
+
+GameState gs(0.13, 35, 150, "0");
+
+//-----
 //BALL
-//----
-float ball_speed = 0.12;
+//-----
+//float ball_speed = 0.013
 int ball_size = 10;
 
-// current ball position
-//float recent_posX = 500;
-//float recent_posY = 500;
-
 float recent_posX = 750;
-float recent_posY = 50;
+float recent_posY = 600;
 
 //current ball position variable
 float current_posX = recent_posX;
@@ -55,18 +78,16 @@ sf::RenderWindow app(sf::VideoMode(screensizeX, screensizeY), "SFML window");
 //PLATFORM
 //---------
 
-int plat_speed = 35;
+//int plat_speed = 35;
 
-int plat_width = 150;
+//int plat_width = 150;
 int plat_len = 12;
 
-float platX = screensizeX / 2 - plat_width / 2 - 150;
+float platX = screensizeX / 2 - gs.plat_width / 2;
 float platY = 800;
 
 float curr_platX = platX;
 float curr_platY = platY;       //to calculate degrees for curr_degrees and not move the platform
-
-float rest = 0;
 
 //---------
 //BLOCKS
@@ -76,13 +97,14 @@ sf::Texture texture_ice;
 sf::Texture texture_poison;
 sf::Texture texture_dirt;
 sf::Texture texture_dirt2;
+//rows
 int block_rows = 10;
 int block_LEN = 30;
 int block_WIDTH = 90;
-//added -1 to make it uneven so there is a checkerboard and not stripes
-int blocks_in_row = (screensizeX - 2 * block_WIDTH) / block_WIDTH - 1;
-int block_amount = blocks_in_row * block_rows;
-double collision_margin = ball_speed + 0.0001;
+//columns
+int blocks_in_row = (screensizeX - 2 * block_WIDTH) / block_WIDTH;
+double collision_margin = gs.ball_speed;
+
 
 enum texture_types
 {
@@ -189,6 +211,6 @@ struct lives_type
 //--------
 sf::Text score;
 sf::Font font;
-string score_number = "0";
+//string score_number = "0";
 
 

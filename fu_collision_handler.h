@@ -30,8 +30,8 @@ void handle_collision_platform()
 {
     if(temp_y + ball_size * 2 >= platY && temp_y + ball_size * 2 < platY + collision_margin)
     {
-        if(temp_x + ball_size > platX && temp_x < platX + plat_width)
-        if(temp_x + ball_size > platX && temp_x < platX + plat_width)
+        if(temp_x + ball_size > platX && temp_x < platX + gs.plat_width)
+        if(temp_x + ball_size > platX && temp_x < platX + gs.plat_width)
         {
             curr_degrees = get_new_angle();
         }

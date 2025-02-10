@@ -69,9 +69,9 @@ int main()
             {
                 if(event.key.code == sf::Keyboard::A)
                 {
-                    if(platX - plat_speed > left_wall)
+                    if(platX - gs.plat_speed > left_wall)
                     {
-                        platX -= plat_speed;
+                        platX -= gs.plat_speed;
                     }
                     else
                     {
@@ -80,13 +80,13 @@ int main()
                 }
                 else if(event.key.code == sf::Keyboard::D)
                 {
-                    if (platX + plat_width + plat_speed < right_wall)
+                    if (platX + gs.plat_width + gs.plat_speed < right_wall)
                     {
-                        platX += plat_speed;
+                        platX += gs.plat_speed;
                     }
                     else
                     {
-                        platX = right_wall - plat_width;
+                        platX = right_wall - gs.plat_width;
                     }
                 }
             }

@@ -7,21 +7,21 @@ int get_new_angle()
 
     //one plat_pos covers the middle, the other covers the far left side of platform, if we dont have it, one of the two flies through.
     //if we dont have it, one of the two flies through.
-    if(temp_x - platX + ball_size > plat_width / 2)
+    if(temp_x - platX + ball_size > gs.plat_width / 2)
     {
         plat_posl = temp_x - platX;
     }
-    else if(temp_x - platX + ball_size <= plat_width / 2)
+    else if(temp_x - platX + ball_size <= gs.plat_width / 2)
     {
         plat_posl = temp_x - platX + ball_size;
     }
     float plat_posr = temp_x - platX;
     //percentige of plat_pos
-    double section = plat_width / (sections_per_side * 2.0);
+    double section = gs.plat_width / (sections_per_side * 2.0);
     int deg_per_section = 90 / (sections_per_side + 1);
 
     //right side
-    if(plat_posr > (plat_width / 2))
+    if(plat_posr > (gs.plat_width / 2))
     {
         for(int i = 0; i < sections_per_side; i++)
         {
@@ -38,7 +38,7 @@ int get_new_angle()
             cout << "-----------------------------" << endl;
             */
 
-            if(plat_posr > (plat_width / 2) + (section * i) && plat_posr < (plat_width / 2) + section * (i + 1))
+            if(plat_posr > (gs.plat_width / 2) + (section * i) && plat_posr < (gs.plat_width / 2) + section * (i + 1))
             {
                 curr_degrees = (deg_per_section * (i + 1));
                 handle_collision(COLLISION_CASE_PLATFORM_RIGHT);
@@ -62,7 +62,7 @@ int get_new_angle()
             cout << "-----------------------------" << endl;
             */
 
-            if(plat_posl < (plat_width / 2) - (section * i) && plat_posl > (plat_width / 2) - section * (i + 1))
+            if(plat_posl < (gs.plat_width / 2) - (section * i) && plat_posl > (gs.plat_width / 2) - section * (i + 1))
             {
                 curr_degrees = (deg_per_section * (i + 1));
                 handle_collision(COLLISION_CASE_PLATFORM_LEFT);
