@@ -40,6 +40,9 @@ int main()
 
     init_textures();
 
+    //for random block generation
+    std::srand(std::time(0));
+
     create_blocks_data();
     create_blocks_graphics();
 

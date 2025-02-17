@@ -102,9 +102,10 @@ int block_rows = 10;
 int block_LEN = 30;
 int block_WIDTH = 90;
 //columns
-int blocks_in_row = (screensizeX - 2 * block_WIDTH) / block_WIDTH;
+int blocks_in_row = (screensizeX - 2 * block_WIDTH) / block_WIDTH - 1;
 double collision_margin = gs.ball_speed;
 
+int block_amount = block_rows * blocks_in_row;
 
 enum texture_types
 {
@@ -130,11 +131,10 @@ struct block_type
     int bottom_bside;
     bool active;
     sf::Texture texture;
-    int texture_type;
     int block_value;
 
     //constructor
-    block_type(int block_widthPar, int block_lenPar, int blockXPar, int blockYPar, sf::Texture texturepar, int texture_typepar, int block_valuepar)
+    block_type(int block_widthPar, int block_lenPar, int blockXPar, int blockYPar, sf::Texture texturepar, int block_valuepar)
     {
         //size of block
         block_width = block_widthPar;
@@ -152,7 +152,6 @@ struct block_type
         //block existant or not
         active = true;
         blockX_new = blockXPar;
-        texture_type = texture_typepar;
         block_value = block_valuepar;
     }
 };
@@ -212,5 +211,3 @@ struct lives_type
 sf::Text score;
 sf::Font font;
 //string score_number = "0";
-
-
