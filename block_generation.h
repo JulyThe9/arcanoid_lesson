@@ -1,8 +1,8 @@
 #include <cassert>
-
-vector<block_type> vector_data_block;
+vector<block_type> vector_columns;
 vector<sf::RectangleShape> vector_graphics_block;
 vector<int> random_blocks;
+
 
 
 sf::Texture curr_block_texture;
@@ -47,10 +47,10 @@ void generate_row(texture_types starterblock, int row_number, int &localblockX, 
     int prevblockX = 0;
 
 
-    for(int i = 0; i < blocks_in_row; i++)
+    for(int i = 0; i < block_columns; i++)
     {
         int random_number = (std::rand() % 100);
-        if(random_number > 84)
+        if(random_number >= 85)
         {
             if(i % 2 == 0)
             {
@@ -104,9 +104,9 @@ void generate_row(texture_types starterblock, int row_number, int &localblockX, 
         localblockX = currblockX;
         prevblockX = currblockX;
 
-        vector_data_block.push_back(block_type(block_WIDTH, block_LEN, localblockX, localblockY,
+        vector_columns.push_back(block_type(block_WIDTH, block_LEN, localblockX, localblockY,
                                                 curr_block_texture, current_block_value));
-        if(i + 1 == blocks_in_row)
+        if(i + 1 == block_columns)
         {
             currblockX = 160;
             localblockY += block_LEN;
@@ -135,8 +135,13 @@ int create_blocks_data()
         }
 
         generate_row(starter_texture, curr_row_number, localblockX, localblockY);
+
+        curr_gamestate.blocks.push_back(vector_columns);
+
+        vector_columns.clear();
+
     }
-    cout << "size of data_vector: " << vector_data_block.size() << endl;
+    cout << "size of data_vector: " << vector_columns.size() << endl;
     return 0;
 }
 
@@ -144,10 +149,15 @@ int create_blocks_data()
 int create_blocks_graphics()
 {
     cout << "block_amount: " << block_amount << endl;
-    cout << "blocks_in_row: " << blocks_in_row << endl;
-    for (int i = 0; i < block_amount; i++)
+    cout << "blocks_in_row: " << block_columns << endl;
+    for (int i = 0; i < block_rows; i++)
     {
-        vector_graphics_block.push_back(init_block(vector_data_block[i]));
+        for(int j = 0; j < block_columns; j++)
+        {
+            vector_graphics_block.push_back(init_block(curr_gamestate.blocks[i][j]));
+        }
+        curr_gamestate.blocks_graphics.push_back(vector_graphics_block);
+        vector_graphics_block.clear();
     }
     cout << "size of graphic_vector: " << vector_graphics_block.size() << endl;
     return 0;

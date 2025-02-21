@@ -72,9 +72,9 @@ int main()
             {
                 if(event.key.code == sf::Keyboard::A)
                 {
-                    if(platX - gs.plat_speed > left_wall)
+                    if(platX - curr_gamestate.plat_speed > left_wall)
                     {
-                        platX -= gs.plat_speed;
+                        platX -= curr_gamestate.plat_speed;
                     }
                     else
                     {
@@ -83,13 +83,13 @@ int main()
                 }
                 else if(event.key.code == sf::Keyboard::D)
                 {
-                    if (platX + gs.plat_width + gs.plat_speed < right_wall)
+                    if (platX + curr_gamestate.plat_width + curr_gamestate.plat_speed < right_wall)
                     {
-                        platX += gs.plat_speed;
+                        platX += curr_gamestate.plat_speed;
                     }
                     else
                     {
-                        platX = right_wall - gs.plat_width;
+                        platX = right_wall - curr_gamestate.plat_width;
                     }
                 }
             }
@@ -128,9 +128,12 @@ int main()
         plat.setPosition(platX, platY);
         barrier.setPosition(barrierX, barrierY);
 
-        for (int i = 0; i < block_amount; i++)
+        for (int i = 0; i < block_rows; i++)
         {
-            app.draw(vector_graphics_block[i]);
+            for(int j = 0; j < block_columns; j++)
+            {
+                app.draw(curr_gamestate.blocks_graphics[i][j]);
+            }
         }
 
         for(int i = 0; i < lives_amount; i++)

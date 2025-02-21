@@ -1,33 +1,4 @@
 using namespace std;
-
-//----------
-//GameState
-//----------
-struct GameState
-{
-    //fields
-    //ball
-    float ball_speed;
-
-    //platform
-    int plat_speed;
-    int plat_width;
-
-    //score
-    string score_number;
-
-    //constructor
-    GameState(float ball_speedpar, int plat_speedpar, int plat_widthpar, string score_numberpar)
-    {
-        ball_speed = ball_speedpar;
-        plat_speed = plat_speedpar;
-        plat_width = plat_widthpar;
-        score_number = score_numberpar;
-    }
-};
-
-GameState gs(0.13, 35, 150, "0");
-
 //-----
 //BALL
 //-----
@@ -73,39 +44,6 @@ enum collision_cases
 
 // Create the main window
 sf::RenderWindow app(sf::VideoMode(screensizeX, screensizeY), "SFML window");
-
-//---------
-//PLATFORM
-//---------
-
-//int plat_speed = 35;
-
-//int plat_width = 150;
-int plat_len = 12;
-
-float platX = screensizeX / 2 - gs.plat_width / 2;
-float platY = 800;
-
-float curr_platX = platX;
-float curr_platY = platY;       //to calculate degrees for curr_degrees and not move the platform
-
-//---------
-//BLOCKS
-//---------
-//90/30 is good
-sf::Texture texture_ice;
-sf::Texture texture_poison;
-sf::Texture texture_dirt;
-sf::Texture texture_dirt2;
-//rows
-int block_rows = 10;
-int block_LEN = 30;
-int block_WIDTH = 90;
-//columns
-int blocks_in_row = (screensizeX - 2 * block_WIDTH) / block_WIDTH - 1;
-double collision_margin = gs.ball_speed;
-
-int block_amount = block_rows * blocks_in_row;
 
 enum texture_types
 {
@@ -156,6 +94,50 @@ struct block_type
     }
 };
 
+//----------
+//GameState
+//----------
+struct GameState
+{
+    //fields
+    //ball
+    float ball_speed;
+
+    //platform
+    int plat_speed;
+    int plat_width;
+
+    //score
+    string score_number;
+
+    //blocks
+    vector<vector<block_type>> blocks;
+
+    vector<vector<sf::RectangleShape>> blocks_graphics;
+
+    //constructor
+    GameState(float ball_speedpar, int plat_speedpar, int plat_widthpar, string score_numberpar)
+    {
+        ball_speed = ball_speedpar;
+        plat_speed = plat_speedpar;
+        plat_width = plat_widthpar;
+        score_number = score_numberpar;
+    }
+};
+
+GameState curr_gamestate(0.13, 35, 150, "0");
+
+//---------
+//PLATFORM
+//---------
+int plat_len = 12;
+
+float platX = screensizeX / 2 - curr_gamestate.plat_width / 2;
+float platY = 800;
+
+float curr_platX = platX;
+float curr_platY = platY;       //to calculate degrees for curr_degrees and not move the platform
+
 //--------
 //BARRIAR
 //--------
@@ -167,6 +149,24 @@ int barrier_length = 10;
 //positions
 int barrierX = 0;
 int barrierY = screensizeY - barrier_length - 5;
+
+//---------
+//BLOCKS
+//---------
+//90/30 is good
+sf::Texture texture_ice;
+sf::Texture texture_poison;
+sf::Texture texture_dirt;
+sf::Texture texture_dirt2;
+//rows
+int block_rows = 10;
+int block_LEN = 30;
+int block_WIDTH = 90;
+//columns
+int block_columns = (screensizeX - 2 * block_WIDTH) / block_WIDTH - 1;
+double collision_margin = curr_gamestate.ball_speed;
+
+int block_amount = block_rows * block_columns;
 
 //--------
 //LIVES
