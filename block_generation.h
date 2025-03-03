@@ -41,6 +41,13 @@ void set_as_poison()
     current_block_value = 20;
 }
 
+void set_as_explosion()
+{
+    curr_block_texture = texture_explosion;
+    current_texture_type = TEXTURE_TYPE_EXPLOSION;
+    current_block_value = 1;
+}
+
 void generate_row(texture_types starterblock, int row_number, int &localblockX, int &localblockY)
 {
     int currblockX = 0;
@@ -49,16 +56,22 @@ void generate_row(texture_types starterblock, int row_number, int &localblockX, 
 
     for(int i = 0; i < block_columns; i++)
     {
+
         int random_number = (std::rand() % 100);
-        if(random_number >= 85)
+        int random_block_type = (std::rand() % 100);
+        if(random_number >= 84)
         {
-            if(i % 2 == 0)
+            if(random_block_type > 66)
             {
-                set_as_ice();
+                set_as_explosion();
             }
-            else
+            else if(random_block_type > 33)
             {
                 set_as_poison();
+            }
+            else if(random_block_type >= 0)
+            {
+                set_as_ice();
             }
         }
         //this case is for even blocks for example: 0, 2, 4, ...
@@ -92,6 +105,7 @@ void generate_row(texture_types starterblock, int row_number, int &localblockX, 
             }
         }
 
+
         if(i == 0)
         {
             currblockX = 160;
@@ -104,8 +118,9 @@ void generate_row(texture_types starterblock, int row_number, int &localblockX, 
         localblockX = currblockX;
         prevblockX = currblockX;
 
+
         vector_columns.push_back(block_type(block_WIDTH, block_LEN, localblockX, localblockY,
-                                                curr_block_texture, current_block_value));
+                                                curr_block_texture, current_texture_type, current_block_value));
         if(i + 1 == block_columns)
         {
             currblockX = 160;
@@ -136,20 +151,17 @@ int create_blocks_data()
 
         generate_row(starter_texture, curr_row_number, localblockX, localblockY);
 
+
         curr_gamestate.blocks.push_back(vector_columns);
 
         vector_columns.clear();
-
     }
-    cout << "size of data_vector: " << vector_columns.size() << endl;
     return 0;
 }
 
 
 int create_blocks_graphics()
 {
-    cout << "block_amount: " << block_amount << endl;
-    cout << "blocks_in_row: " << block_columns << endl;
     for (int i = 0; i < block_rows; i++)
     {
         for(int j = 0; j < block_columns; j++)
@@ -159,7 +171,6 @@ int create_blocks_graphics()
         curr_gamestate.blocks_graphics.push_back(vector_graphics_block);
         vector_graphics_block.clear();
     }
-    cout << "size of graphic_vector: " << vector_graphics_block.size() << endl;
     return 0;
 }
 

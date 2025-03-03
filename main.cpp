@@ -23,8 +23,10 @@
 //#include "life_animation.h"
 #include "get_new_angle.h"
 #include "fu_score_logic.h"
+#include "get_neighbours.h"
 #include "fu_collision_handler.h"
 #include "fu_init_misc.h"
+
 
 
 

@@ -23,7 +23,7 @@ float left_wall = 0;
 float top_wall = 0;
 float bottom_wall = screensizeY;
 
-// angle of flight
+// angle of flight(ball)
 float curr_degrees = 30;
 
 float temp_y = 0;
@@ -51,6 +51,7 @@ enum texture_types
     TEXTURE_TYPE_POISON,
     TEXTURE_TYPE_DIRT,
     TEXTURE_TYPE_DIRT2,
+    TEXTURE_TYPE_EXPLOSION,
 };
 
 struct block_type
@@ -69,10 +70,11 @@ struct block_type
     int bottom_bside;
     bool active;
     sf::Texture texture;
+    texture_types texturetype;
     int block_value;
 
     //constructor
-    block_type(int block_widthPar, int block_lenPar, int blockXPar, int blockYPar, sf::Texture texturepar, int block_valuepar)
+    block_type(int block_widthPar, int block_lenPar, int blockXPar, int blockYPar, sf::Texture texturepar, texture_types texturetypepar, int block_valuepar)
     {
         //size of block
         block_width = block_widthPar;
@@ -82,6 +84,7 @@ struct block_type
         blockY = blockYPar;
         //colour of block
         texture = texturepar;
+        texturetype = texturetypepar;
         //sides of block
         top_bside = blockY;
         left_bside = blockX;
@@ -132,7 +135,7 @@ GameState curr_gamestate(0.13, 35, 150, "0");
 //---------
 int plat_len = 12;
 
-float platX = screensizeX / 2 - curr_gamestate.plat_width / 2;
+float platX = screensizeX / 2 - curr_gamestate.plat_width / 2 + (35 * 4);
 float platY = 800;
 
 float curr_platX = platX;
@@ -158,6 +161,7 @@ sf::Texture texture_ice;
 sf::Texture texture_poison;
 sf::Texture texture_dirt;
 sf::Texture texture_dirt2;
+sf::Texture texture_explosion;
 //rows
 int block_rows = 10;
 int block_LEN = 30;
@@ -210,4 +214,3 @@ struct lives_type
 //--------
 sf::Text score;
 sf::Font font;
-//string score_number = "0";

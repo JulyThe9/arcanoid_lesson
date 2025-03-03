@@ -20,6 +20,11 @@ void init_textures()
         // Handle error
         throw std::runtime_error("Failed to load font: textures/blocks/block_dirt2.png");
     }
+    else if(!texture_explosion.loadFromFile("textures/blocks/block_explosive.png", sf::IntRect(0, 0, 90, 30)))
+    {
+        // Handle error
+        throw std::runtime_error("Failed to load font: textures/blocks/block_dirt2.png");
+    }
 }
 
 void init_score()

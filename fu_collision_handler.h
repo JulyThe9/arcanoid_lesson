@@ -41,7 +41,38 @@ void handle_collision_platform()
 //make block disappear
 void hit_block(int row, int col)
 {
-    cout << "row: " << row << "; col: " << col << "; block value: " << curr_gamestate.blocks[row][col].block_value << endl;
+    int sum = 0;
+    //add current hit block value to sum
+    sum += curr_gamestate.blocks[row][col].block_value;
+    vector<pair<int, int>> neighbours;
+    bool radius = true; //true = big explosion, false = small explosion
+
+    if(curr_gamestate.blocks[row][col].texturetype == TEXTURE_TYPE_EXPLOSION)
+    {
+        neighbours = get_neighbours(row, col, radius);
+    }
+
+    cout << "Block[" << row << ", " << col << "] has " << neighbours.size() << " neighbors" << endl;
+    cout << "---" << endl;
+
+    for(int i = 0; i < neighbours.size(); i++)
+    {
+        int curr_row = neighbours[i].first;
+        int curr_col = neighbours[i].second;
+        sum += curr_gamestate.blocks[curr_row][curr_col].block_value;
+
+        cout << "Neighbor "<< i + 1
+            << ": Location [" << neighbours[i].first << ", " << neighbours[i].second
+            << "], Type: " << curr_gamestate.blocks[curr_row][curr_col].texturetype
+            << ", Value: " << curr_gamestate.blocks[curr_row][curr_col].block_value << endl;
+
+        curr_gamestate.blocks[neighbours[i].first][neighbours[i].second].active = false;
+        curr_gamestate.blocks_graphics[neighbours[i].first][neighbours[i].second].setFillColor(sf::Color(0, 0, 0));
+        add_to_score(neighbours[i].first, neighbours[i].second);
+    }
+
+    cout << "Sum of all Values: " << sum << endl;
+    neighbours.clear();
     curr_gamestate.blocks[row][col].active = false;
     curr_gamestate.blocks_graphics[row][col].setFillColor(sf::Color(0, 0, 0));
     add_to_score(row, col);
