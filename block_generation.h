@@ -8,6 +8,7 @@ vector<int> random_blocks;
 sf::Texture curr_block_texture;
 texture_types current_texture_type;
 int current_block_value;
+bool radius;
 
 
 //forward declaration: tells compiler "all good I have this covered"
@@ -46,6 +47,15 @@ void set_as_explosion()
     curr_block_texture = texture_explosion;
     current_texture_type = TEXTURE_TYPE_EXPLOSION;
     current_block_value = 1;
+    radius = false;
+}
+
+void set_as_explosion2()
+{
+    curr_block_texture = texture_explosion2;
+    current_texture_type = TEXTURE_TYPE_EXPLOSION2;
+    current_block_value = 2;
+    radius = true;
 }
 
 void generate_row(texture_types starterblock, int row_number, int &localblockX, int &localblockY)
@@ -61,11 +71,15 @@ void generate_row(texture_types starterblock, int row_number, int &localblockX, 
         int random_block_type = (std::rand() % 100);
         if(random_number >= 84)
         {
-            if(random_block_type > 66)
+            if(random_block_type > 80)
             {
                 set_as_explosion();
             }
-            else if(random_block_type > 33)
+            else if(random_block_type > 60)
+            {
+                set_as_explosion2();
+            }
+            else if(random_block_type > 30)
             {
                 set_as_poison();
             }
@@ -120,7 +134,7 @@ void generate_row(texture_types starterblock, int row_number, int &localblockX, 
 
 
         vector_columns.push_back(block_type(block_WIDTH, block_LEN, localblockX, localblockY,
-                                                curr_block_texture, current_texture_type, current_block_value));
+                                                curr_block_texture, current_texture_type, current_block_value, radius));
         if(i + 1 == block_columns)
         {
             currblockX = 160;

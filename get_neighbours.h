@@ -16,7 +16,7 @@ bool is_valid_neighbour(int candidate_block_row, int candidate_block_col)
     return false;
 }
 
-vector<pair<int, int>> get_neighbours(int row, int col, bool great_radius)
+vector<pair<int, int>> get_neighbours(int row, int col)
 {
     bool valid;
     vector<pair<int, int>> block_neighbours;
@@ -56,7 +56,7 @@ vector<pair<int, int>> get_neighbours(int row, int col, bool great_radius)
 
     }
 
-    if(great_radius)
+    if(curr_gamestate.blocks[row][col].radius)
     {
         int upper_right_row = row - 1;
         int upper_right_col = col + 1;

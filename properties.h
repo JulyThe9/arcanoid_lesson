@@ -52,6 +52,7 @@ enum texture_types
     TEXTURE_TYPE_DIRT,
     TEXTURE_TYPE_DIRT2,
     TEXTURE_TYPE_EXPLOSION,
+    TEXTURE_TYPE_EXPLOSION2,
 };
 
 struct block_type
@@ -72,9 +73,10 @@ struct block_type
     sf::Texture texture;
     texture_types texturetype;
     int block_value;
+    bool radius;
 
     //constructor
-    block_type(int block_widthPar, int block_lenPar, int blockXPar, int blockYPar, sf::Texture texturepar, texture_types texturetypepar, int block_valuepar)
+    block_type(int block_widthPar, int block_lenPar, int blockXPar, int blockYPar, sf::Texture texturepar, texture_types texturetypepar, int block_valuepar, bool radiuspar)
     {
         //size of block
         block_width = block_widthPar;
@@ -94,6 +96,7 @@ struct block_type
         active = true;
         blockX_new = blockXPar;
         block_value = block_valuepar;
+        radius = radiuspar;
     }
 };
 
@@ -162,6 +165,7 @@ sf::Texture texture_poison;
 sf::Texture texture_dirt;
 sf::Texture texture_dirt2;
 sf::Texture texture_explosion;
+sf::Texture texture_explosion2;
 //rows
 int block_rows = 10;
 int block_LEN = 30;

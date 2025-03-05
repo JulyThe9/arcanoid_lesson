@@ -45,11 +45,12 @@ void hit_block(int row, int col)
     //add current hit block value to sum
     sum += curr_gamestate.blocks[row][col].block_value;
     vector<pair<int, int>> neighbours;
-    bool radius = true; //true = big explosion, false = small explosion
+    //true = big explosion, false = small explosion
 
-    if(curr_gamestate.blocks[row][col].texturetype == TEXTURE_TYPE_EXPLOSION)
+    if(curr_gamestate.blocks[row][col].texturetype == TEXTURE_TYPE_EXPLOSION ||
+       curr_gamestate.blocks[row][col].texturetype == TEXTURE_TYPE_EXPLOSION2)
     {
-        neighbours = get_neighbours(row, col, radius);
+        neighbours = get_neighbours(row, col);
     }
 
     cout << "Block[" << row << ", " << col << "] has " << neighbours.size() << " neighbors" << endl;
