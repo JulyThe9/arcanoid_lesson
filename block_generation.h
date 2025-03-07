@@ -44,16 +44,16 @@ void set_as_poison()
 
 void set_as_explosion()
 {
-    curr_block_texture = texture_explosion;
-    current_texture_type = TEXTURE_TYPE_EXPLOSION;
+    curr_block_texture = texture_explosion_small;
+    current_texture_type = TEXTURE_TYPE_EXPLOSION_SMALL;
     current_block_value = 1;
     radius = false;
 }
 
-void set_as_explosion2()
+void set_as_explosion_large()
 {
-    curr_block_texture = texture_explosion2;
-    current_texture_type = TEXTURE_TYPE_EXPLOSION2;
+    curr_block_texture = texture_explosion_large;
+    current_texture_type = TEXTURE_TYPE_EXPLOSION_LARGE;
     current_block_value = 2;
     radius = true;
 }
@@ -69,17 +69,17 @@ void generate_row(texture_types starterblock, int row_number, int &localblockX, 
 
         int random_number = (std::rand() % 100);
         int random_block_type = (std::rand() % 100);
-        if(random_number >= 84)
+        if(random_number >= 60)
         {
-            if(random_block_type > 80)
+            if(random_block_type > 65)
             {
                 set_as_explosion();
             }
-            else if(random_block_type > 60)
+            else if(random_block_type > 40)
             {
-                set_as_explosion2();
+                set_as_explosion_large();
             }
-            else if(random_block_type > 30)
+            else if(random_block_type > 20)
             {
                 set_as_poison();
             }

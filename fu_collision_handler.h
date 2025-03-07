@@ -47,14 +47,15 @@ void hit_block(int row, int col)
     vector<pair<int, int>> neighbours;
     //true = big explosion, false = small explosion
 
-    if(curr_gamestate.blocks[row][col].texturetype == TEXTURE_TYPE_EXPLOSION ||
-       curr_gamestate.blocks[row][col].texturetype == TEXTURE_TYPE_EXPLOSION2)
+    if(curr_gamestate.blocks[row][col].texturetype == TEXTURE_TYPE_EXPLOSION_SMALL ||
+       curr_gamestate.blocks[row][col].texturetype == TEXTURE_TYPE_EXPLOSION_LARGE)
     {
+        cout << "Block[" << row << ", " << col << "] has " << neighbours.size() << " neighbors" << endl;
+        cout << "---" << endl;
         neighbours = get_neighbours(row, col);
     }
+    cout << "Hit Block[" << row << ", " << col << "]" << endl;
 
-    cout << "Block[" << row << ", " << col << "] has " << neighbours.size() << " neighbors" << endl;
-    cout << "---" << endl;
 
     for(int i = 0; i < neighbours.size(); i++)
     {
@@ -67,13 +68,23 @@ void hit_block(int row, int col)
             << "], Type: " << curr_gamestate.blocks[curr_row][curr_col].texturetype
             << ", Value: " << curr_gamestate.blocks[curr_row][curr_col].block_value << endl;
 
+        //this line is used to set the active variable of neighbours of explosion block to false
         curr_gamestate.blocks[neighbours[i].first][neighbours[i].second].active = false;
         curr_gamestate.blocks_graphics[neighbours[i].first][neighbours[i].second].setFillColor(sf::Color(0, 0, 0));
         add_to_score(neighbours[i].first, neighbours[i].second);
     }
 
+    for(int i = 0; i < neighbours.size(); i++)
+    {
+        if(curr_gamestate.blocks[neighbours[i].first][neighbours[i].second].texturetype == TEXTURE_TYPE_EXPLOSION_SMALL ||
+           curr_gamestate.blocks[neighbours[i].first][neighbours[i].second].texturetype == TEXTURE_TYPE_EXPLOSION_LARGE)
+        {
+            hit_block(neighbours[i].first, neighbours[i].second);
+        }
+    }
     cout << "Sum of all Values: " << sum << endl;
     neighbours.clear();
+    //this line is used to set the active variable of explosion block to false
     curr_gamestate.blocks[row][col].active = false;
     curr_gamestate.blocks_graphics[row][col].setFillColor(sf::Color(0, 0, 0));
     add_to_score(row, col);

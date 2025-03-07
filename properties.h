@@ -51,8 +51,8 @@ enum texture_types
     TEXTURE_TYPE_POISON,
     TEXTURE_TYPE_DIRT,
     TEXTURE_TYPE_DIRT2,
-    TEXTURE_TYPE_EXPLOSION,
-    TEXTURE_TYPE_EXPLOSION2,
+    TEXTURE_TYPE_EXPLOSION_SMALL,
+    TEXTURE_TYPE_EXPLOSION_LARGE,
 };
 
 struct block_type
@@ -164,8 +164,8 @@ sf::Texture texture_ice;
 sf::Texture texture_poison;
 sf::Texture texture_dirt;
 sf::Texture texture_dirt2;
-sf::Texture texture_explosion;
-sf::Texture texture_explosion2;
+sf::Texture texture_explosion_small;
+sf::Texture texture_explosion_large;
 //rows
 int block_rows = 10;
 int block_LEN = 30;
