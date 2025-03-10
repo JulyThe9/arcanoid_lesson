@@ -14,7 +14,7 @@ float current_posY = recent_posY;
 
 // size of screen
 float screensizeX = 1500;
-float screensizeY = 1000;
+float screensizeY = 1200;
 
 // walls
 float right_wall = screensizeX;
@@ -131,7 +131,7 @@ struct GameState
     }
 };
 
-GameState curr_gamestate(0.13, 35, 150, "0");
+GameState curr_gamestate(0.17, 35, 150, "000000");
 
 //---------
 //PLATFORM
@@ -139,7 +139,7 @@ GameState curr_gamestate(0.13, 35, 150, "0");
 int plat_len = 12;
 
 float platX = screensizeX / 2 - curr_gamestate.plat_width / 2 + (35 * 4);
-float platY = 800;
+float platY = 1000;
 
 float curr_platX = platX;
 float curr_platY = platY;       //to calculate degrees for curr_degrees and not move the platform
@@ -179,37 +179,26 @@ int block_amount = block_rows * block_columns;
 //--------
 //LIVES
 //--------
+int heart_width = 100;
+int heart_length = 100;
 
-int life_width = 15;
-int life_length = 70;
 int lives_amount = 3;
-int lives_spacing = life_width;
+int lives_spacing = heart_width;
 bool skip_blinking = false;
 int step = 25;
 
 
 struct lives_type
 {
-    int lives_width;
-    int lives_length;
     int livesX;
     int livesY;
     int lives_num;
-    int colour_red_life;
-    int colour_green_life;
-    int colour_blue_life;
 
-    lives_type(int lives_widthPar, int lives_lengthPar, int livesXPar, int livesYPar, int lives_numPar,
-               int colour_red_lifePar, int colour_green_lifePar, int colour_blue_lifePar)
+    lives_type(int livesXPar, int livesYPar, int lives_numPar)
     {
-        lives_width = lives_widthPar;
-        lives_length = lives_lengthPar;
         livesX = livesXPar;
         livesY = livesYPar;
         lives_num = livesXPar;
-        colour_red_life = colour_red_lifePar;
-        colour_green_life = colour_green_lifePar;
-        colour_blue_life = colour_blue_lifePar;
     }
 };
 
@@ -218,3 +207,21 @@ struct lives_type
 //--------
 sf::Text score;
 sf::Font font;
+
+//--------
+//STATUS BAR
+//--------
+
+sf::Texture background_status_bar;
+sf::Texture arcanoid_logo;
+sf::Texture heart_texture;
+
+
+int logo_width = 300;
+int logo_length = 109;
+
+int logo_posX = (screensizeX / 2) - (logo_width / 2);
+int logo_posY = 0;
+
+int status_bar_width = screensizeX;
+int status_bar_length = 120;

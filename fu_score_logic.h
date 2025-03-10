@@ -4,5 +4,7 @@ void add_to_score(int row, int col)
     block_type curr_block = curr_gamestate.blocks[row][col];
     score_numberInt += curr_block.block_value;
     curr_gamestate.score_number = to_string(score_numberInt);
-    score.setString(curr_gamestate.score_number);
+    int num_len = 6 - curr_gamestate.score_number.size();
+    string string_len (num_len, '0');
+    score.setString(string_len + curr_gamestate.score_number);
 }

@@ -30,6 +30,21 @@ void init_textures()
         // Handle error
         throw std::runtime_error("Failed to load font: textures/blocks/block_explosive2.png");
     }
+    else if(!background_status_bar.loadFromFile("textures/status_bar/status_bar_background.png", sf::IntRect(0, 0, status_bar_width, status_bar_length)))
+    {
+        // Handle error
+        throw std::runtime_error("Failed to load font: textures/status_bar/status_bar_background.png");
+    }
+    else if(!arcanoid_logo.loadFromFile("textures/status_bar/arcanoid_logo.png", sf::IntRect(0, 0, logo_width, logo_length)))
+    {
+        // Handle error
+        throw std::runtime_error("Failed to load font: textures/status_bar/arcanoid_logo.png");
+    }
+    else if(!heart_texture.loadFromFile("textures/status_bar/heart_full.png", sf::IntRect(0, 0, logo_width, logo_length)))
+    {
+        // Handle error
+        throw std::runtime_error("Failed to load font: textures/status_bar/heart_full.png");
+    }
 }
 
 void init_score()
@@ -41,10 +56,10 @@ void init_score()
     }
 
     score.setFont(font);
-    score.setString(curr_gamestate.score_number);
-    score.setCharacterSize(50);
+    score.setCharacterSize(60);
     score.setFillColor(sf::Color::Red);
     score.setStyle(sf::Text::Bold);
-    score.setPosition(screensizeX - 200, 20);
+    score.setPosition(screensizeX - 300, 25);
+    score.setString(curr_gamestate.score_number);
 }
 

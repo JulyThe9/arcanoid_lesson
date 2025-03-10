@@ -12,7 +12,7 @@ void handle_collision_walls()
         {
             handle_collision(COLLISION_CASE_RIGHT);
         }
-        else if(temp_y <= top_wall)
+        else if(temp_y <= status_bar_length)
         {
             handle_collision(COLLISION_CASE_TOP);
         }

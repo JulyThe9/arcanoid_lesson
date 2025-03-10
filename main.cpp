@@ -18,14 +18,17 @@
 #include "blocks.h"
 #include "block_generation.h"
 #include "barriar.h"
-#include "lives.h"
-#include "lives_generation.h"
+//#include "lives.h"
 //#include "life_animation.h"
 #include "get_new_angle.h"
 #include "fu_score_logic.h"
 #include "get_neighbours.h"
 #include "fu_collision_handler.h"
 #include "fu_init_misc.h"
+#include "status_bar.h"
+#include "logo.h"
+#include "heart.h"
+#include "lives_generation.h"
 
 
 
@@ -52,6 +55,10 @@ int main()
     set_life_graphics();
 
     init_score();
+
+    sf::RectangleShape status_bar = init_status_bar();
+
+    sf::RectangleShape status_bar_logo = init_logo();
 
 
 
@@ -138,15 +145,19 @@ int main()
             }
         }
 
-        for(int i = 0; i < lives_amount; i++)
-        {
-            app.draw(vector_graphics_life[i]);
-        }
+
 
         app.draw(plat);
         app.draw(barrier);
         app.draw(ball);
+        app.draw(status_bar);
+        app.draw(status_bar_logo);
         app.draw(score);
+
+        for(int i = 0; i < lives_amount; i++)
+        {
+            app.draw(vector_graphics_life[i]);
+        }
 
         app.display();
 

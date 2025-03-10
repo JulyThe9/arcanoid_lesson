@@ -146,7 +146,7 @@ void generate_row(texture_types starterblock, int row_number, int &localblockX, 
 int create_blocks_data()
 {
     int localblockX = 0;
-    int localblockY = 100;
+    int localblockY = 300;
 
 
     texture_types starter_texture = TEXTURE_TYPE_DIRT;
