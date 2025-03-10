@@ -214,7 +214,8 @@ sf::Font font;
 
 sf::Texture background_status_bar;
 sf::Texture arcanoid_logo;
-sf::Texture heart_texture;
+sf::Texture heart_texture_full;
+sf::Texture heart_texture_empty;
 
 
 int logo_width = 300;
