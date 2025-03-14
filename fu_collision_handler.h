@@ -51,10 +51,13 @@ void hit_block(int row, int col)
        curr_gamestate.blocks[row][col].texturetype == TEXTURE_TYPE_EXPLOSION_LARGE)
     {
         cout << "Block[" << row << ", " << col << "] has " << neighbours.size() << " neighbors" << endl;
-        cout << "---" << endl;
         neighbours = get_neighbours(row, col);
     }
-    cout << "Hit Block[" << row << ", " << col << "]" << endl;
+    else
+    {
+        cout << "Hit Block[" << row << ", " << col << "]" << endl;
+    }
+    cout << "---" << endl;
 
 
     for(int i = 0; i < neighbours.size(); i++)
@@ -88,6 +91,20 @@ void hit_block(int row, int col)
     curr_gamestate.blocks[row][col].active = false;
     curr_gamestate.blocks_graphics[row][col].setFillColor(sf::Color(0, 0, 0));
     add_to_score(row, col);
+}
+
+void hit_barrier()
+{
+    static int heart_number = lives_amount - 1;
+    if(heart_number != -1)
+    {
+        vector_life_data[heart_number].heart_texture = heart_texture_empty;
+        heart_number--;
+    }
+    else
+    {
+        game_active = false;
+    }
 }
 
 void handle_collision_all_sides(int i, int j)
@@ -160,8 +177,14 @@ void handle_collision_barrier()
 {
     if(temp_y + ball_size * 2 > barrierY)
     {
+        hit_barrier();
         handle_collision(COLLISION_CASE_BOTTOM);
-        //block_disappear();
     }
+}
+
+void check_gamestate()
+{
+    if(game_active == false)
+    cout << "--Game Over--" << endl;
 }
 

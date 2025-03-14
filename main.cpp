@@ -8,9 +8,6 @@
 #include <cstdlib>  // For rand() and srand()
 #include <ctime>    // For time()
 
-//#include <C:\Users\Master.DESKTOP-8NQ0SCM\Documents\codeblox_projects\arcanoid_lesson\properties.h>
-//#include <C:\Users\Master.DESKTOP-8NQ0SCM\Documents\codeblox_projects\arcanoid_lesson\fu_ball.h>
-//#include <C:\Users\Master.DESKTOP-8NQ0SCM\Documents\codeblox_projects\arcanoid_lesson\fu_platform.h>
 
 #include "properties.h"
 #include "fu_ball.h"
@@ -18,17 +15,17 @@
 #include "blocks.h"
 #include "block_generation.h"
 #include "barriar.h"
-//#include "lives.h"
-//#include "life_animation.h"
 #include "get_new_angle.h"
 #include "fu_score_logic.h"
 #include "get_neighbours.h"
+#include "heart.h"
+#include "lives_generation.h"
 #include "fu_collision_handler.h"
 #include "fu_init_misc.h"
 #include "status_bar.h"
 #include "logo.h"
-#include "heart.h"
-#include "lives_generation.h"
+
+
 
 
 
@@ -63,7 +60,7 @@ int main()
 
 
 	// Start the game loop
-    while (app.isOpen())
+    while (app.isOpen() && game_active)
     {
         // ---------------------------------
         // BUTTONS ON APP (Process events)
@@ -137,6 +134,8 @@ int main()
         plat.setPosition(platX, platY);
         barrier.setPosition(barrierX, barrierY);
 
+        check_gamestate();
+
         for (int i = 0; i < block_rows; i++)
         {
             for(int j = 0; j < block_columns; j++)
@@ -144,8 +143,6 @@ int main()
                 app.draw(curr_gamestate.blocks_graphics[i][j]);
             }
         }
-
-
 
         app.draw(plat);
         app.draw(barrier);

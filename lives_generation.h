@@ -28,7 +28,7 @@ int set_life_data()
 
         locallifeX = currlifeX;
 
-        vector_life_data.push_back(lives_type(locallifeX, locallifeY, lives_amount));
+        vector_life_data.push_back(lives_type(locallifeX, locallifeY, lives_amount, heart_texture_full));
 
         prevlifeX = currlifeX;
     }

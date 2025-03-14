@@ -193,12 +193,15 @@ struct lives_type
     int livesX;
     int livesY;
     int lives_num;
+    sf::Texture heart_texture;
 
-    lives_type(int livesXPar, int livesYPar, int lives_numPar)
+
+    lives_type(int livesXPar, int livesYPar, int lives_numPar, sf::Texture heart_texturepar)
     {
         livesX = livesXPar;
         livesY = livesYPar;
         lives_num = livesXPar;
+        heart_texture = heart_texturepar;
     }
 };
 
@@ -226,3 +229,5 @@ int logo_posY = 0;
 
 int status_bar_width = screensizeX;
 int status_bar_length = 120;
+
+bool game_active = true;
