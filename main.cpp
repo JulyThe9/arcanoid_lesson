@@ -62,79 +62,90 @@ int main()
 	// Start the game loop
     while (app.isOpen() && game_active)
     {
-        // ---------------------------------
-        // BUTTONS ON APP (Process events)
-        // ---------------------------------
-        sf::Event event;
-        while (app.pollEvent(event))
+        if(!waiting_for_continuation)
         {
-            // Close window : exit
-            if (event.type == sf::Event::Closed)
+            while (app.pollEvent(event))
             {
-                app.close();
-            }
-
-            else if(event.type == sf::Event::KeyPressed)
-            {
-                if(event.key.code == sf::Keyboard::A)
+                // Close window : exit
+                if (event.type == sf::Event::Closed)
                 {
-                    if(platX - curr_gamestate.plat_speed > left_wall)
+                    app.close();
+                }
+
+                else if(event.type == sf::Event::KeyPressed)
+                {
+                    if(event.key.code == sf::Keyboard::A)
                     {
-                        platX -= curr_gamestate.plat_speed;
+                        if(platX - curr_gamestate.plat_speed > left_wall)
+                        {
+                            platX -= curr_gamestate.plat_speed;
+                        }
+                        else
+                        {
+                            platX = left_wall;
+                        }
                     }
-                    else
+                    else if(event.key.code == sf::Keyboard::D)
                     {
-                        platX = left_wall;
+                        if (platX + curr_gamestate.plat_width + curr_gamestate.plat_speed < right_wall)
+                        {
+                            platX += curr_gamestate.plat_speed;
+                        }
+                        else
+                        {
+                            platX = right_wall - curr_gamestate.plat_width;
+                        }
                     }
                 }
-                else if(event.key.code == sf::Keyboard::D)
-                {
-                    if (platX + curr_gamestate.plat_width + curr_gamestate.plat_speed < right_wall)
-                    {
-                        platX += curr_gamestate.plat_speed;
-                    }
-                    else
-                    {
-                        platX = right_wall - curr_gamestate.plat_width;
-                    }
-                }
             }
-        }
 
 
-        // ---------------------------------
-        // CORE GAME LOOP FROM HERE
-        // ---------------------------------
-        if (alpha_y == 0 && alpha_x == 0)
-        {
-            // default movement at the start of the game
-            recent_posX += get_new_x(curr_degrees);
-            recent_posY += get_new_y(curr_degrees);
-            //TODO needs to be debugged
+            // ---------------------------------
+            // CORE GAME LOOP FROM HERE
+            // ---------------------------------
+            if (alpha_y == 0 && alpha_x == 0)
+            {
+                // default movement at the start of the game
+                recent_posX += get_new_x(curr_degrees);
+                recent_posY += get_new_y(curr_degrees);
+                //TODO needs to be debugged
+            }
+            else
+            {
+                // all other movement
+                recent_posX += alpha_x;
+                recent_posY += alpha_y;
+            }
+
+            temp_y = recent_posY;
+            temp_x = recent_posX;
+
+
+            //MAIN COLLISIONS
+            handle_collision_walls();
+            handle_collision_block();
+            handle_collision_platform();
+            handle_collision_barrier();
+
+
+            ball.setPosition(recent_posX, recent_posY);
+            plat.setPosition(platX, platY);
+            barrier.setPosition(barrierX, barrierY);
+
+            check_gamestate();
+
         }
         else
         {
-            // all other movement
-            recent_posX += alpha_x;
-            recent_posY += alpha_y;
+            app.draw(heart_deduction_text);
+            while (app.pollEvent(event))
+            {
+                if(event.key.code == sf::Keyboard::Space)
+                {
+                    waiting_for_continuation = false;
+                }
+            }
         }
-
-        temp_y = recent_posY;
-        temp_x = recent_posX;
-
-
-        //MAIN COLLISIONS
-        handle_collision_walls();
-        handle_collision_block();
-        handle_collision_platform();
-        handle_collision_barrier();
-
-
-        ball.setPosition(recent_posX, recent_posY);
-        plat.setPosition(platX, platY);
-        barrier.setPosition(barrierX, barrierY);
-
-        check_gamestate();
 
         for (int i = 0; i < block_rows; i++)
         {
@@ -151,6 +162,8 @@ int main()
         app.draw(status_bar_logo);
         app.draw(score);
 
+
+
         for(int i = 0; i < lives_amount; i++)
         {
             app.draw(vector_graphics_life[i]);
@@ -158,8 +171,11 @@ int main()
 
         app.display();
 
+
         // Clear screen
         app.clear();
+
+
 
     }
 

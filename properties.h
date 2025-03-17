@@ -1,4 +1,9 @@
 using namespace std;
+// ---------------------------------
+// BUTTONS ON APP (Process events)
+// ---------------------------------
+sf::Event event;
+
 //-----
 //BALL
 //-----
@@ -231,3 +236,6 @@ int status_bar_width = screensizeX;
 int status_bar_length = 120;
 
 bool game_active = true;
+
+sf::Text heart_deduction_text;
+bool waiting_for_continuation = false;

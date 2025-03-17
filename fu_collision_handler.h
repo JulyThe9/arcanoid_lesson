@@ -100,6 +100,13 @@ void hit_barrier()
     {
         vector_life_data[heart_number].heart_texture = heart_texture_empty;
         heart_number--;
+        heart_deduction_text.setFont(font);
+        heart_deduction_text.setCharacterSize(70);
+        heart_deduction_text.setFillColor(sf::Color::Yellow);
+        heart_deduction_text.setStyle(sf::Text::Bold);
+        heart_deduction_text.setPosition(280, 700);
+        heart_deduction_text.setString("Press Space to continue..");
+        waiting_for_continuation = true;
     }
     else
     {
