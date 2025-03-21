@@ -130,5 +130,10 @@ void handle_collision(char wall_side)
                 current_posY = recent_posY;
                 return;
             }
+        case COLLISION_CASE_RESET:
+            current_posX = recent_posX;
+            current_posY = recent_posY;
+            return;
+
     }
 }

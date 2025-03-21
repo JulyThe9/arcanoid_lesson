@@ -62,7 +62,7 @@ int main()
 	// Start the game loop
     while (app.isOpen() && game_active)
     {
-        if(!waiting_for_continuation)
+        if(game_status == GAME_ACTIVE)
         {
             while (app.pollEvent(event))
             {
@@ -135,14 +135,42 @@ int main()
             check_gamestate();
 
         }
-        else
+        else if(game_status == HEART_DEDUCTION)
         {
             app.draw(heart_deduction_text);
             while (app.pollEvent(event))
             {
                 if(event.key.code == sf::Keyboard::Space)
                 {
-                    waiting_for_continuation = false;
+                    game_status = GAME_ACTIVE;
+                    curr_degrees = ball_starter_deg;
+                    recent_posX = ball_start_posX;
+                    recent_posY = ball_start_posY;
+                    handle_collision(COLLISION_CASE_RESET);
+                    platX = platform_starter_X;
+                    cout << "PRESSSED SPACE" << endl;
+                }
+            }
+        }
+        else if(game_status == HEARTS_GONE)
+        {
+           app.draw(no_hearts_text);
+            while (app.pollEvent(event))
+            {
+                if(event.key.code == sf::Keyboard::Space)
+                {
+                    game_active = false;
+                }
+            }
+        }
+        else
+        {
+            app.draw(game_won_text);
+            while (app.pollEvent(event))
+            {
+                if(event.key.code == sf::Keyboard::Space)
+                {
+                    game_active = false;
                 }
             }
         }

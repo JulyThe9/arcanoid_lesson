@@ -27,7 +27,6 @@ vector<pair<int, int>> get_neighbours(int row, int col)
     if(valid)
     {
         block_neighbours.push_back({upper_row, upper_col});
-
     }
 
     int right_row = row;
@@ -44,7 +43,6 @@ vector<pair<int, int>> get_neighbours(int row, int col)
     if(valid)
     {
         block_neighbours.push_back({lower_row, lower_col});
-
     }
 
     int left_row = row;
@@ -53,7 +51,6 @@ vector<pair<int, int>> get_neighbours(int row, int col)
     if(valid)
     {
         block_neighbours.push_back({left_row, left_col});
-
     }
 
     if(curr_gamestate.blocks[row][col].radius)

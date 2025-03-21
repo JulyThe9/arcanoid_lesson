@@ -1,25 +1,33 @@
 using namespace std;
+
+
 // ---------------------------------
 // BUTTONS ON APP (Process events)
 // ---------------------------------
 sf::Event event;
 
+float screensizeX = 1500;
+float screensizeY = 1200;
+
 //-----
 //BALL
 //-----
-//float ball_speed = 0.013
 int ball_size = 10;
 
-float recent_posX = 750;
-float recent_posY = 600;
+const int ball_start_posX = screensizeX / 2;
+const int ball_start_posY = screensizeY / 2 + 100;
+const int ball_starter_deg = 30;
+
+
+float recent_posX = ball_start_posX;
+float recent_posY = ball_start_posY;
 
 //current ball position variable
 float current_posX = recent_posX;
 float current_posY = recent_posY;
 
 // size of screen
-float screensizeX = 1500;
-float screensizeY = 1200;
+
 
 // walls
 float right_wall = screensizeX;
@@ -29,7 +37,8 @@ float top_wall = 0;
 float bottom_wall = screensizeY;
 
 // angle of flight(ball)
-float curr_degrees = 30;
+
+float curr_degrees = ball_starter_deg;
 
 float temp_y = 0;
 float temp_x = 0;
@@ -45,6 +54,7 @@ enum collision_cases
     COLLISION_CASE_RIGHT,
     COLLISION_CASE_PLATFORM_RIGHT,
     COLLISION_CASE_PLATFORM_LEFT,
+    COLLISION_CASE_RESET,
 };
 
 // Create the main window
@@ -105,6 +115,12 @@ struct block_type
     }
 };
 
+int block_rows = 10;
+int block_LEN = 30;
+int block_WIDTH = 90;
+//columns
+int block_columns = (screensizeX - 2 * block_WIDTH) / block_WIDTH - 1;
+
 //----------
 //GameState
 //----------
@@ -126,24 +142,35 @@ struct GameState
 
     vector<vector<sf::RectangleShape>> blocks_graphics;
 
+    int block_amount;
+
     //constructor
-    GameState(float ball_speedpar, int plat_speedpar, int plat_widthpar, string score_numberpar)
+    GameState(float ball_speedpar, int plat_speedpar, int plat_widthpar, string score_numberpar, int block_amountpar)
     {
         ball_speed = ball_speedpar;
         plat_speed = plat_speedpar;
         plat_width = plat_widthpar;
         score_number = score_numberpar;
+        block_amount = block_amountpar;
     }
 };
 
-GameState curr_gamestate(0.17, 35, 150, "000000");
+GameState curr_gamestate(0.24, 45, 200, "000000", block_rows * block_columns);
 
+bool godmode_active = true;
+bool crazy_ballspeed = false;
+float godspeed = 0.45;
+
+double collision_margin = curr_gamestate.ball_speed;
+double collision_margin_godmode = godspeed;
 //---------
 //PLATFORM
 //---------
 int plat_len = 12;
 
-float platX = screensizeX / 2 - curr_gamestate.plat_width / 2 + (35 * 4);
+const float platform_starter_X = screensizeX / 2 - curr_gamestate.plat_width / 2 + (35 * 4);
+
+float platX = platform_starter_X;
 float platY = 1000;
 
 float curr_platX = platX;
@@ -171,16 +198,6 @@ sf::Texture texture_dirt;
 sf::Texture texture_dirt2;
 sf::Texture texture_explosion_small;
 sf::Texture texture_explosion_large;
-//rows
-int block_rows = 10;
-int block_LEN = 30;
-int block_WIDTH = 90;
-//columns
-int block_columns = (screensizeX - 2 * block_WIDTH) / block_WIDTH - 1;
-double collision_margin = curr_gamestate.ball_speed;
-
-int block_amount = block_rows * block_columns;
-
 //--------
 //LIVES
 //--------
@@ -237,5 +254,19 @@ int status_bar_length = 120;
 
 bool game_active = true;
 
+enum game_status_type
+{
+    GAME_ACTIVE,
+    HEART_DEDUCTION,
+    HEARTS_GONE,
+    BLOCKS_GONE,
+};
+
+game_status_type game_status = GAME_ACTIVE;
+
 sf::Text heart_deduction_text;
-bool waiting_for_continuation = false;
+sf::Text no_hearts_text;
+sf::Text game_won_text;
+
+
+

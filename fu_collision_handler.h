@@ -28,7 +28,9 @@ void handle_collision_walls()
 // ---------------------------------
 void handle_collision_platform()
 {
-    if(temp_y + ball_size * 2 >= platY && temp_y + ball_size * 2 < platY + collision_margin)
+    if(temp_y + ball_size * 2 >= platY &&
+       (temp_y + ball_size * 2 < platY + collision_margin ||
+        temp_y + ball_size * 2 < platY + collision_margin_godmode))
     {
         if(temp_x + ball_size > platX && temp_x < platX + curr_gamestate.plat_width)
         if(temp_x + ball_size > platX && temp_x < platX + curr_gamestate.plat_width)
@@ -41,41 +43,29 @@ void handle_collision_platform()
 //make block disappear
 void hit_block(int row, int col)
 {
-    int sum = 0;
-    //add current hit block value to sum
-    sum += curr_gamestate.blocks[row][col].block_value;
+    if(curr_gamestate.blocks[row][col].active)
+        curr_gamestate.block_amount--;
+
+    curr_gamestate.blocks[row][col].active = false;
     vector<pair<int, int>> neighbours;
-    //true = big explosion, false = small explosion
 
     if(curr_gamestate.blocks[row][col].texturetype == TEXTURE_TYPE_EXPLOSION_SMALL ||
        curr_gamestate.blocks[row][col].texturetype == TEXTURE_TYPE_EXPLOSION_LARGE)
     {
-        cout << "Block[" << row << ", " << col << "] has " << neighbours.size() << " neighbors" << endl;
         neighbours = get_neighbours(row, col);
     }
-    else
-    {
-        cout << "Hit Block[" << row << ", " << col << "]" << endl;
-    }
-    cout << "---" << endl;
-
 
     for(int i = 0; i < neighbours.size(); i++)
     {
+        curr_gamestate.block_amount--;
         int curr_row = neighbours[i].first;
         int curr_col = neighbours[i].second;
-        sum += curr_gamestate.blocks[curr_row][curr_col].block_value;
-
-        cout << "Neighbor "<< i + 1
-            << ": Location [" << neighbours[i].first << ", " << neighbours[i].second
-            << "], Type: " << curr_gamestate.blocks[curr_row][curr_col].texturetype
-            << ", Value: " << curr_gamestate.blocks[curr_row][curr_col].block_value << endl;
-
         //this line is used to set the active variable of neighbours of explosion block to false
         curr_gamestate.blocks[neighbours[i].first][neighbours[i].second].active = false;
         curr_gamestate.blocks_graphics[neighbours[i].first][neighbours[i].second].setFillColor(sf::Color(0, 0, 0));
         add_to_score(neighbours[i].first, neighbours[i].second);
     }
+
 
     for(int i = 0; i < neighbours.size(); i++)
     {
@@ -85,39 +75,71 @@ void hit_block(int row, int col)
             hit_block(neighbours[i].first, neighbours[i].second);
         }
     }
-    cout << "Sum of all Values: " << sum << endl;
-    neighbours.clear();
+
     //this line is used to set the active variable of explosion block to false
-    curr_gamestate.blocks[row][col].active = false;
     curr_gamestate.blocks_graphics[row][col].setFillColor(sf::Color(0, 0, 0));
     add_to_score(row, col);
+
+    if(curr_gamestate.block_amount == 3)
+    {
+        if(godmode_active)
+        {
+            crazy_ballspeed = true;
+            curr_gamestate.ball_speed = godspeed;
+        }
+    }
+
+    if(curr_gamestate.block_amount == 0)
+    {
+        game_won_text.setFont(font);
+        game_won_text.setCharacterSize(50);
+        game_won_text.setFillColor(sf::Color::Green);
+        game_won_text.setStyle(sf::Text::Bold);
+        game_won_text.setPosition(280, 700);
+        game_won_text.setString("CONGRADULATIONS! YOU WON!");
+        game_status = BLOCKS_GONE;
+    }
 }
 
 void hit_barrier()
 {
     static int heart_number = lives_amount - 1;
-    if(heart_number != -1)
+    if(heart_number != 0)
     {
-        vector_life_data[heart_number].heart_texture = heart_texture_empty;
-        heart_number--;
-        heart_deduction_text.setFont(font);
-        heart_deduction_text.setCharacterSize(70);
-        heart_deduction_text.setFillColor(sf::Color::Yellow);
-        heart_deduction_text.setStyle(sf::Text::Bold);
-        heart_deduction_text.setPosition(280, 700);
-        heart_deduction_text.setString("Press Space to continue..");
-        waiting_for_continuation = true;
+        if(!godmode_active)
+        {
+            vector_life_data[heart_number].heart_texture = heart_texture_empty;
+            heart_number--;
+            heart_deduction_text.setFont(font);
+            heart_deduction_text.setCharacterSize(50);
+            heart_deduction_text.setFillColor(sf::Color::Yellow);
+            heart_deduction_text.setStyle(sf::Text::Bold);
+            heart_deduction_text.setPosition(280, 700);
+            heart_deduction_text.setString("Press Space to continue..");
+            game_status = HEART_DEDUCTION;
+        }
     }
     else
     {
-        game_active = false;
+        if(!godmode_active)
+        {
+            vector_life_data[heart_number].heart_texture = heart_texture_empty;
+            no_hearts_text.setFont(font);
+            no_hearts_text.setCharacterSize(70);
+            no_hearts_text.setFillColor(sf::Color::Red);
+            no_hearts_text.setStyle(sf::Text::Bold);
+            no_hearts_text.setPosition(screensizeX / 2 - 200, 700);
+            no_hearts_text.setString("Game Over!");
+            game_status = HEARTS_GONE;
+        }
     }
 }
 
 void handle_collision_all_sides(int i, int j)
 {
     if(temp_y + ball_size * 2 >= curr_gamestate.blocks[i][j].top_bside &&
-       temp_y + ball_size * 2 < curr_gamestate.blocks[i][j].top_bside + collision_margin)
+       (temp_y + ball_size * 2 < curr_gamestate.blocks[i][j].top_bside + collision_margin ||
+       temp_y + ball_size * 2 < curr_gamestate.blocks[i][j].top_bside + collision_margin_godmode))
     {
         if(temp_x + ball_size * 2 > curr_gamestate.blocks[i][j].blockX &&
            temp_x < curr_gamestate.blocks[i][j].right_bside &&
@@ -128,7 +150,8 @@ void handle_collision_all_sides(int i, int j)
         }
     }
     else if(temp_x + ball_size * 2 >= curr_gamestate.blocks[i][j].left_bside &&
-            temp_x + ball_size * 2 < curr_gamestate.blocks[i][j].left_bside + collision_margin)
+            (temp_x + ball_size * 2 < curr_gamestate.blocks[i][j].left_bside + collision_margin ||
+            temp_x + ball_size * 2 < curr_gamestate.blocks[i][j].left_bside + collision_margin_godmode))
     {
         if(temp_y + ball_size * 2 > curr_gamestate.blocks[i][j].top_bside &&
            temp_y < curr_gamestate.blocks[i][j].bottom_bside &&
@@ -140,7 +163,8 @@ void handle_collision_all_sides(int i, int j)
         }
     }
     else if(temp_y <= curr_gamestate.blocks[i][j].bottom_bside &&
-            temp_y > curr_gamestate.blocks[i][j].bottom_bside - collision_margin)
+            (temp_y > curr_gamestate.blocks[i][j].bottom_bside - collision_margin ||
+            temp_y > curr_gamestate.blocks[i][j].bottom_bside - collision_margin_godmode))
     {
         if(temp_x + ball_size * 2 > curr_gamestate.blocks[i][j].left_bside &&
            temp_x < curr_gamestate.blocks[i][j].right_bside &&
