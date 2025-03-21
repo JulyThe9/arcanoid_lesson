@@ -6,4 +6,16 @@
 !*.cpp
 !*.h
 !*.gitignore
+!/fonts/
+/fonts/*
+!/fonts/*.ttf
 
+!/textures/
+
+!/textures/blocks/
+/textures/blocks/*
+!/textures/blocks/*.png
+
+!/textures/status_bar/
+/textures/status_bar/*
+!/textures/status_bar/*.png
