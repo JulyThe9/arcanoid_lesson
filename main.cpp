@@ -7,7 +7,7 @@
 #include <string>
 #include <cstdlib>  // For rand() and srand()
 #include <ctime>    // For time()
-
+#include <chrono>
 
 #include "properties.h"
 #include "fu_ball.h"
@@ -29,7 +29,7 @@
 
 
 
-
+using namespace std::chrono;
 
 //-------------------------------------------------------------------
 int main()
@@ -57,11 +57,43 @@ int main()
 
     sf::RectangleShape status_bar_logo = init_logo();
 
-
-
+    // find a good place for these
+    bool textVisible = false;
+    auto lastTime = high_resolution_clock::now();
 	// Start the game loop
     while (app.isOpen() && game_active)
     {
+        auto curTtime = high_resolution_clock::now();
+        auto timePassed = duration_cast<milliseconds>(curTtime - lastTime);
+
+        // TEMPORARY PLACE
+        // ===================================================================================
+        // text is visible case
+        if (textVisible)
+        {
+            // text has has been visible for a time long enough,
+            // make it hidden
+            if (timePassed.count() > TEXT_VISIBLE_PERIOD)
+            {
+                cout << timePassed.count() << " ms passed, making text HIDDEN\n";
+                textVisible = false;
+                lastTime = curTtime;
+            }
+        }
+        // text invisible case
+        else
+        {
+            // text has has been hidden for a time long enough,
+            // make it visible
+            if (timePassed.count() > TEXT_NOT_VISIBLE_PERIOD)
+            {
+                cout << timePassed.count() << " ms passed, making text VISIBLE\n";
+                textVisible = true;
+                lastTime = curTtime;
+            }
+        }
+        // ===================================================================================
+
         if(!waiting_for_continuation)
         {
             while (app.pollEvent(event))
