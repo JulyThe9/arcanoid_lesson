@@ -1,5 +1,8 @@
 using namespace std;
 
+// GLOBAL DEFINES
+#define TEXT_VISIBLE_PERIOD 1500
+#define TEXT_NOT_VISIBLE_PERIOD 200
 
 // ---------------------------------
 // BUTTONS ON APP (Process events)

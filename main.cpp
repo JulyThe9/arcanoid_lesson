@@ -7,7 +7,7 @@
 #include <string>
 #include <cstdlib>  // For rand() and srand()
 #include <ctime>    // For time()
-
+#include <chrono>
 
 #include "properties.h"
 #include "fu_ball.h"
@@ -30,7 +30,7 @@
 
 
 
-
+using namespace std::chrono;
 
 //-------------------------------------------------------------------
 int main()
@@ -58,8 +58,9 @@ int main()
 
     sf::RectangleShape status_bar_logo = init_logo();
 
-
-
+    // find a good place for these
+    bool textVisible = false;
+    auto lastTime = high_resolution_clock::now();
 	// Start the game loop
     while (app.isOpen() && game_active)
     {
