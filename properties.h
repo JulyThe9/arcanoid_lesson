@@ -1,7 +1,7 @@
 using namespace std;
 
 // GLOBAL DEFINES
-#define TEXT_VISIBLE_PERIOD 1500
+#define TEXT_VISIBLE_PERIOD 550
 #define TEXT_NOT_VISIBLE_PERIOD 200
 
 // ---------------------------------
@@ -12,10 +12,12 @@ sf::Event event;
 float screensizeX = 1500;
 float screensizeY = 1200;
 
+bool textVisible = false;
+
 //-----
 //BALL
 //-----
-int ball_size = 20;
+int ball_size = 10;
 
 const int ball_start_posX = screensizeX / 2;
 const int ball_start_posY = screensizeY / 2 + 100;
@@ -210,7 +212,6 @@ int heart_length = 100;
 
 int lives_amount = 3;
 int lives_spacing = heart_width;
-bool skip_blinking = false;
 int step = 25;
 
 

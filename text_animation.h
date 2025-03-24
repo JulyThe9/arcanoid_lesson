@@ -28,8 +28,39 @@ void SetLossOfLife(int &heart_number)
     heart_deduction_text.setCharacterSize(50);
     heart_deduction_text.setFillColor(sf::Color::Yellow);
     heart_deduction_text.setStyle(sf::Text::Bold);
-    heart_deduction_text.setPosition(280, 700);
+    heart_deduction_text.setPosition(screensizeX / 2 - 300, 700);
     heart_deduction_text.setString("Press Space to continue..");
     game_status = HEART_DEDUCTION;
     heart_number--;
+}
+
+void TextAnimation(auto &lastTime, auto &curTtime, auto &timePassed)
+{
+    if (textVisible)
+    {
+        // text has has been visible for a time long enough,
+        // make it hidden
+        if (timePassed.count() > TEXT_VISIBLE_PERIOD)
+        {
+            cout << timePassed.count() << " ms passed, making text HIDDEN\n";
+            heart_deduction_text.setFillColor(sf::Color::Black);
+            no_hearts_text.setFillColor(sf::Color::Black);
+            textVisible = false;
+            lastTime = curTtime;
+        }
+    }
+    // text invisible case
+    else
+    {
+        // text has has been hidden for a time long enough,
+        // make it visible
+        if (timePassed.count() > TEXT_NOT_VISIBLE_PERIOD)
+        {
+            cout << timePassed.count() << " ms passed, making text VISIBLE\n";
+            heart_deduction_text.setFillColor(sf::Color::Yellow);
+            no_hearts_text.setFillColor(sf::Color::Red);
+            textVisible = true;
+            lastTime = curTtime;
+        }
+    }
 }

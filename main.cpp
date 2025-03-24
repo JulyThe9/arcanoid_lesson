@@ -58,8 +58,6 @@ int main()
 
     sf::RectangleShape status_bar_logo = init_logo();
 
-    // find a good place for these
-    bool textVisible = false;
     auto lastTime = high_resolution_clock::now();
 	// Start the game loop
     while (app.isOpen() && game_active)
@@ -70,29 +68,10 @@ int main()
         // TEMPORARY PLACE
         // ===================================================================================
         // text is visible case
-        if (textVisible)
-        {
-            // text has has been visible for a time long enough,
-            // make it hidden
-            if (timePassed.count() > TEXT_VISIBLE_PERIOD)
-            {
-                cout << timePassed.count() << " ms passed, making text HIDDEN\n";
-                textVisible = false;
-                lastTime = curTtime;
-            }
-        }
-        // text invisible case
-        else
-        {
-            // text has has been hidden for a time long enough,
-            // make it visible
-            if (timePassed.count() > TEXT_NOT_VISIBLE_PERIOD)
-            {
-                cout << timePassed.count() << " ms passed, making text VISIBLE\n";
-                textVisible = true;
-                lastTime = curTtime;
-            }
-        }
+
+        //#define TEXT_VISIBLE_PERIOD 1500
+        //#define TEXT_NOT_VISIBLE_PERIOD 200
+
         // ===================================================================================
 
         if(game_status == GAME_ACTIVE)
@@ -170,9 +149,12 @@ int main()
         }
         else if(game_status == HEART_DEDUCTION)
         {
-            app.draw(heart_deduction_text);
+
+            TextAnimation(lastTime, curTtime, timePassed);
+            app.draw(heart_deduction_text);//------------------------------------------
             while (app.pollEvent(event))
             {
+
                 if(event.key.code == sf::Keyboard::Space)
                 {
                     game_status = GAME_ACTIVE;
@@ -181,17 +163,13 @@ int main()
                     recent_posY = ball_start_posY;
                     handle_collision(COLLISION_CASE_RESET);
                     platX = platform_starter_X;
-                    cout << "PRESSSED SPACE" << endl;
                 }
             }
         }
         else if(game_status == HEARTS_GONE)
         {
-            for(int i = 0; i < blinking_amount; i++)
-            {
-                app.draw(no_hearts_text);
-            }
-
+            TextAnimation(lastTime, curTtime, timePassed);
+            app.draw(no_hearts_text);//--------------------------------------------
             while (app.pollEvent(event))
             {
                 if(event.key.code == sf::Keyboard::Space)
@@ -202,7 +180,7 @@ int main()
         }
         else
         {
-            app.draw(game_won_text);
+            app.draw(game_won_text);//-------------------------------------------------------
             while (app.pollEvent(event))
             {
                 if(event.key.code == sf::Keyboard::Space)
