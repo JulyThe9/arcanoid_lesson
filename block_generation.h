@@ -63,6 +63,11 @@ void generate_row(texture_types starterblock, int row_number, int &localblockX, 
     int currblockX = 0;
     int prevblockX = 0;
 
+    if(block_columns * block_WIDTH > screensizeX)
+    {
+        block_columns = (screensizeX - 2 * block_WIDTH) / block_WIDTH + 1;
+    }
+
 
     for(int i = 0; i < block_columns; i++)
     {
@@ -75,7 +80,7 @@ void generate_row(texture_types starterblock, int row_number, int &localblockX, 
             {
                 set_as_explosion();
             }
-            else if(random_block_type > 40)
+            else if(random_block_type > 45)
             {
                 set_as_explosion_large();
             }
@@ -122,7 +127,7 @@ void generate_row(texture_types starterblock, int row_number, int &localblockX, 
 
         if(i == 0)
         {
-            currblockX = 160;
+            currblockX = (screensizeX - (block_WIDTH * block_columns)) / 2;
         }
         else
         {
@@ -137,7 +142,6 @@ void generate_row(texture_types starterblock, int row_number, int &localblockX, 
                                                 curr_block_texture, current_texture_type, current_block_value, radius));
         if(i + 1 == block_columns)
         {
-            currblockX = 160;
             localblockY += block_LEN;
         }
     }
@@ -150,6 +154,11 @@ int create_blocks_data()
 
 
     texture_types starter_texture = TEXTURE_TYPE_DIRT;
+
+    if(block_rows * block_WIDTH > screensizeX)
+    {
+        block_rows = (screensizeY - (platY/ 2)) / block_LEN;
+    }
 
     for (int curr_row_number = 0; curr_row_number < block_rows; curr_row_number++)
     {

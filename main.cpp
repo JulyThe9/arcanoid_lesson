@@ -20,6 +20,7 @@
 #include "get_neighbours.h"
 #include "heart.h"
 #include "lives_generation.h"
+#include "text_animation.h"
 #include "fu_collision_handler.h"
 #include "fu_init_misc.h"
 #include "status_bar.h"
@@ -154,7 +155,11 @@ int main()
         }
         else if(game_status == HEARTS_GONE)
         {
-           app.draw(no_hearts_text);
+            for(int i = 0; i < blinking_amount; i++)
+            {
+                app.draw(no_hearts_text);
+            }
+
             while (app.pollEvent(event))
             {
                 if(event.key.code == sf::Keyboard::Space)

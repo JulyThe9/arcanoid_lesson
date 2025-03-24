@@ -2,6 +2,7 @@
 // WALL COLLISION DETECTION HERE
 // ---------------------------------
 
+
 void handle_collision_walls()
 {
     if(temp_y >= bottom_wall - ball_size * 2)
@@ -91,13 +92,7 @@ void hit_block(int row, int col)
 
     if(curr_gamestate.block_amount == 0)
     {
-        game_won_text.setFont(font);
-        game_won_text.setCharacterSize(50);
-        game_won_text.setFillColor(sf::Color::Green);
-        game_won_text.setStyle(sf::Text::Bold);
-        game_won_text.setPosition(280, 700);
-        game_won_text.setString("CONGRADULATIONS! YOU WON!");
-        game_status = BLOCKS_GONE;
+        SetGameWon();
     }
 }
 
@@ -108,36 +103,22 @@ void hit_barrier()
     {
         if(!godmode_active)
         {
-            vector_life_data[heart_number].heart_texture = heart_texture_empty;
-            heart_number--;
-            heart_deduction_text.setFont(font);
-            heart_deduction_text.setCharacterSize(50);
-            heart_deduction_text.setFillColor(sf::Color::Yellow);
-            heart_deduction_text.setStyle(sf::Text::Bold);
-            heart_deduction_text.setPosition(280, 700);
-            heart_deduction_text.setString("Press Space to continue..");
-            game_status = HEART_DEDUCTION;
+            SetLossOfLife(heart_number);
         }
     }
     else
     {
         if(!godmode_active)
         {
-            vector_life_data[heart_number].heart_texture = heart_texture_empty;
-            no_hearts_text.setFont(font);
-            no_hearts_text.setCharacterSize(70);
-            no_hearts_text.setFillColor(sf::Color::Red);
-            no_hearts_text.setStyle(sf::Text::Bold);
-            no_hearts_text.setPosition(screensizeX / 2 - 200, 700);
-            no_hearts_text.setString("Game Over!");
-            game_status = HEARTS_GONE;
+            SetGameLoss(heart_number);
         }
     }
 }
 
 void handle_collision_all_sides(int i, int j)
 {
-    if(temp_y + ball_size * 2 >= curr_gamestate.blocks[i][j].top_bside &&
+    //hit top side
+    if(temp_y + ball_size * 2 > curr_gamestate.blocks[i][j].top_bside &&
        (temp_y + ball_size * 2 < curr_gamestate.blocks[i][j].top_bside + collision_margin ||
        temp_y + ball_size * 2 < curr_gamestate.blocks[i][j].top_bside + collision_margin_godmode))
     {
@@ -145,11 +126,13 @@ void handle_collision_all_sides(int i, int j)
            temp_x < curr_gamestate.blocks[i][j].right_bside &&
            curr_gamestate.blocks[i][j].active)
         {
+            temp_y = curr_gamestate.blocks[i][j].top_bside - collision_margin;
             handle_collision(COLLISION_CASE_BOTTOM);
             hit_block(i, j);
         }
     }
-    else if(temp_x + ball_size * 2 >= curr_gamestate.blocks[i][j].left_bside &&
+    //hit left side
+    else if(temp_x + ball_size * 2 > curr_gamestate.blocks[i][j].left_bside &&
             (temp_x + ball_size * 2 < curr_gamestate.blocks[i][j].left_bside + collision_margin ||
             temp_x + ball_size * 2 < curr_gamestate.blocks[i][j].left_bside + collision_margin_godmode))
     {
@@ -157,12 +140,13 @@ void handle_collision_all_sides(int i, int j)
            temp_y < curr_gamestate.blocks[i][j].bottom_bside &&
            curr_gamestate.blocks[i][j].active)
         {
-
+            temp_x = curr_gamestate.blocks[i][j].left_bside - collision_margin;
             handle_collision(COLLISION_CASE_RIGHT);
             hit_block(i, j);
         }
     }
-    else if(temp_y <= curr_gamestate.blocks[i][j].bottom_bside &&
+    //hit bottom side
+    else if(temp_y < curr_gamestate.blocks[i][j].bottom_bside &&
             (temp_y > curr_gamestate.blocks[i][j].bottom_bside - collision_margin ||
             temp_y > curr_gamestate.blocks[i][j].bottom_bside - collision_margin_godmode))
     {
@@ -170,10 +154,12 @@ void handle_collision_all_sides(int i, int j)
            temp_x < curr_gamestate.blocks[i][j].right_bside &&
            curr_gamestate.blocks[i][j].active)
         {
+            temp_y = curr_gamestate.blocks[i][j].bottom_bside + collision_margin;
             handle_collision(COLLISION_CASE_TOP);
             hit_block(i, j);
         }
     }
+    //hit right side
     else if(temp_x <= curr_gamestate.blocks[i][j].right_bside &&
             temp_x > curr_gamestate.blocks[i][j].right_bside - collision_margin)
     {
@@ -181,6 +167,7 @@ void handle_collision_all_sides(int i, int j)
            temp_y <= curr_gamestate.blocks[i][j].bottom_bside &&
            curr_gamestate.blocks[i][j].active)
         {
+            temp_x = curr_gamestate.blocks[i][j].right_bside + collision_margin;
             handle_collision(COLLISION_CASE_LEFT);
             hit_block(i, j);
         }

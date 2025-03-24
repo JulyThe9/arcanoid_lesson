@@ -12,7 +12,7 @@ float screensizeY = 1200;
 //-----
 //BALL
 //-----
-int ball_size = 10;
+int ball_size = 20;
 
 const int ball_start_posX = screensizeX / 2;
 const int ball_start_posY = screensizeY / 2 + 100;
@@ -115,12 +115,6 @@ struct block_type
     }
 };
 
-int block_rows = 10;
-int block_LEN = 30;
-int block_WIDTH = 90;
-//columns
-int block_columns = (screensizeX - 2 * block_WIDTH) / block_WIDTH - 1;
-
 //----------
 //GameState
 //----------
@@ -155,10 +149,21 @@ struct GameState
     }
 };
 
-GameState curr_gamestate(0.24, 45, 200, "000000", block_rows * block_columns);
+float platY = screensizeY - 120;
+int block_LEN = 30;
+int block_WIDTH = 90;
+int block_rows = (screensizeY - (platY / 1.2)) / block_LEN;
+//columns
+int block_columns = (screensizeX - 2 * block_WIDTH) / block_WIDTH - 1;
 
-bool godmode_active = true;
-bool crazy_ballspeed = false;
+GameState curr_gamestate(0.24, 45, 200, "000000", block_rows * block_columns);
+float platX = screensizeX / 2 - curr_gamestate.plat_width / 2 + (35 * 4);
+
+float platform_starter_X = screensizeX / 2 - curr_gamestate.plat_width / 2 + (35 * 4);
+
+
+bool godmode_active = false;
+bool crazy_ballspeed = true;
 float godspeed = 0.45;
 
 double collision_margin = curr_gamestate.ball_speed;
@@ -168,10 +173,6 @@ double collision_margin_godmode = godspeed;
 //---------
 int plat_len = 12;
 
-const float platform_starter_X = screensizeX / 2 - curr_gamestate.plat_width / 2 + (35 * 4);
-
-float platX = platform_starter_X;
-float platY = 1000;
 
 float curr_platX = platX;
 float curr_platY = platY;       //to calculate degrees for curr_degrees and not move the platform
@@ -267,6 +268,8 @@ game_status_type game_status = GAME_ACTIVE;
 sf::Text heart_deduction_text;
 sf::Text no_hearts_text;
 sf::Text game_won_text;
+
+int blinking_amount = 5;
 
 
 
