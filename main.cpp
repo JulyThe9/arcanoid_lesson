@@ -155,14 +155,17 @@ int main()
             while (app.pollEvent(event))
             {
 
-                if(event.key.code == sf::Keyboard::Space)
+                if(event.type == sf::Event::KeyPressed)
                 {
-                    game_status = GAME_ACTIVE;
-                    curr_degrees = ball_starter_deg;
-                    recent_posX = ball_start_posX;
-                    recent_posY = ball_start_posY;
-                    handle_collision(COLLISION_CASE_RESET);
-                    platX = platform_starter_X;
+                    if(event.key.code == sf::Keyboard::Space)
+                    {
+                        game_status = GAME_ACTIVE;
+                        curr_degrees = ball_starter_deg;
+                        recent_posX = ball_start_posX;
+                        recent_posY = ball_start_posY;
+                        handle_collision(COLLISION_CASE_RESET);
+                        platX = platform_starter_X;
+                    }
                 }
             }
         }
