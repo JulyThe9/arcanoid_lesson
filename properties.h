@@ -17,7 +17,7 @@ bool textVisible = false;
 //-----
 //BALL
 //-----
-int ball_size = 10;
+int ball_size = 30;
 
 const int ball_start_posX = screensizeX / 2;
 const int ball_start_posY = screensizeY / 2 + 100;
@@ -155,19 +155,19 @@ struct GameState
 };
 
 float platY = screensizeY - 120;
-int block_LEN = 30;
-int block_WIDTH = 90;
-int block_rows = (screensizeY - (platY / 1.2)) / block_LEN;
+int block_LEN = 10;
+int block_WIDTH = 10;
+int block_rows = (screensizeY - (platY / 1.2)) / block_LEN + 100;
 //columns
-int block_columns = (screensizeX - 2 * block_WIDTH) / block_WIDTH - 1;
+int block_columns = (screensizeX - 2 * block_WIDTH) / block_WIDTH + 100;
 
-GameState curr_gamestate(0.24, 45, 200, "000000", block_rows * block_columns);
+GameState curr_gamestate(4, 45, 200, "000000", block_rows * block_columns);
 float platX = screensizeX / 2 - curr_gamestate.plat_width / 2 + (35 * 4);
 
 float platform_starter_X = screensizeX / 2 - curr_gamestate.plat_width / 2 + (35 * 4);
 
 
-bool godmode_active = false;
+bool godmode_active = true;
 bool crazy_ballspeed = true;
 float godspeed = 0.45;
 
