@@ -62,18 +62,21 @@ void hit_block(int row, int col)
         int curr_row = neighbours[i].first;
         int curr_col = neighbours[i].second;
         //this line is used to set the active variable of neighbours of explosion block to false
-        curr_gamestate.blocks[neighbours[i].first][neighbours[i].second].active = false;
-        curr_gamestate.blocks_graphics[neighbours[i].first][neighbours[i].second].setFillColor(sf::Color(0, 0, 0));
-        add_to_score(neighbours[i].first, neighbours[i].second);
+        curr_gamestate.blocks[curr_row][curr_col].active = false;
+        curr_gamestate.blocks_graphics[curr_row][curr_col].setFillColor(sf::Color(0, 0, 0));
+        add_to_score(curr_row, curr_col);
     }
 
 
     for(int i = 0; i < neighbours.size(); i++)
     {
-        if(curr_gamestate.blocks[neighbours[i].first][neighbours[i].second].texturetype == TEXTURE_TYPE_EXPLOSION_SMALL ||
-           curr_gamestate.blocks[neighbours[i].first][neighbours[i].second].texturetype == TEXTURE_TYPE_EXPLOSION_LARGE)
+        int curr_row = neighbours[i].first;
+        int curr_col = neighbours[i].second;
+
+        if(curr_gamestate.blocks[curr_row][curr_col].texturetype == TEXTURE_TYPE_EXPLOSION_SMALL ||
+           curr_gamestate.blocks[curr_row][curr_col].texturetype == TEXTURE_TYPE_EXPLOSION_LARGE)
         {
-            hit_block(neighbours[i].first, neighbours[i].second);
+            hit_block(curr_row, curr_col);
         }
     }
 

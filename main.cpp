@@ -25,9 +25,7 @@
 #include "fu_init_misc.h"
 #include "status_bar.h"
 #include "logo.h"
-
-
-
+#include "drawing.h"
 
 
 using namespace std::chrono;
@@ -35,6 +33,9 @@ using namespace std::chrono;
 //-------------------------------------------------------------------
 int main()
 {
+    // Create the main window
+    sf::RenderWindow app(sf::VideoMode(screensizeX, screensizeY), "SFML window");
+
     sf::CircleShape ball = init_ball();
 
     sf::RectangleShape plat = init_platform();
@@ -65,14 +66,7 @@ int main()
 
         auto curTtime = high_resolution_clock::now();
         auto timePassed = duration_cast<milliseconds>(curTtime - lastTime);
-        // TEMPORARY PLACE
-        // ===================================================================================
-        // text is visible case
 
-        //#define TEXT_VISIBLE_PERIOD 1500
-        //#define TEXT_NOT_VISIBLE_PERIOD 200
-
-        // ===================================================================================
 
         if(game_status == GAME_ACTIVE)
         {
@@ -133,7 +127,7 @@ int main()
             temp_x = recent_posX;
 
 
-            //MAIN COLLISIONS
+            // MAIN COLLISIONS
             handle_collision_walls();
             handle_collision_block();
             handle_collision_platform();
@@ -151,7 +145,7 @@ int main()
         {
 
             TextAnimation(lastTime, curTtime, timePassed);
-            app.draw(heart_deduction_text);//------------------------------------------
+            DrawHeartDeductionText(app);
             while (app.pollEvent(event))
             {
 
@@ -172,7 +166,7 @@ int main()
         else if(game_status == HEARTS_GONE)
         {
             TextAnimation(lastTime, curTtime, timePassed);
-            app.draw(no_hearts_text);//--------------------------------------------
+            DrawNoHeartsText(app);
             while (app.pollEvent(event))
             {
                 if(event.key.code == sf::Keyboard::Space)
@@ -183,7 +177,7 @@ int main()
         }
         else
         {
-            app.draw(game_won_text);//-------------------------------------------------------
+            DrawGameWonText(app);
             while (app.pollEvent(event))
             {
                 if(event.key.code == sf::Keyboard::Space)
@@ -193,27 +187,19 @@ int main()
             }
         }
 
-        for (int i = 0; i < block_rows; i++)
+        if(temp_x == recent_posX)
         {
-            for(int j = 0; j < block_columns; j++)
-            {
-                app.draw(curr_gamestate.blocks_graphics[i][j]);
-            }
+            cout << "WE ARE THE SAME" << endl;
         }
 
-        app.draw(plat);
-        app.draw(barrier);
-        app.draw(ball);
-        app.draw(status_bar);
-        app.draw(status_bar_logo);
-        app.draw(score);
-
-
-
-        for(int i = 0; i < lives_amount; i++)
-        {
-            app.draw(vector_graphics_life[i]);
-        }
+        DrawBlocks(app);
+        DrawPlat(app, plat);
+        DrawBarrier(app, barrier);
+        DrawBall(app, ball);
+        DrawStatusBar(app, status_bar);
+        DrawStatusBarLogo(app, status_bar_logo);
+        DrawScore(app);
+        DrawHearts(app);
 
         app.display();
 

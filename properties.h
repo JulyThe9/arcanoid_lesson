@@ -62,8 +62,6 @@ enum collision_cases
     COLLISION_CASE_RESET,
 };
 
-// Create the main window
-sf::RenderWindow app(sf::VideoMode(screensizeX, screensizeY), "SFML window");
 
 enum texture_types
 {

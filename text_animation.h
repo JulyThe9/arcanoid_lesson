@@ -36,6 +36,7 @@ void SetLossOfLife(int &heart_number)
 
 void TextAnimation(auto &lastTime, auto &curTtime, auto &timePassed)
 {
+    // text visible case
     if (textVisible)
     {
         // text has has been visible for a time long enough,
