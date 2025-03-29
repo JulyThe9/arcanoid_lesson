@@ -7,15 +7,15 @@ int get_new_angle()
 
     //one plat_pos covers the middle, the other covers the far left side of platform, if we dont have it, one of the two flies through.
     //if we dont have it, one of the two flies through.
-    if(temp_x - platX + ball_size > curr_gamestate.plat_width / 2)
+    if(current_posX - platX + ball_size > curr_gamestate.plat_width / 2)
     {
-        plat_posl = temp_x - platX;
+        plat_posl = current_posX - platX;
     }
-    else if(temp_x - platX + ball_size <= curr_gamestate.plat_width / 2)
+    else if(current_posX - platX + ball_size <= curr_gamestate.plat_width / 2)
     {
-        plat_posl = temp_x - platX + ball_size;
+        plat_posl = current_posX - platX + ball_size;
     }
-    float plat_posr = temp_x - platX;
+    float plat_posr = current_posX - platX;
     //percentige of plat_pos
     double section = curr_gamestate.plat_width / (sections_per_side * 2.0);
     int deg_per_section = 90 / (sections_per_side + 1);

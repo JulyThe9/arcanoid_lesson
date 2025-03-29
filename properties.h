@@ -24,12 +24,12 @@ const int ball_start_posY = screensizeY / 2 + 100;
 const int ball_starter_deg = 30;
 
 
-float recent_posX = ball_start_posX;
-float recent_posY = ball_start_posY;
+float current_posX = ball_start_posX;
+float current_posY = ball_start_posY;
 
 //current ball position variable
-float current_posX = recent_posX;
-float current_posY = recent_posY;
+float recent_posX = current_posX;
+float recent_posY = current_posY;
 
 // size of screen
 
@@ -44,9 +44,6 @@ float bottom_wall = screensizeY;
 // angle of flight(ball)
 
 float curr_degrees = ball_starter_deg;
-
-float temp_y = 0;
-float temp_x = 0;
 
 float alpha_x = 0;
 float alpha_y = 0;

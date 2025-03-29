@@ -112,19 +112,19 @@ int main()
             if (alpha_y == 0 && alpha_x == 0)
             {
                 // default movement at the start of the game
-                recent_posX += get_new_x(curr_degrees);
-                recent_posY += get_new_y(curr_degrees);
+                current_posX += get_new_x(curr_degrees);
+                current_posY += get_new_y(curr_degrees);
                 //TODO needs to be debugged
             }
             else
             {
                 // all other movement
-                recent_posX += alpha_x;
-                recent_posY += alpha_y;
+                current_posX += alpha_x;
+                current_posY += alpha_y;
             }
 
-            temp_y = recent_posY;
-            temp_x = recent_posX;
+            current_posY = current_posY;
+            current_posX = current_posX;
 
 
             // MAIN COLLISIONS
@@ -134,7 +134,7 @@ int main()
             handle_collision_barrier();
 
 
-            ball.setPosition(recent_posX, recent_posY);
+            ball.setPosition(current_posX, current_posY);
             plat.setPosition(platX, platY);
             barrier.setPosition(barrierX, barrierY);
 
@@ -155,8 +155,8 @@ int main()
                     {
                         game_status = GAME_ACTIVE;
                         curr_degrees = ball_starter_deg;
-                        recent_posX = ball_start_posX;
-                        recent_posY = ball_start_posY;
+                        current_posX = ball_start_posX;
+                        current_posY = ball_start_posY;
                         handle_collision(COLLISION_CASE_RESET);
                         platX = platform_starter_X;
                     }
@@ -187,11 +187,6 @@ int main()
             }
         }
 
-        if(temp_x == recent_posX)
-        {
-            cout << "WE ARE THE SAME" << endl;
-        }
-
         DrawBlocks(app);
         DrawPlat(app, plat);
         DrawBarrier(app, barrier);
@@ -206,8 +201,6 @@ int main()
 
         // Clear screen
         app.clear();
-
-
 
     }
 
