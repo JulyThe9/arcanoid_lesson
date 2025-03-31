@@ -4,49 +4,107 @@ using namespace std;
 #define TEXT_VISIBLE_PERIOD 550
 #define TEXT_NOT_VISIBLE_PERIOD 200
 
-// ---------------------------------
-// BUTTONS ON APP (Process events)
-// ---------------------------------
-sf::Event event;
+#define SCREENSIZE_X 1500
+#define SCREENSIZE_Y 1200
 
-float screensizeX = 1500;
-float screensizeY = 1200;
+#define BALL_STARTER_DEG 30
+
+#define BLOCK_LEN 30
+#define BLOCK_WIDTH 90
 
 bool textVisible = false;
 
-//-----
-//BALL
-//-----
 int ball_size = 10;
 
-const int ball_start_posX = screensizeX / 2;
-const int ball_start_posY = screensizeY / 2 + 100;
-const int ball_starter_deg = 30;
+const int BALL_START_POSX = SCREENSIZE_X / 2;
+const int BALL_START_POSY = SCREENSIZE_Y / 2 + 100;
 
+// current ball position at each frame
+float current_posX = BALL_START_POSX;
+float current_posY = BALL_START_POSY;
 
-float current_posX = ball_start_posX;
-float current_posY = ball_start_posY;
-
-//current ball position variable
-float recent_posX = current_posX;
-float recent_posY = current_posY;
-
-// size of screen
-
+// ball position after every collision or beginning
+float recent_collisionX = current_posX;
+float recent_collisionY = current_posY;
 
 // walls
-float right_wall = screensizeX;
+float right_wall = SCREENSIZE_X;
 float left_wall = 0;
-
 float top_wall = 0;
-float bottom_wall = screensizeY;
+float bottom_wall = SCREENSIZE_Y;
 
 // angle of flight(ball)
+float curr_degrees = BALL_STARTER_DEG;
 
-float curr_degrees = ball_starter_deg;
-
+// direction +/- of flight
 float alpha_x = 0;
 float alpha_y = 0;
+
+// godmode that makes you invinsible to barrier
+bool godmode_active = false;
+// active when true and block amount is under 4
+bool crazy_ballspeed = true;
+// godspeed if block amount are under 4 and ballspeed is true
+float godspeed = 0.45;
+
+//---------
+// Barrier
+//---------
+int barrier_width = SCREENSIZE_X;
+int barrier_length = 10;
+
+int barrierX = 0;
+int barrierY = SCREENSIZE_Y - barrier_length - 5;
+
+//--------
+// BLOCK TEXTURES
+//--------
+// 90/30 is good
+sf::Texture texture_ice;
+sf::Texture texture_poison;
+sf::Texture texture_dirt;
+sf::Texture texture_dirt2;
+sf::Texture texture_explosion_small;
+sf::Texture texture_explosion_large;
+
+//--------
+// STATUS BAR
+//--------
+sf::Texture background_status_bar;
+sf::Texture arcanoid_logo;
+sf::Texture heart_texture_full;
+sf::Texture heart_texture_empty;
+sf::Text score;
+sf::Font font;
+
+int logo_width = 300;
+int logo_length = 109;
+
+int logo_posX = (SCREENSIZE_X / 2) - (logo_width / 2);
+int logo_posY = 0;
+
+int status_bar_width = SCREENSIZE_X;
+int status_bar_length = 120;
+
+bool game_active = true;
+
+//--------
+// LIVES
+//--------
+int heart_width = 100;
+int heart_length = 100;
+
+int lives_amount = 3;
+int lives_spacing = heart_width;
+int step = 25;
+
+//--------
+// GAME STATUS TEXTS
+//--------
+sf::Text heart_deduction_text;
+sf::Text no_hearts_text;
+sf::Text game_won_text;
+
 
 enum collision_cases
 {
@@ -59,7 +117,6 @@ enum collision_cases
     COLLISION_CASE_RESET,
 };
 
-
 enum texture_types
 {
     TEXTURE_TYPE_ICE,
@@ -70,14 +127,17 @@ enum texture_types
     TEXTURE_TYPE_EXPLOSION_LARGE,
 };
 
+enum game_status_type
+{
+    GAME_ACTIVE,
+    HEART_DEDUCTION,
+    HEARTS_GONE,
+    BLOCKS_GONE,
+};
+
 struct block_type
 {
-    //fields
-    int block_width;
-    int block_len;
-
     int blockX;
-    int blockX_new;
     int blockY;
 
     int top_bside;
@@ -90,55 +150,42 @@ struct block_type
     int block_value;
     bool radius;
 
-    //constructor
-    block_type(int block_widthPar, int block_lenPar, int blockXPar, int blockYPar, sf::Texture texturepar, texture_types texturetypepar, int block_valuepar, bool radiuspar)
+    block_type(int blockXPar, int blockYPar, sf::Texture texturepar, texture_types texturetypepar, int block_valuepar, bool radiuspar)
     {
-        //size of block
-        block_width = block_widthPar;
-        block_len = block_lenPar;
-        //position of block
         blockX = blockXPar;
         blockY = blockYPar;
-        //colour of block
+
         texture = texturepar;
         texturetype = texturetypepar;
+
         //sides of block
         top_bside = blockY;
         left_bside = blockX;
-        right_bside =  blockX + block_width;
-        bottom_bside = blockY + block_len;
+        right_bside =  blockX + BLOCK_WIDTH;
+        bottom_bside = blockY + BLOCK_LEN;
+
         //block existant or not
         active = true;
-        blockX_new = blockXPar;
         block_value = block_valuepar;
         radius = radiuspar;
     }
 };
 
-//----------
-//GameState
-//----------
 struct GameState
 {
-    //fields
-    //ball
     float ball_speed;
 
-    //platform
     int plat_speed;
     int plat_width;
 
-    //score
     string score_number;
 
-    //blocks
     vector<vector<block_type>> blocks;
 
     vector<vector<sf::RectangleShape>> blocks_graphics;
 
     int block_amount;
 
-    //constructor
     GameState(float ball_speedpar, int plat_speedpar, int plat_widthpar, string score_numberpar, int block_amountpar)
     {
         ball_speed = ball_speedpar;
@@ -148,67 +195,6 @@ struct GameState
         block_amount = block_amountpar;
     }
 };
-
-float platY = screensizeY - 120;
-int block_LEN = 30;
-int block_WIDTH = 90;
-int block_rows = (screensizeY - (platY / 1.2)) / block_LEN;
-//columns
-int block_columns = (screensizeX - 2 * block_WIDTH) / block_WIDTH - 1;
-
-GameState curr_gamestate(0.24, 45, 200, "000000", block_rows * block_columns);
-float platX = screensizeX / 2 - curr_gamestate.plat_width / 2 + (35 * 4);
-
-float platform_starter_X = screensizeX / 2 - curr_gamestate.plat_width / 2 + (35 * 4);
-
-
-bool godmode_active = false;
-bool crazy_ballspeed = true;
-float godspeed = 0.45;
-
-double collision_margin = curr_gamestate.ball_speed;
-double collision_margin_godmode = godspeed;
-//---------
-//PLATFORM
-//---------
-int plat_len = 12;
-
-
-float curr_platX = platX;
-float curr_platY = platY;       //to calculate degrees for curr_degrees and not move the platform
-
-//--------
-//BARRIAR
-//--------
-
-//size
-int barrier_width = screensizeX;
-int barrier_length = 10;
-
-//positions
-int barrierX = 0;
-int barrierY = screensizeY - barrier_length - 5;
-
-//---------
-//BLOCKS
-//---------
-//90/30 is good
-sf::Texture texture_ice;
-sf::Texture texture_poison;
-sf::Texture texture_dirt;
-sf::Texture texture_dirt2;
-sf::Texture texture_explosion_small;
-sf::Texture texture_explosion_large;
-//--------
-//LIVES
-//--------
-int heart_width = 100;
-int heart_length = 100;
-
-int lives_amount = 3;
-int lives_spacing = heart_width;
-int step = 25;
-
 
 struct lives_type
 {
@@ -227,48 +213,20 @@ struct lives_type
     }
 };
 
-//--------
-//SCORE
-//--------
-sf::Text score;
-sf::Font font;
+
 
 //--------
-//STATUS BAR
+// PLATFORM
 //--------
+float platY = SCREENSIZE_Y - 120;
+int block_rows = (SCREENSIZE_Y - (platY / 1.2)) / BLOCK_LEN;
+int block_columns = (SCREENSIZE_X - 2 * BLOCK_WIDTH) / BLOCK_WIDTH - 1;
+GameState curr_gamestate(0.24, 45, 200, "000000", block_rows * block_columns);
+float platform_starter_X = SCREENSIZE_X / 2 - curr_gamestate.plat_width / 2 + (35 * 4);
+float platX = platform_starter_X;
+int plat_len = 12;
 
-sf::Texture background_status_bar;
-sf::Texture arcanoid_logo;
-sf::Texture heart_texture_full;
-sf::Texture heart_texture_empty;
 
 
-int logo_width = 300;
-int logo_length = 109;
-
-int logo_posX = (screensizeX / 2) - (logo_width / 2);
-int logo_posY = 0;
-
-int status_bar_width = screensizeX;
-int status_bar_length = 120;
-
-bool game_active = true;
-
-enum game_status_type
-{
-    GAME_ACTIVE,
-    HEART_DEDUCTION,
-    HEARTS_GONE,
-    BLOCKS_GONE,
-};
-
+//GAME STATUS
 game_status_type game_status = GAME_ACTIVE;
-
-sf::Text heart_deduction_text;
-sf::Text no_hearts_text;
-sf::Text game_won_text;
-
-int blinking_amount = 5;
-
-
-

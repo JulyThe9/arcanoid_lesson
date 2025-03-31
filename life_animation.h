@@ -8,8 +8,8 @@ int block_disappear()
     int colour_green2 = 0;
     int colour_blue2 = 0;
 
-    int locallifeX = screensizeX - 150;
-    int locallifeY = screensizeY - 100;
+    int locallifeX = SCREENSIZE_X - 150;
+    int locallifeY = SCREENSIZE_Y - 100;
 
     lives_type life_data2 = lives_type(life_width, life_length, locallifeX, locallifeY, lives_amount,  colour_red2, colour_green2, colour_blue2);
     sf::RectangleShape no_life = init_lives(life_data2);

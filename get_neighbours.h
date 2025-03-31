@@ -120,8 +120,6 @@ vector<pair<int, int>> get_neighbours(int row, int col)
         {
             block_neighbours.push_back({left_left_row, left_left_col});
         }
-
-
     }
     return block_neighbours;
 }

@@ -34,7 +34,9 @@ using namespace std::chrono;
 int main()
 {
     // Create the main window
-    sf::RenderWindow app(sf::VideoMode(screensizeX, screensizeY), "SFML window");
+    sf::RenderWindow main_window(sf::VideoMode(SCREENSIZE_X, SCREENSIZE_Y), "SFML window");
+
+    sf::Event event;
 
     sf::CircleShape ball = init_ball();
 
@@ -59,23 +61,23 @@ int main()
 
     sf::RectangleShape status_bar_logo = init_logo();
 
-    auto lastTime = high_resolution_clock::now();
+    std::chrono::time_point<std::chrono::high_resolution_clock> lastTime = high_resolution_clock::now();
 	// Start the game loop
-    while (app.isOpen() && game_active)
+    while (main_window.isOpen() && game_active)
     {
 
-        auto curTtime = high_resolution_clock::now();
-        auto timePassed = duration_cast<milliseconds>(curTtime - lastTime);
+        std::chrono::time_point<std::chrono::high_resolution_clock> curTtime = high_resolution_clock::now();
+        std::chrono::milliseconds timePassed = duration_cast<milliseconds>(curTtime - lastTime);
 
 
         if(game_status == GAME_ACTIVE)
         {
-            while (app.pollEvent(event))
+            while (main_window.pollEvent(event))
             {
                 // Close window : exit
                 if (event.type == sf::Event::Closed)
                 {
-                    app.close();
+                    main_window.close();
                 }
 
                 else if(event.type == sf::Event::KeyPressed)
@@ -145,8 +147,8 @@ int main()
         {
 
             TextAnimation(lastTime, curTtime, timePassed);
-            DrawHeartDeductionText(app);
-            while (app.pollEvent(event))
+            DrawHeartDeductionText(main_window);
+            while (main_window.pollEvent(event))
             {
 
                 if(event.type == sf::Event::KeyPressed)
@@ -154,9 +156,9 @@ int main()
                     if(event.key.code == sf::Keyboard::Space)
                     {
                         game_status = GAME_ACTIVE;
-                        curr_degrees = ball_starter_deg;
-                        current_posX = ball_start_posX;
-                        current_posY = ball_start_posY;
+                        curr_degrees = BALL_STARTER_DEG;
+                        current_posX = BALL_START_POSX;
+                        current_posY = BALL_START_POSY;
                         handle_collision(COLLISION_CASE_RESET);
                         platX = platform_starter_X;
                     }
@@ -166,8 +168,8 @@ int main()
         else if(game_status == HEARTS_GONE)
         {
             TextAnimation(lastTime, curTtime, timePassed);
-            DrawNoHeartsText(app);
-            while (app.pollEvent(event))
+            DrawNoHeartsText(main_window);
+            while (main_window.pollEvent(event))
             {
                 if(event.key.code == sf::Keyboard::Space)
                 {
@@ -177,8 +179,8 @@ int main()
         }
         else
         {
-            DrawGameWonText(app);
-            while (app.pollEvent(event))
+            DrawGameWonText(main_window);
+            while (main_window.pollEvent(event))
             {
                 if(event.key.code == sf::Keyboard::Space)
                 {
@@ -187,20 +189,19 @@ int main()
             }
         }
 
-        DrawBlocks(app);
-        DrawPlat(app, plat);
-        DrawBarrier(app, barrier);
-        DrawBall(app, ball);
-        DrawStatusBar(app, status_bar);
-        DrawStatusBarLogo(app, status_bar_logo);
-        DrawScore(app);
-        DrawHearts(app);
+        DrawBlocks(main_window);
+        DrawPlat(main_window, plat);
+        DrawBarrier(main_window, barrier);
+        DrawBall(main_window, ball);
+        DrawStatusBar(main_window, status_bar);
+        DrawStatusBarLogo(main_window, status_bar_logo);
+        DrawScore(main_window);
+        DrawHearts(main_window);
 
-        app.display();
-
+        main_window.display();
 
         // Clear screen
-        app.clear();
+        main_window.clear();
 
     }
 

@@ -4,11 +4,8 @@ vector<sf::RectangleShape> vector_graphics_life;
 int currlifeX = 0;
 int prevlifeX = 0;
 
-
 //forward decleration
 sf::RectangleShape init_lives(lives_type current_life);
-
-
 
 int set_life_data()
 {
@@ -34,7 +31,6 @@ int set_life_data()
     }
     return 0;
 }
-
 
 int set_life_graphics()
 {

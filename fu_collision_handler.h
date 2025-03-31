@@ -2,33 +2,36 @@
 // WALL COLLISION DETECTION HERE
 // ---------------------------------
 
-
 void handle_collision_walls()
 {
     if(current_posY >= bottom_wall - ball_size * 2)
-        {
-            handle_collision(COLLISION_CASE_BOTTOM);
-        }
-        else if(current_posX >= right_wall - ball_size * 2)
-        {
-            handle_collision(COLLISION_CASE_RIGHT);
-        }
-        else if(current_posY <= status_bar_length)
-        {
-            handle_collision(COLLISION_CASE_TOP);
-        }
-        else if(current_posX <= left_wall)
-        {
-            handle_collision(COLLISION_CASE_LEFT);
-        }
+    {
+        handle_collision(COLLISION_CASE_BOTTOM);
+    }
+    else if(current_posX >= right_wall - ball_size * 2)
+    {
+        handle_collision(COLLISION_CASE_RIGHT);
+    }
+    else if(current_posY <= status_bar_length)
+    {
+        handle_collision(COLLISION_CASE_TOP);
+    }
+    else if(current_posX <= left_wall)
+    {
+        handle_collision(COLLISION_CASE_LEFT);
+    }
 }
-
 
 // ---------------------------------
 // PLATFORM COLLISION DETECTION HERE
 // ---------------------------------
 void handle_collision_platform()
 {
+    // margin for collisions for normal speed
+    double collision_margin = curr_gamestate.ball_speed;
+    // margin for collisions for godspeed
+    double collision_margin_godmode = godspeed;
+
     if(current_posY + ball_size * 2 >= platY &&
        (current_posY + ball_size * 2 < platY + collision_margin ||
         current_posY + ball_size * 2 < platY + collision_margin_godmode))
@@ -56,7 +59,7 @@ void hit_block(int row, int col)
         neighbours = get_neighbours(row, col);
     }
 
-    for(int i = 0; i < neighbours.size(); i++)
+    for(unsigned int i = 0; i < neighbours.size(); i++)
     {
         curr_gamestate.block_amount--;
         int curr_row = neighbours[i].first;
@@ -68,7 +71,7 @@ void hit_block(int row, int col)
     }
 
 
-    for(int i = 0; i < neighbours.size(); i++)
+    for(unsigned int i = 0; i < neighbours.size(); i++)
     {
         int curr_row = neighbours[i].first;
         int curr_col = neighbours[i].second;
@@ -102,6 +105,7 @@ void hit_block(int row, int col)
 void hit_barrier()
 {
     static int heart_number = lives_amount - 1;
+
     if(heart_number != 0)
     {
         if(!godmode_active)
@@ -120,6 +124,11 @@ void hit_barrier()
 
 void handle_collision_all_sides(int i, int j)
 {
+    // margin for collisions for normal speed
+    double collision_margin = curr_gamestate.ball_speed;
+    // margin for collisions for godspeed
+    double collision_margin_godmode = godspeed;
+
     //hit top side
     if(current_posY + ball_size * 2 > curr_gamestate.blocks[i][j].top_bside &&
        (current_posY + ball_size * 2 < curr_gamestate.blocks[i][j].top_bside + collision_margin ||

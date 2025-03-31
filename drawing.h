@@ -1,63 +1,63 @@
-void DrawPlat(sf::RenderWindow &app, sf::RectangleShape plat)
+void DrawPlat(sf::RenderWindow &main_window, sf::RectangleShape plat)
 {
-    app.draw(plat);
+    main_window.draw(plat);
 }
 
-void DrawBarrier(sf::RenderWindow &app, sf::RectangleShape barrier)
+void DrawBarrier(sf::RenderWindow &main_window, sf::RectangleShape barrier)
 {
-    app.draw(barrier);
+    main_window.draw(barrier);
 }
 
-void DrawBall(sf::RenderWindow &app, sf::CircleShape ball)
+void DrawBall(sf::RenderWindow &main_window, sf::CircleShape ball)
 {
-    app.draw(ball);
+    main_window.draw(ball);
 }
 
-void DrawStatusBar(sf::RenderWindow &app, sf::RectangleShape status_bar)
+void DrawStatusBar(sf::RenderWindow &main_window, sf::RectangleShape status_bar)
 {
-    app.draw(status_bar);
+    main_window.draw(status_bar);
 }
 
-void DrawStatusBarLogo(sf::RenderWindow &app, sf::RectangleShape status_bar_logo)
+void DrawStatusBarLogo(sf::RenderWindow &main_window, sf::RectangleShape status_bar_logo)
 {
-    app.draw(status_bar_logo);
+    main_window.draw(status_bar_logo);
 }
 
-void DrawScore(sf::RenderWindow &app)
+void DrawScore(sf::RenderWindow &main_window)
 {
-    app.draw(score);
+    main_window.draw(score);
 }
 
-void DrawBlocks(sf::RenderWindow &app)
+void DrawBlocks(sf::RenderWindow &main_window)
 {
     for (int i = 0; i < block_rows; i++)
     {
         for(int j = 0; j < block_columns; j++)
         {
-            app.draw(curr_gamestate.blocks_graphics[i][j]);
+            main_window.draw(curr_gamestate.blocks_graphics[i][j]);
         }
     }
 }
 
-void DrawHearts(sf::RenderWindow &app)
+void DrawHearts(sf::RenderWindow &main_window)
 {
     for(int i = 0; i < lives_amount; i++)
     {
-        app.draw(vector_graphics_life[i]);
+        main_window.draw(vector_graphics_life[i]);
     }
 }
 
-void DrawGameWonText(sf::RenderWindow &app)
+void DrawGameWonText(sf::RenderWindow &main_window)
 {
-    app.draw(game_won_text);
+    main_window.draw(game_won_text);
 }
 
-void DrawNoHeartsText(sf::RenderWindow &app)
+void DrawNoHeartsText(sf::RenderWindow &main_window)
 {
-    app.draw(no_hearts_text);
+    main_window.draw(no_hearts_text);
 }
 
-void DrawHeartDeductionText(sf::RenderWindow &app)
+void DrawHeartDeductionText(sf::RenderWindow &main_window)
 {
-    app.draw(heart_deduction_text);
+    main_window.draw(heart_deduction_text);
 }

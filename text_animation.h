@@ -16,7 +16,7 @@ void SetGameLoss(int heart_number)
     no_hearts_text.setCharacterSize(70);
     no_hearts_text.setFillColor(sf::Color::Red);
     no_hearts_text.setStyle(sf::Text::Bold);
-    no_hearts_text.setPosition(screensizeX / 2 - 200, 700);
+    no_hearts_text.setPosition(SCREENSIZE_X / 2 - 200, 700);
     no_hearts_text.setString("Game Over!");
     game_status = HEARTS_GONE;
 }
@@ -28,13 +28,15 @@ void SetLossOfLife(int &heart_number)
     heart_deduction_text.setCharacterSize(50);
     heart_deduction_text.setFillColor(sf::Color::Yellow);
     heart_deduction_text.setStyle(sf::Text::Bold);
-    heart_deduction_text.setPosition(screensizeX / 2 - 300, 700);
+    heart_deduction_text.setPosition(SCREENSIZE_X / 2 - 300, 700);
     heart_deduction_text.setString("Press Space to continue..");
     game_status = HEART_DEDUCTION;
     heart_number--;
 }
 
-void TextAnimation(auto &lastTime, auto &curTtime, auto &timePassed)
+void TextAnimation(std::chrono::time_point<std::chrono::high_resolution_clock> &lastTime,
+                   std::chrono::time_point<std::chrono::high_resolution_clock> &curTtime,
+                   std::chrono::milliseconds &timePassed)
 {
     // text visible case
     if (textVisible)

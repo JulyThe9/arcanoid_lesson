@@ -30,95 +30,95 @@ void handle_collision(char wall_side)
     switch (wall_side)
     {
         case COLLISION_CASE_BOTTOM:
-            if (current_posX > recent_posX)
+            if (current_posX > recent_collisionX)
             {
                 alpha_y = alpha_y * (-1);
-                recent_posX = current_posX;
-                recent_posY = current_posY;
+                recent_collisionX = current_posX;
+                recent_collisionY = current_posY;
                 return;
             }
             else
             {
                 alpha_x = alpha_x * (-1);
                 alpha_y = alpha_y * (-1);
-                recent_posX = current_posX;
-                recent_posY = current_posY;
+                recent_collisionX = current_posX;
+                recent_collisionY = current_posY;
                 return;
             }
 
         case COLLISION_CASE_RIGHT:
-            if (current_posY < recent_posY)
+            if (current_posY < recent_collisionY)
             {
                 alpha_x = alpha_x * (-1);
                 alpha_y = alpha_y * (-1);
-                recent_posX = current_posX;
-                recent_posY = current_posY;
+                recent_collisionX = current_posX;
+                recent_collisionY = current_posY;
                 return;
             }
             else
             {
                 alpha_x = alpha_x * (-1);
-                recent_posX = current_posX;
-                recent_posY = current_posY;
+                recent_collisionX = current_posX;
+                recent_collisionY = current_posY;
                 return;
             }
 
         case COLLISION_CASE_TOP:
-            if (current_posX < recent_posX)
+            if (current_posX < recent_collisionX)
             {
                 alpha_x = alpha_x * (-1);
-                recent_posX = current_posX;
-                recent_posY = current_posY;
+                recent_collisionX = current_posX;
+                recent_collisionY = current_posY;
                 return;
             }
             else
             {
-                recent_posX = current_posX;
-                recent_posY = current_posY;
+                recent_collisionX = current_posX;
+                recent_collisionY = current_posY;
                 return;
             }
 
         case COLLISION_CASE_LEFT:
-            if (current_posY > recent_posY)
+            if (current_posY > recent_collisionY)
             {
-                recent_posX = current_posX;
-                recent_posY = current_posY;
+                recent_collisionX = current_posX;
+                recent_collisionY = current_posY;
                 return;
             }
             else
             {
                 alpha_y = alpha_y * (-1);
-                recent_posX = current_posX;
-                recent_posY = current_posY;
+                recent_collisionX = current_posX;
+                recent_collisionY = current_posY;
                 return;
             }
         //right side of platform
         case COLLISION_CASE_PLATFORM_RIGHT:
             //ball flies right to left
-            if(current_posX >= recent_posX)
+            if(current_posX >= recent_collisionX)
             {
                 alpha_y = alpha_y * (-1);
-                recent_posX = current_posX;
-                recent_posY = current_posY;
+                recent_collisionX = current_posX;
+                recent_collisionY = current_posY;
                 return;
             }
             //ball flies left to right
             else
             {
                 alpha_y = alpha_y * (-1);
-                recent_posX = current_posX;
-                recent_posY = current_posY;
+                recent_collisionX = current_posX;
+                recent_collisionY = current_posY;
                 return;
             }
         //left side of platform
         case COLLISION_CASE_PLATFORM_LEFT:
             //ball flies right to left
-            if (current_posX >= recent_posX)
+            if (current_posX >= recent_collisionX)
             {
                 alpha_x = alpha_x * (-1);
                 alpha_y = alpha_y * (-1);
-                recent_posX = current_posX;
-                recent_posY = current_posY;
+                recent_collisionX = current_posX;
+                recent_collisionY = current_posY;
                 return;
             }
             //ball flies left to right
@@ -126,14 +126,13 @@ void handle_collision(char wall_side)
             {
                 alpha_x = alpha_x * (-1);
                 alpha_y = alpha_y * (-1);
-                recent_posX = current_posX;
-                recent_posY = current_posY;
+                recent_collisionX = current_posX;
+                recent_collisionY = current_posY;
                 return;
             }
         case COLLISION_CASE_RESET:
-            recent_posX = current_posX;
-            recent_posY = current_posY;
+            recent_collisionX = current_posX;
+            recent_collisionY = current_posY;
             return;
-
     }
 }

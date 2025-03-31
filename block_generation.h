@@ -63,9 +63,9 @@ void generate_row(texture_types starterblock, int row_number, int &localblockX, 
     int currblockX = 0;
     int prevblockX = 0;
 
-    if(block_columns * block_WIDTH > screensizeX)
+    if(block_columns * BLOCK_WIDTH > SCREENSIZE_X)
     {
-        block_columns = (screensizeX - 2 * block_WIDTH) / block_WIDTH + 1;
+        block_columns = (SCREENSIZE_X - 2 * BLOCK_WIDTH) / BLOCK_WIDTH + 1;
     }
 
 
@@ -127,22 +127,22 @@ void generate_row(texture_types starterblock, int row_number, int &localblockX, 
 
         if(i == 0)
         {
-            currblockX = (screensizeX - (block_WIDTH * block_columns)) / 2;
+            currblockX = (SCREENSIZE_X - (BLOCK_WIDTH * block_columns)) / 2;
         }
         else
         {
-            currblockX = prevblockX + block_WIDTH;
+            currblockX = prevblockX + BLOCK_WIDTH;
         }
 
         localblockX = currblockX;
         prevblockX = currblockX;
 
 
-        vector_columns.push_back(block_type(block_WIDTH, block_LEN, localblockX, localblockY,
+        vector_columns.push_back(block_type(localblockX, localblockY,
                                                 curr_block_texture, current_texture_type, current_block_value, radius));
         if(i + 1 == block_columns)
         {
-            localblockY += block_LEN;
+            localblockY += BLOCK_LEN;
         }
     }
 }
@@ -152,12 +152,11 @@ int create_blocks_data()
     int localblockX = 0;
     int localblockY = 300;
 
-
     texture_types starter_texture = TEXTURE_TYPE_DIRT;
 
-    if(block_rows * block_WIDTH > screensizeX)
+    if(block_rows * BLOCK_WIDTH > SCREENSIZE_X)
     {
-        block_rows = (screensizeY - (platY/ 2)) / block_LEN;
+        block_rows = (SCREENSIZE_Y - (platY/ 2)) / BLOCK_LEN;
     }
 
     for (int curr_row_number = 0; curr_row_number < block_rows; curr_row_number++)
@@ -173,8 +172,6 @@ int create_blocks_data()
         }
 
         generate_row(starter_texture, curr_row_number, localblockX, localblockY);
-
-
         curr_gamestate.blocks.push_back(vector_columns);
 
         vector_columns.clear();
