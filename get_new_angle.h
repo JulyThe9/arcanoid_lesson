@@ -4,25 +4,25 @@ int get_new_angle()
     float plat_pos = 0.0;
     int sections_per_side = 20;
 
-    if(current_posX - platX + ball_size > curr_gamestate.plat_width / 2)
+    if(curr_gamestate.ball.curr_x - curr_gamestate.platform.x + curr_gamestate.ball.size_radius > curr_gamestate.platform.width / 2)
     {
-        plat_pos = current_posX - platX;
+        plat_pos = curr_gamestate.ball.curr_x - curr_gamestate.platform.x;
     }
-    else if(current_posX - platX + ball_size <= curr_gamestate.plat_width / 2)
+    else if(curr_gamestate.ball.curr_x - curr_gamestate.platform.x + curr_gamestate.ball.size_radius <= curr_gamestate.platform.width / 2)
     {
-        plat_pos = current_posX - platX + ball_size;
+        plat_pos = curr_gamestate.ball.curr_x - curr_gamestate.platform.x + curr_gamestate.ball.size_radius;
     }
 
-    float plat_posr = current_posX - platX;
-    double section = curr_gamestate.plat_width / (sections_per_side * 2.0);
+    float plat_posr = curr_gamestate.ball.curr_x - curr_gamestate.platform.x;
+    double section = curr_gamestate.platform.width / (sections_per_side * 2.0);
     int deg_per_section = 90 / (sections_per_side + 1);
 
     //right side
-    if(plat_posr > (curr_gamestate.plat_width / 2))
+    if(plat_posr > (curr_gamestate.platform.width / 2))
     {
         for(int i = 0; i < sections_per_side; i++)
         {
-            if(plat_posr > (curr_gamestate.plat_width / 2) + (section * i) && plat_posr < (curr_gamestate.plat_width / 2) + section * (i + 1))
+            if(plat_posr > (curr_gamestate.platform.width / 2) + (section * i) && plat_posr < (curr_gamestate.platform.width / 2) + section * (i + 1))
             {
                 curr_degrees = (deg_per_section * (i + 1));
                 handle_collision(COLLISION_CASE_PLATFORM_RIGHT);
@@ -46,7 +46,7 @@ int get_new_angle()
             cout << "-----------------------------" << endl;
             */
 
-            if(plat_pos < (curr_gamestate.plat_width / 2) - (section * i) && plat_pos > (curr_gamestate.plat_width / 2) - section * (i + 1))
+            if(plat_pos < (curr_gamestate.platform.width / 2) - (section * i) && plat_pos > (curr_gamestate.platform.width / 2) - section * (i + 1))
             {
                 curr_degrees = (deg_per_section * (i + 1));
                 handle_collision(COLLISION_CASE_PLATFORM_LEFT);

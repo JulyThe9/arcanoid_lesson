@@ -1,8 +1,8 @@
 using namespace std;
 
 // GLOBAL DEFINES
-#define TEXT_VISIBLE_PERIOD 550
-#define TEXT_NOT_VISIBLE_PERIOD 200
+#define TEXT_VISIBLE_PERIOD 750
+#define TEXT_NOT_VISIBLE_PERIOD 750
 
 #define SCREENSIZE_X 1500
 #define SCREENSIZE_Y 1200
@@ -14,18 +14,8 @@ using namespace std;
 
 bool textVisible = false;
 
-int ball_size = 10;
-
 const int BALL_START_POSX = SCREENSIZE_X / 2;
 const int BALL_START_POSY = SCREENSIZE_Y / 2 + 100;
-
-// current ball position at each frame
-float current_posX = BALL_START_POSX;
-float current_posY = BALL_START_POSY;
-
-// ball position after every collision or beginning
-float recent_collisionX = current_posX;
-float recent_collisionY = current_posY;
 
 // walls
 float right_wall = SCREENSIZE_X;
@@ -77,26 +67,11 @@ sf::Texture heart_texture_empty;
 sf::Text score;
 sf::Font font;
 
-int logo_width = 300;
-int logo_length = 109;
-
-int logo_posX = (SCREENSIZE_X / 2) - (logo_width / 2);
-int logo_posY = 0;
-
 int status_bar_width = SCREENSIZE_X;
 int status_bar_length = 120;
 
 bool game_active = true;
 
-//--------
-// LIVES
-//--------
-int heart_width = 100;
-int heart_length = 100;
-
-int lives_amount = 3;
-int lives_spacing = heart_width;
-int step = 25;
 
 //--------
 // GAME STATUS TEXTS
@@ -171,62 +146,151 @@ struct block_type
     }
 };
 
-struct GameState
+struct platform_type
 {
-    float ball_speed;
+    float x;
+    float y;
+
+    int width;
+    int len;
 
     int plat_speed;
-    int plat_width;
 
+    int reflection_steps;
+
+    float platform_starter_x;
+
+    platform_type(){};
+
+    platform_type(float ypar, int widthpar, int lenpar, int plat_speedpar, int reflection_stepspar)
+    {
+        platform_starter_x = SCREENSIZE_X / 2 - widthpar / 2 + (35 * 4);
+
+        x = platform_starter_x;
+        y = ypar;
+
+        width = widthpar;
+        len = lenpar;
+
+        plat_speed = plat_speedpar;
+
+        reflection_steps = reflection_stepspar;
+
+
+    }
+
+};
+
+
+struct ball_type
+{
+    float speed;
+    int size_radius;
+
+    // current ball position at each frame
+    float curr_x;
+    float curr_y;
+
+    // ball position after every collision or beginning (recent ball position)
+    float recent_x;
+    float recent_y;
+
+    ball_type(){};
+
+    ball_type(float speedpar, int size_radiuspar, float curr_xpar, float curr_ypar, float recent_xpar, float recent_ypar)
+    {
+        speed = speedpar;
+        size_radius = size_radiuspar;
+        curr_x = curr_xpar;
+        curr_y = curr_ypar;
+        recent_x = recent_xpar;
+        recent_y = recent_ypar;
+    }
+};
+
+struct GameState
+{
     string score_number;
 
     vector<vector<block_type>> blocks;
 
     vector<vector<sf::RectangleShape>> blocks_graphics;
 
+    int lives_amount;
     int block_amount;
 
-    GameState(float ball_speedpar, int plat_speedpar, int plat_widthpar, string score_numberpar, int block_amountpar)
+    ball_type ball;
+    platform_type platform;
+
+    GameState(){};
+
+    GameState(string score_numberpar, int lives_amountpar, int block_amountpar, ball_type ballpar, platform_type platformpar)
     {
-        ball_speed = ball_speedpar;
-        plat_speed = plat_speedpar;
-        plat_width = plat_widthpar;
         score_number = score_numberpar;
+        lives_amount = lives_amountpar;
         block_amount = block_amountpar;
+        ball = ballpar;
+        platform = platformpar;
     }
 };
+
 
 struct lives_type
 {
-    int livesX;
-    int livesY;
-    int lives_num;
-    sf::Texture heart_texture;
+    int x;
+    int y;
 
+    int width;
+    int length;
+    int spacing;
 
-    lives_type(int livesXPar, int livesYPar, int lives_numPar, sf::Texture heart_texturepar)
+    sf::Texture texture;
+
+    lives_type(int xpar, int ypar,  int widthpar, int lengthpar, int spacingpar, sf::Texture texturepar)
     {
-        livesX = livesXPar;
-        livesY = livesYPar;
-        lives_num = livesXPar;
-        heart_texture = heart_texturepar;
+        x = xpar;
+        y = ypar;
+
+        width = widthpar;
+        length = lengthpar;
+        spacing = spacingpar;
+
+        texture = texturepar;
+    }
+};
+vector<lives_type> vector_life_data;
+vector<sf::RectangleShape> vector_graphics_life;
+
+struct logo_type
+{
+    int width;
+    int length;
+
+    int x;
+    int y;
+
+    logo_type(int widthpar, int lengthpar, int xpar, int ypar)
+    {
+        width = widthpar;
+        length = lengthpar;
+
+        x = xpar;
+        y = ypar;
     }
 };
 
 
+logo_type logo(300, 109, (SCREENSIZE_X / 2) - (logo.width / 2), 0);
 
-//--------
-// PLATFORM
-//--------
-float platY = SCREENSIZE_Y - 120;
-int block_rows = (SCREENSIZE_Y - (platY / 1.2)) / BLOCK_LEN;
+//void init_gamestate()
+//{
+
+ball_type ball(0.24, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY);
+platform_type platform(SCREENSIZE_Y - 120, 200, 12, 45, 25);
+int block_rows = (SCREENSIZE_Y - (platform.y / 1.2)) / BLOCK_LEN;
 int block_columns = (SCREENSIZE_X - 2 * BLOCK_WIDTH) / BLOCK_WIDTH - 1;
-GameState curr_gamestate(0.24, 45, 200, "000000", block_rows * block_columns);
-float platform_starter_X = SCREENSIZE_X / 2 - curr_gamestate.plat_width / 2 + (35 * 4);
-float platX = platform_starter_X;
-int plat_len = 12;
-
-
+GameState curr_gamestate("000000", 3, block_rows * block_columns, ball, platform);
+//}
 
 //GAME STATUS
 game_status_type game_status = GAME_ACTIVE;

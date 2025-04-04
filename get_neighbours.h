@@ -1,6 +1,5 @@
 //curr_gamestate.blocks[candidate_block_row][candidate_block_col].active == true
 
-
 bool is_valid_neighbour(int candidate_block_row, int candidate_block_col)
 {
     if(candidate_block_row < block_rows &&

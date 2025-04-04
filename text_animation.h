@@ -11,7 +11,7 @@ void SetGameWon()
 
 void SetGameLoss(int heart_number)
 {
-    vector_life_data[heart_number].heart_texture = heart_texture_empty;
+    vector_life_data[heart_number].texture = heart_texture_empty;
     no_hearts_text.setFont(font);
     no_hearts_text.setCharacterSize(70);
     no_hearts_text.setFillColor(sf::Color::Red);
@@ -23,7 +23,7 @@ void SetGameLoss(int heart_number)
 
 void SetLossOfLife(int &heart_number)
 {
-    vector_life_data[heart_number].heart_texture = heart_texture_empty;
+    vector_life_data[heart_number].texture = heart_texture_empty;
     heart_deduction_text.setFont(font);
     heart_deduction_text.setCharacterSize(50);
     heart_deduction_text.setFillColor(sf::Color::Yellow);

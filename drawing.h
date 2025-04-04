@@ -41,7 +41,7 @@ void DrawBlocks(sf::RenderWindow &main_window)
 
 void DrawHearts(sf::RenderWindow &main_window)
 {
-    for(int i = 0; i < lives_amount; i++)
+    for(int i = 0; i < curr_gamestate.lives_amount; i++)
     {
         main_window.draw(vector_graphics_life[i]);
     }

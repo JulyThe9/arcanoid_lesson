@@ -84,24 +84,24 @@ int main()
                 {
                     if(event.key.code == sf::Keyboard::A)
                     {
-                        if(platX - curr_gamestate.plat_speed > left_wall)
+                        if(curr_gamestate.platform.x - curr_gamestate.platform.plat_speed > left_wall)
                         {
-                            platX -= curr_gamestate.plat_speed;
+                            curr_gamestate.platform.x -= curr_gamestate.platform.plat_speed;
                         }
                         else
                         {
-                            platX = left_wall;
+                            curr_gamestate.platform.x = left_wall;
                         }
                     }
                     else if(event.key.code == sf::Keyboard::D)
                     {
-                        if (platX + curr_gamestate.plat_width + curr_gamestate.plat_speed < right_wall)
+                        if (curr_gamestate.platform.x + curr_gamestate.platform.width + curr_gamestate.platform.plat_speed < right_wall)
                         {
-                            platX += curr_gamestate.plat_speed;
+                            curr_gamestate.platform.x += curr_gamestate.platform.plat_speed;
                         }
                         else
                         {
-                            platX = right_wall - curr_gamestate.plat_width;
+                            curr_gamestate.platform.x = right_wall - curr_gamestate.platform.width;
                         }
                     }
                 }
@@ -114,19 +114,16 @@ int main()
             if (alpha_y == 0 && alpha_x == 0)
             {
                 // default movement at the start of the game
-                current_posX += get_new_x(curr_degrees);
-                current_posY += get_new_y(curr_degrees);
+                curr_gamestate.ball.curr_x += get_new_x(curr_degrees);
+                curr_gamestate.ball.curr_y += get_new_y(curr_degrees);
                 //TODO needs to be debugged
             }
             else
             {
                 // all other movement
-                current_posX += alpha_x;
-                current_posY += alpha_y;
+                curr_gamestate.ball.curr_x += alpha_x;
+                curr_gamestate.ball.curr_y += alpha_y;
             }
-
-            current_posY = current_posY;
-            current_posX = current_posX;
 
 
             // MAIN COLLISIONS
@@ -136,8 +133,8 @@ int main()
             handle_collision_barrier();
 
 
-            ball.setPosition(current_posX, current_posY);
-            plat.setPosition(platX, platY);
+            ball.setPosition(curr_gamestate.ball.curr_x, curr_gamestate.ball.curr_y);
+            plat.setPosition(curr_gamestate.platform.x, curr_gamestate.platform.y);
             barrier.setPosition(barrierX, barrierY);
 
             check_gamestate();
@@ -157,10 +154,10 @@ int main()
                     {
                         game_status = GAME_ACTIVE;
                         curr_degrees = BALL_STARTER_DEG;
-                        current_posX = BALL_START_POSX;
-                        current_posY = BALL_START_POSY;
+                        curr_gamestate.ball.curr_x = BALL_START_POSX;
+                        curr_gamestate.ball.curr_y = BALL_START_POSY;
                         handle_collision(COLLISION_CASE_RESET);
-                        platX = platform_starter_X;
+                        curr_gamestate.platform.x = curr_gamestate.platform.platform_starter_x;
                     }
                 }
             }

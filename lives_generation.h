@@ -1,31 +1,32 @@
-vector<lives_type> vector_life_data;
-vector<sf::RectangleShape> vector_graphics_life;
-
-int currlifeX = 0;
-int prevlifeX = 0;
-
 //forward decleration
 sf::RectangleShape init_lives(lives_type current_life);
 
 int set_life_data()
 {
-    int locallifeX = 25;
-    int locallifeY = 10;
+    int currlifeX = 0;
+    int prevlifeX = 0;
 
-    for(int i = 0; i < lives_amount; i++)
+    int x = 25;
+    int y = 10;
+
+    int width = 100;
+    int length = 100;
+    int spacing = 100;
+
+    for(int i = 0; i < curr_gamestate.lives_amount; i++)
     {
         if(i == 0)
         {
-            currlifeX = locallifeX;
+            currlifeX = x;
         }
         else
         {
-            currlifeX = prevlifeX + heart_width;
+            currlifeX = prevlifeX + spacing;
         }
 
-        locallifeX = currlifeX;
+        x = currlifeX;
 
-        vector_life_data.push_back(lives_type(locallifeX, locallifeY, lives_amount, heart_texture_full));
+        vector_life_data.push_back(lives_type(x, y, width, length, spacing, heart_texture_full));
 
         prevlifeX = currlifeX;
     }
@@ -34,9 +35,9 @@ int set_life_data()
 
 int set_life_graphics()
 {
-    for (int i = 0; i < lives_amount; i++)
+    for (int i = 0; i < curr_gamestate.lives_amount; i++)
     {
-        vector_graphics_life.push_back(init_heart(vector_life_data[i]));
+        vector_graphics_life.push_back(init_heart(vector_life_data[i], i));
     }
     return 0;
 }

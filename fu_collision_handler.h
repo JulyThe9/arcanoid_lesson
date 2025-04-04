@@ -1,22 +1,21 @@
 // ---------------------------------
 // WALL COLLISION DETECTION HERE
 // ---------------------------------
-
 void handle_collision_walls()
 {
-    if(current_posY >= bottom_wall - ball_size * 2)
+    if(curr_gamestate.ball.curr_y >= bottom_wall - curr_gamestate.ball.size_radius * 2)
     {
         handle_collision(COLLISION_CASE_BOTTOM);
     }
-    else if(current_posX >= right_wall - ball_size * 2)
+    else if(curr_gamestate.ball.curr_x >= right_wall - curr_gamestate.ball.size_radius * 2)
     {
         handle_collision(COLLISION_CASE_RIGHT);
     }
-    else if(current_posY <= status_bar_length)
+    else if(curr_gamestate.ball.curr_y <= status_bar_length)
     {
         handle_collision(COLLISION_CASE_TOP);
     }
-    else if(current_posX <= left_wall)
+    else if(curr_gamestate.ball.curr_x <= left_wall)
     {
         handle_collision(COLLISION_CASE_LEFT);
     }
@@ -28,16 +27,18 @@ void handle_collision_walls()
 void handle_collision_platform()
 {
     // margin for collisions for normal speed
-    double collision_margin = curr_gamestate.ball_speed;
+    double collision_margin = curr_gamestate.ball.speed;
     // margin for collisions for godspeed
     double collision_margin_godmode = godspeed;
 
-    if(current_posY + ball_size * 2 >= platY &&
-       (current_posY + ball_size * 2 < platY + collision_margin ||
-        current_posY + ball_size * 2 < platY + collision_margin_godmode))
+    if(curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 >= curr_gamestate.platform.y &&
+       (curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 < curr_gamestate.platform.y + collision_margin ||
+        curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 < curr_gamestate.platform.y + collision_margin_godmode))
     {
-        if(current_posX + ball_size > platX && current_posX < platX + curr_gamestate.plat_width)
-        if(current_posX + ball_size > platX && current_posX < platX + curr_gamestate.plat_width)
+        if(curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius > curr_gamestate.platform.x &&
+           curr_gamestate.ball.curr_x < curr_gamestate.platform.x + curr_gamestate.platform.width)
+        if(curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius > curr_gamestate.platform.x &&
+           curr_gamestate.ball.curr_x < curr_gamestate.platform.x + curr_gamestate.platform.width)
         {
             curr_degrees = get_new_angle();
         }
@@ -92,7 +93,7 @@ void hit_block(int row, int col)
         if(godmode_active)
         {
             crazy_ballspeed = true;
-            curr_gamestate.ball_speed = godspeed;
+            curr_gamestate.ball.speed = godspeed;
         }
     }
 
@@ -104,7 +105,7 @@ void hit_block(int row, int col)
 
 void hit_barrier()
 {
-    static int heart_number = lives_amount - 1;
+    static int heart_number = curr_gamestate.lives_amount - 1;
 
     if(heart_number != 0)
     {
@@ -125,61 +126,61 @@ void hit_barrier()
 void handle_collision_all_sides(int i, int j)
 {
     // margin for collisions for normal speed
-    double collision_margin = curr_gamestate.ball_speed;
+    double collision_margin = curr_gamestate.ball.speed;
     // margin for collisions for godspeed
     double collision_margin_godmode = godspeed;
 
     //hit top side
-    if(current_posY + ball_size * 2 > curr_gamestate.blocks[i][j].top_bside &&
-       (current_posY + ball_size * 2 < curr_gamestate.blocks[i][j].top_bside + collision_margin ||
-       current_posY + ball_size * 2 < curr_gamestate.blocks[i][j].top_bside + collision_margin_godmode))
+    if(curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 > curr_gamestate.blocks[i][j].top_bside &&
+       (curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 < curr_gamestate.blocks[i][j].top_bside + collision_margin ||
+       curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 < curr_gamestate.blocks[i][j].top_bside + collision_margin_godmode))
     {
-        if(current_posX + ball_size * 2 > curr_gamestate.blocks[i][j].blockX &&
-           current_posX < curr_gamestate.blocks[i][j].right_bside &&
+        if(curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius * 2 > curr_gamestate.blocks[i][j].blockX &&
+           curr_gamestate.ball.curr_x < curr_gamestate.blocks[i][j].right_bside &&
            curr_gamestate.blocks[i][j].active)
         {
-            current_posY = curr_gamestate.blocks[i][j].top_bside - collision_margin;
+            curr_gamestate.ball.curr_y = curr_gamestate.blocks[i][j].top_bside - collision_margin;
             handle_collision(COLLISION_CASE_BOTTOM);
             hit_block(i, j);
         }
     }
     //hit left side
-    else if(current_posX + ball_size * 2 > curr_gamestate.blocks[i][j].left_bside &&
-            (current_posX + ball_size * 2 < curr_gamestate.blocks[i][j].left_bside + collision_margin ||
-            current_posX + ball_size * 2 < curr_gamestate.blocks[i][j].left_bside + collision_margin_godmode))
+    else if(curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius * 2 > curr_gamestate.blocks[i][j].left_bside &&
+            (curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius * 2 < curr_gamestate.blocks[i][j].left_bside + collision_margin ||
+            curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius * 2 < curr_gamestate.blocks[i][j].left_bside + collision_margin_godmode))
     {
-        if(current_posY + ball_size * 2 > curr_gamestate.blocks[i][j].top_bside &&
-           current_posY < curr_gamestate.blocks[i][j].bottom_bside &&
+        if(curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 > curr_gamestate.blocks[i][j].top_bside &&
+           curr_gamestate.ball.curr_y < curr_gamestate.blocks[i][j].bottom_bside &&
            curr_gamestate.blocks[i][j].active)
         {
-            current_posX = curr_gamestate.blocks[i][j].left_bside - collision_margin;
+            curr_gamestate.ball.curr_x = curr_gamestate.blocks[i][j].left_bside - collision_margin;
             handle_collision(COLLISION_CASE_RIGHT);
             hit_block(i, j);
         }
     }
     //hit bottom side
-    else if(current_posY < curr_gamestate.blocks[i][j].bottom_bside &&
-            (current_posY > curr_gamestate.blocks[i][j].bottom_bside - collision_margin ||
-            current_posY > curr_gamestate.blocks[i][j].bottom_bside - collision_margin_godmode))
+    else if(curr_gamestate.ball.curr_y < curr_gamestate.blocks[i][j].bottom_bside &&
+            (curr_gamestate.ball.curr_y > curr_gamestate.blocks[i][j].bottom_bside - collision_margin ||
+            curr_gamestate.ball.curr_y > curr_gamestate.blocks[i][j].bottom_bside - collision_margin_godmode))
     {
-        if(current_posX + ball_size * 2 > curr_gamestate.blocks[i][j].left_bside &&
-           current_posX < curr_gamestate.blocks[i][j].right_bside &&
+        if(curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius * 2 > curr_gamestate.blocks[i][j].left_bside &&
+           curr_gamestate.ball.curr_x < curr_gamestate.blocks[i][j].right_bside &&
            curr_gamestate.blocks[i][j].active)
         {
-            current_posY = curr_gamestate.blocks[i][j].bottom_bside + collision_margin;
+            curr_gamestate.ball.curr_y = curr_gamestate.blocks[i][j].bottom_bside + collision_margin;
             handle_collision(COLLISION_CASE_TOP);
             hit_block(i, j);
         }
     }
     //hit right side
-    else if(current_posX <= curr_gamestate.blocks[i][j].right_bside &&
-            current_posX > curr_gamestate.blocks[i][j].right_bside - collision_margin)
+    else if(curr_gamestate.ball.curr_x <= curr_gamestate.blocks[i][j].right_bside &&
+            curr_gamestate.ball.curr_x > curr_gamestate.blocks[i][j].right_bside - collision_margin)
     {
-        if(current_posY + ball_size * 2 >= curr_gamestate.blocks[i][j].top_bside &&
-           current_posY <= curr_gamestate.blocks[i][j].bottom_bside &&
+        if(curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 >= curr_gamestate.blocks[i][j].top_bside &&
+           curr_gamestate.ball.curr_y <= curr_gamestate.blocks[i][j].bottom_bside &&
            curr_gamestate.blocks[i][j].active)
         {
-            current_posX = curr_gamestate.blocks[i][j].right_bside + collision_margin;
+            curr_gamestate.ball.curr_x = curr_gamestate.blocks[i][j].right_bside + collision_margin;
             handle_collision(COLLISION_CASE_LEFT);
             hit_block(i, j);
         }
@@ -205,7 +206,7 @@ void handle_collision_block()
 //--------------------------
 void handle_collision_barrier()
 {
-    if(current_posY + ball_size * 2 > barrierY)
+    if(curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 > barrierY)
     {
         hit_barrier();
         handle_collision(COLLISION_CASE_BOTTOM);

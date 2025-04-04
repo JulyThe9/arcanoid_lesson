@@ -11,10 +11,10 @@ int block_disappear()
     int locallifeX = SCREENSIZE_X - 150;
     int locallifeY = SCREENSIZE_Y - 100;
 
-    lives_type life_data2 = lives_type(life_width, life_length, locallifeX, locallifeY, lives_amount,  colour_red2, colour_green2, colour_blue2);
+    lives_type life_data2 = lives_type(life_width, life_length, locallifeX, locallifeY, curr_gamestate.lives_amount,  colour_red2, colour_green2, colour_blue2);
     sf::RectangleShape no_life = init_lives(life_data2);
 
-    for(int i = 0; i < lives_amount; i++)
+    for(int i = 0; i < curr_gamestate.lives_amount; i++)
     {
         if(i == 0)
         {
@@ -45,7 +45,7 @@ int block_disappear()
                 if(i % 2 == 0)
                 {
                     colour_green = (colour_green / step) * (step - 1);
-                    lives_type life_data = lives_type(life_width, life_length, locallifeX, locallifeY, lives_amount,  colour_red, colour_green, colour_blue);
+                    lives_type life_data = lives_type(life_width, life_length, locallifeX, locallifeY, curr_gamestate.lives_amount,  colour_red, colour_green, colour_blue);
                     sf::RectangleShape life = init_lives(life_data);
                     app.draw(life);
                 }

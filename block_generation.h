@@ -4,7 +4,6 @@ vector<sf::RectangleShape> vector_graphics_block;
 vector<int> random_blocks;
 
 
-
 sf::Texture curr_block_texture;
 texture_types current_texture_type;
 int current_block_value;
@@ -156,7 +155,7 @@ int create_blocks_data()
 
     if(block_rows * BLOCK_WIDTH > SCREENSIZE_X)
     {
-        block_rows = (SCREENSIZE_Y - (platY/ 2)) / BLOCK_LEN;
+        block_rows = (SCREENSIZE_Y - (curr_gamestate.platform.y/ 2)) / BLOCK_LEN;
     }
 
     for (int curr_row_number = 0; curr_row_number < block_rows; curr_row_number++)

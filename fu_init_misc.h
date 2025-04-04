@@ -35,17 +35,17 @@ void init_textures()
         // Handle error
         throw std::runtime_error("Failed to load font: textures/status_bar/status_bar_background.png");
     }
-    else if(!arcanoid_logo.loadFromFile("textures/status_bar/arcanoid_logo.png", sf::IntRect(0, 0, logo_width, logo_length)))
+    else if(!arcanoid_logo.loadFromFile("textures/status_bar/arcanoid_logo.png", sf::IntRect(0, 0, logo.width, logo.length)))
     {
         // Handle error
         throw std::runtime_error("Failed to load font: textures/status_bar/arcanoid_logo.png");
     }
-    else if(!heart_texture_full.loadFromFile("textures/status_bar/heart_full.png", sf::IntRect(0, 0, logo_width, logo_length)))
+    else if(!heart_texture_full.loadFromFile("textures/status_bar/heart_full.png", sf::IntRect(0, 0, logo.width, logo.length)))
     {
         // Handle error
         throw std::runtime_error("Failed to load font: textures/status_bar/heart_full.png");
     }
-    else if(!heart_texture_empty.loadFromFile("textures/status_bar/heart_empty.png", sf::IntRect(0, 0, logo_width, logo_length)))
+    else if(!heart_texture_empty.loadFromFile("textures/status_bar/heart_empty.png", sf::IntRect(0, 0, logo.width, logo.length)))
     {
         // Handle error
         throw std::runtime_error("Failed to load font: textures/status_bar/heart_empty.png");
