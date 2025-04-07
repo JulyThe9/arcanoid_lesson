@@ -5,18 +5,22 @@ void handle_collision_walls()
 {
     if(curr_gamestate.ball.curr_y >= bottom_wall - curr_gamestate.ball.size_radius * 2)
     {
+        last_collision = COLLISION_CASE_BOTTOM;
         handle_collision(COLLISION_CASE_BOTTOM);
     }
     else if(curr_gamestate.ball.curr_x >= right_wall - curr_gamestate.ball.size_radius * 2)
     {
+        last_collision = COLLISION_CASE_RIGHT;
         handle_collision(COLLISION_CASE_RIGHT);
     }
     else if(curr_gamestate.ball.curr_y <= status_bar_length)
     {
+        last_collision = COLLISION_CASE_TOP;
         handle_collision(COLLISION_CASE_TOP);
     }
     else if(curr_gamestate.ball.curr_x <= left_wall)
     {
+        last_collision = COLLISION_CASE_LEFT;
         handle_collision(COLLISION_CASE_LEFT);
     }
 }
@@ -40,6 +44,7 @@ void handle_collision_platform()
         if(curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius > curr_gamestate.platform.x &&
            curr_gamestate.ball.curr_x < curr_gamestate.platform.x + curr_gamestate.platform.width)
         {
+            last_collision = COLLISION_CASE_BOTTOM;
             curr_degrees = get_new_angle();
         }
     }
@@ -111,6 +116,7 @@ void hit_barrier()
     {
         if(!godmode_active)
         {
+            last_collision = COLLISION_CASE_BOTTOM;
             SetLossOfLife(heart_number);
         }
     }
@@ -118,6 +124,7 @@ void hit_barrier()
     {
         if(!godmode_active)
         {
+            last_collision = COLLISION_CASE_BOTTOM;
             SetGameLoss(heart_number);
         }
     }
@@ -137,9 +144,17 @@ void handle_collision_all_sides(int i, int j)
     {
         if(curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius * 2 > curr_gamestate.blocks[i][j].blockX &&
            curr_gamestate.ball.curr_x < curr_gamestate.blocks[i][j].right_bside &&
-           curr_gamestate.blocks[i][j].active)
+           curr_gamestate.blocks[i][j].active &&
+           last_collision != COLLISION_CASE_BOTTOM)
         {
+            last_collision = COLLISION_CASE_BOTTOM;
+            cout << "HIT TOP SIDE!!!!!!" << endl;
+            cout << "[" << i << "][" << j << "]" << endl;
+            cout << "top side: " << curr_gamestate.blocks[i][j].top_bside << endl;
+            cout << "block_y before: " << curr_gamestate.ball.curr_y << endl;
             curr_gamestate.ball.curr_y = curr_gamestate.blocks[i][j].top_bside - (2 * curr_gamestate.ball.size_radius);
+            cout << "block_y after: " << curr_gamestate.ball.curr_y << endl;
+            cout << "------------------------: " << endl;
             handle_collision(COLLISION_CASE_BOTTOM);
             hit_block(i, j);
         }
@@ -151,9 +166,15 @@ void handle_collision_all_sides(int i, int j)
     {
         if(curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 > curr_gamestate.blocks[i][j].top_bside &&
            curr_gamestate.ball.curr_y < curr_gamestate.blocks[i][j].bottom_bside &&
-           curr_gamestate.blocks[i][j].active)
+           curr_gamestate.blocks[i][j].active &&
+           last_collision != COLLISION_CASE_RIGHT)
         {
+            last_collision = COLLISION_CASE_RIGHT;
+            cout << "left side: " << curr_gamestate.blocks[i][j].left_bside << endl;
+            cout << "block_x before: " << curr_gamestate.ball.curr_x << endl;
             curr_gamestate.ball.curr_x = curr_gamestate.blocks[i][j].left_bside - (2 * curr_gamestate.ball.size_radius);
+            cout << "block_x after: " << curr_gamestate.ball.curr_x << endl;
+            cout << "------------------------: " << endl;
             handle_collision(COLLISION_CASE_RIGHT);
             hit_block(i, j);
         }
@@ -165,9 +186,15 @@ void handle_collision_all_sides(int i, int j)
     {
         if(curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius * 2 > curr_gamestate.blocks[i][j].left_bside &&
            curr_gamestate.ball.curr_x < curr_gamestate.blocks[i][j].right_bside &&
-           curr_gamestate.blocks[i][j].active)
+           curr_gamestate.blocks[i][j].active &&
+           last_collision != COLLISION_CASE_TOP)
         {
+            last_collision = COLLISION_CASE_TOP;
+            cout << "bottom side: " << curr_gamestate.blocks[i][j].bottom_bside << endl;
+            cout << "block_y before: " << curr_gamestate.ball.curr_y << endl;
             curr_gamestate.ball.curr_y = curr_gamestate.blocks[i][j].bottom_bside;
+            cout << "block_y after: " << curr_gamestate.ball.curr_y << endl;
+            cout << "------------------------: " << endl;
             handle_collision(COLLISION_CASE_TOP);
             hit_block(i, j);
         }
@@ -178,8 +205,10 @@ void handle_collision_all_sides(int i, int j)
     {
         if(curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 >= curr_gamestate.blocks[i][j].top_bside &&
            curr_gamestate.ball.curr_y <= curr_gamestate.blocks[i][j].bottom_bside &&
-           curr_gamestate.blocks[i][j].active)
+           curr_gamestate.blocks[i][j].active &&
+           last_collision != COLLISION_CASE_LEFT)
         {
+            last_collision = COLLISION_CASE_LEFT;
             curr_gamestate.ball.curr_x = curr_gamestate.blocks[i][j].right_bside;
             handle_collision(COLLISION_CASE_LEFT);
             hit_block(i, j);
@@ -208,6 +237,7 @@ void handle_collision_barrier()
 {
     if(curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 > barrierY)
     {
+        last_collision = COLLISION_CASE_BOTTOM;
         hit_barrier();
         handle_collision(COLLISION_CASE_BOTTOM);
     }

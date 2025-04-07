@@ -166,7 +166,7 @@ struct platform_type
 
     platform_type(float ypar, int widthpar, int lenpar, int plat_speedpar, int reflection_stepspar)
     {
-        platform_starter_x = SCREENSIZE_X / 2 - widthpar / 2 + (35 * 4);
+        platform_starter_x = SCREENSIZE_X / 2 - widthpar / 2 + (35 * 4) + 156;
 
         x = platform_starter_x;
         y = ypar;
@@ -312,3 +312,5 @@ logo_type logo(300, 109, (SCREENSIZE_X / 2) - (logo.width / 2), 0);
 
 //GAME STATUS
 game_status_type game_status = GAME_ACTIVE;
+
+collision_cases last_collision = COLLISION_CASE_RESET;

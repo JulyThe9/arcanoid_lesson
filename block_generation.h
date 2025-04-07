@@ -74,11 +74,11 @@ void generate_row(texture_types starterblock, int row_number, int &localblockX, 
         int random_block_type = (std::rand() % 100);
         if(random_number >= 60)
         {
-            if(random_block_type > 65)
+            if(random_block_type > 100)
             {
                 set_as_explosion();
             }
-            else if(random_block_type > 45)
+            else if(random_block_type > 100)
             {
                 set_as_explosion_large();
             }

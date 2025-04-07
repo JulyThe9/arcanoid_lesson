@@ -55,7 +55,7 @@ void handle_collision(char wall_side)
                 curr_gamestate.ball.recent_y = curr_gamestate.ball.curr_y;
                 return;
             }
-            else
+            else if(curr_gamestate.ball.curr_y > curr_gamestate.ball.recent_y)
             {
                 alpha_x = alpha_x * (-1);
                 curr_gamestate.ball.recent_x = curr_gamestate.ball.curr_x;
@@ -64,7 +64,7 @@ void handle_collision(char wall_side)
             }
 
         case COLLISION_CASE_TOP:
-            if (curr_gamestate.ball.curr_x < curr_gamestate.ball.recent_x)
+            if (curr_gamestate.ball.curr_x <= curr_gamestate.ball.recent_x)
             {
                 alpha_x = alpha_x * (-1);
                 curr_gamestate.ball.recent_x = curr_gamestate.ball.curr_x;
