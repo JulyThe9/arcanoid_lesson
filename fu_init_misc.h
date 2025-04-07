@@ -67,4 +67,3 @@ void init_score()
     score.setPosition(SCREENSIZE_X - 300, 25);
     score.setString(curr_gamestate.score_number);
 }
-

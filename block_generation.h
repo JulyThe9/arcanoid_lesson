@@ -67,7 +67,6 @@ void generate_row(texture_types starterblock, int row_number, int &localblockX, 
         block_columns = (SCREENSIZE_X - 2 * BLOCK_WIDTH) / BLOCK_WIDTH + 1;
     }
 
-
     for(int i = 0; i < block_columns; i++)
     {
 
@@ -192,4 +191,3 @@ int create_blocks_graphics()
     }
     return 0;
 }
-

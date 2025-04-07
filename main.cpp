@@ -38,12 +38,6 @@ int main()
 
     sf::Event event;
 
-    sf::CircleShape ball = init_ball();
-
-    sf::RectangleShape plat = init_platform();
-
-    sf::RectangleShape barrier = init_barrier();
-
     init_textures();
 
     //for random block generation
@@ -51,6 +45,15 @@ int main()
 
     create_blocks_data();
     create_blocks_graphics();
+
+    init_gamestate();
+    assert(curr_gamestate.isInitialized);
+
+    sf::CircleShape ball = init_ball();
+
+    sf::RectangleShape plat = init_platform();
+
+    sf::RectangleShape barrier = init_barrier();
 
     set_life_data();
     set_life_graphics();

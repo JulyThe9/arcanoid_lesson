@@ -139,7 +139,7 @@ void handle_collision_all_sides(int i, int j)
            curr_gamestate.ball.curr_x < curr_gamestate.blocks[i][j].right_bside &&
            curr_gamestate.blocks[i][j].active)
         {
-            curr_gamestate.ball.curr_y = curr_gamestate.blocks[i][j].top_bside - collision_margin;
+            curr_gamestate.ball.curr_y = curr_gamestate.blocks[i][j].top_bside - (2 * curr_gamestate.ball.size_radius);
             handle_collision(COLLISION_CASE_BOTTOM);
             hit_block(i, j);
         }
@@ -153,7 +153,7 @@ void handle_collision_all_sides(int i, int j)
            curr_gamestate.ball.curr_y < curr_gamestate.blocks[i][j].bottom_bside &&
            curr_gamestate.blocks[i][j].active)
         {
-            curr_gamestate.ball.curr_x = curr_gamestate.blocks[i][j].left_bside - collision_margin;
+            curr_gamestate.ball.curr_x = curr_gamestate.blocks[i][j].left_bside - (2 * curr_gamestate.ball.size_radius);
             handle_collision(COLLISION_CASE_RIGHT);
             hit_block(i, j);
         }
@@ -167,7 +167,7 @@ void handle_collision_all_sides(int i, int j)
            curr_gamestate.ball.curr_x < curr_gamestate.blocks[i][j].right_bside &&
            curr_gamestate.blocks[i][j].active)
         {
-            curr_gamestate.ball.curr_y = curr_gamestate.blocks[i][j].bottom_bside + collision_margin;
+            curr_gamestate.ball.curr_y = curr_gamestate.blocks[i][j].bottom_bside;
             handle_collision(COLLISION_CASE_TOP);
             hit_block(i, j);
         }
@@ -180,7 +180,7 @@ void handle_collision_all_sides(int i, int j)
            curr_gamestate.ball.curr_y <= curr_gamestate.blocks[i][j].bottom_bside &&
            curr_gamestate.blocks[i][j].active)
         {
-            curr_gamestate.ball.curr_x = curr_gamestate.blocks[i][j].right_bside + collision_margin;
+            curr_gamestate.ball.curr_x = curr_gamestate.blocks[i][j].right_bside;
             handle_collision(COLLISION_CASE_LEFT);
             hit_block(i, j);
         }
@@ -218,4 +218,3 @@ void check_gamestate()
     if(game_active == false)
     cout << "--Game Over--" << endl;
 }
-

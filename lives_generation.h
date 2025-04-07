@@ -41,4 +41,3 @@ int set_life_graphics()
     }
     return 0;
 }
-

@@ -14,6 +14,8 @@ using namespace std;
 
 bool textVisible = false;
 
+const double PLATFORM_INITIAL_Y = SCREENSIZE_Y - 120;
+
 const int BALL_START_POSX = SCREENSIZE_X / 2;
 const int BALL_START_POSY = SCREENSIZE_Y / 2 + 100;
 
@@ -175,8 +177,6 @@ struct platform_type
         plat_speed = plat_speedpar;
 
         reflection_steps = reflection_stepspar;
-
-
     }
 
 };
@@ -210,6 +210,8 @@ struct ball_type
 
 struct GameState
 {
+    bool isInitialized = false;
+
     string score_number;
 
     vector<vector<block_type>> blocks;
@@ -222,8 +224,12 @@ struct GameState
     ball_type ball;
     platform_type platform;
 
-    GameState(){};
+    GameState()
+    {
+        isInitialized = false;
+    };
 
+    /*
     GameState(string score_numberpar, int lives_amountpar, int block_amountpar, ball_type ballpar, platform_type platformpar)
     {
         score_number = score_numberpar;
@@ -232,8 +238,18 @@ struct GameState
         ball = ballpar;
         platform = platformpar;
     }
-};
+    */
 
+    void init(string score_numberpar, int lives_amountpar, int block_amountpar, ball_type ballpar, platform_type platformpar)
+    {
+        score_number = score_numberpar;
+        lives_amount = lives_amountpar;
+        block_amount = block_amountpar;
+        ball = ballpar;
+        platform = platformpar;
+        isInitialized = true;
+    }
+};
 
 struct lives_type
 {
@@ -280,17 +296,19 @@ struct logo_type
 };
 
 
-logo_type logo(300, 109, (SCREENSIZE_X / 2) - (logo.width / 2), 0);
-
-//void init_gamestate()
-//{
-
-ball_type ball(0.24, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY);
-platform_type platform(SCREENSIZE_Y - 120, 200, 12, 45, 25);
-int block_rows = (SCREENSIZE_Y - (platform.y / 1.2)) / BLOCK_LEN;
+int block_rows = (SCREENSIZE_Y - (PLATFORM_INITIAL_Y / 1.2)) / BLOCK_LEN;
 int block_columns = (SCREENSIZE_X - 2 * BLOCK_WIDTH) / BLOCK_WIDTH - 1;
-GameState curr_gamestate("000000", 3, block_rows * block_columns, ball, platform);
-//}
+
+GameState curr_gamestate;
+
+void init_gamestate()
+{
+    ball_type ball_data(0.24, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY);
+    platform_type platform(PLATFORM_INITIAL_Y, 200, 12, 45, 25);
+    curr_gamestate.init("000000", 3, block_rows * block_columns, ball_data, platform);
+}
+
+logo_type logo(300, 109, (SCREENSIZE_X / 2) - (logo.width / 2), 0);
 
 //GAME STATUS
 game_status_type game_status = GAME_ACTIVE;
