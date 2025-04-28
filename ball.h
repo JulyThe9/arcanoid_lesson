@@ -1,15 +1,3 @@
-sf::CircleShape init_ball()
-{
-    sf::CircleShape ball(curr_gamestate.ball.size_radius);
-
-    ball.setFillColor(sf::Color(150, 250, 50));
-
-    ball.setPosition(curr_gamestate.ball.curr_x, curr_gamestate.ball.curr_y);
-
-    return ball;
-}
-
-//-------------------------------------------------------------------
 float get_new_x(float agr_deg)
 {
     return curr_gamestate.ball.speed * sin(agr_deg * (M_PI / 180.0));

@@ -16,10 +16,13 @@ bool textVisible = false;
 
 const double PLATFORM_INITIAL_Y = SCREENSIZE_Y - 120;
 
+
 const int BALL_START_POSX = SCREENSIZE_X / 2;
 const int BALL_START_POSY = SCREENSIZE_Y / 2 + 100;
 
-// walls
+//--------
+// WALLS
+//--------
 float right_wall = SCREENSIZE_X;
 float left_wall = 0;
 float top_wall = 0;
@@ -39,19 +42,9 @@ bool crazy_ballspeed = true;
 // godspeed if block amount are under 4 and ballspeed is true
 float godspeed = 0.45;
 
-//---------
-// Barrier
-//---------
-int barrier_width = SCREENSIZE_X;
-int barrier_length = 10;
-
-int barrierX = 0;
-int barrierY = SCREENSIZE_Y - barrier_length - 5;
-
 //--------
 // BLOCK TEXTURES
 //--------
-// 90/30 is good
 sf::Texture texture_ice;
 sf::Texture texture_poison;
 sf::Texture texture_dirt;
@@ -74,7 +67,6 @@ int status_bar_length = 120;
 
 bool game_active = true;
 
-
 //--------
 // GAME STATUS TEXTS
 //--------
@@ -94,7 +86,7 @@ enum collision_cases
     COLLISION_CASE_RESET,
 };
 
-enum texture_types
+enum block_texture_types
 {
     TEXTURE_TYPE_ICE,
     TEXTURE_TYPE_POISON,
@@ -112,6 +104,9 @@ enum game_status_type
     BLOCKS_GONE,
 };
 
+//--------
+//used for collisions and block related data (!not used for textures!)
+//--------
 struct block_type
 {
     int blockX;
@@ -121,13 +116,15 @@ struct block_type
     int left_bside;
     int right_bside;
     int bottom_bside;
+    //if a block is still active(able to collide with ball and still visible) or not active
     bool active;
     sf::Texture texture;
-    texture_types texturetype;
+    block_texture_types texturetype;
     int block_value;
+    //explosion radius to check if its large explosion radius(true) or small explosion radius(false), used in hit_block()
     bool radius;
 
-    block_type(int blockXPar, int blockYPar, sf::Texture texturepar, texture_types texturetypepar, int block_valuepar, bool radiuspar)
+    block_type(int blockXPar, int blockYPar, sf::Texture texturepar, block_texture_types texturetypepar, int block_valuepar, bool radiuspar)
     {
         blockX = blockXPar;
         blockY = blockYPar;
@@ -143,6 +140,7 @@ struct block_type
 
         //block existant or not
         active = true;
+        //value of score points a block type has
         block_value = block_valuepar;
         radius = radiuspar;
     }
@@ -158,6 +156,7 @@ struct platform_type
 
     int plat_speed;
 
+    //used in get_new_angle() for sections of platform in each half to calculate new ball angle
     int reflection_steps;
 
     float platform_starter_x;
@@ -224,21 +223,13 @@ struct GameState
     ball_type ball;
     platform_type platform;
 
+
     GameState()
     {
+        //needs to be initialized before objects, because Gamestate is necessary for objects
+        //added assert in to main in case object exists with empty values
         isInitialized = false;
     };
-
-    /*
-    GameState(string score_numberpar, int lives_amountpar, int block_amountpar, ball_type ballpar, platform_type platformpar)
-    {
-        score_number = score_numberpar;
-        lives_amount = lives_amountpar;
-        block_amount = block_amountpar;
-        ball = ballpar;
-        platform = platformpar;
-    }
-    */
 
     void init(string score_numberpar, int lives_amountpar, int block_amountpar, ball_type ballpar, platform_type platformpar)
     {
@@ -269,11 +260,13 @@ struct lives_type
 
         width = widthpar;
         length = lengthpar;
-        spacing = spacingpar;
 
+        spacing = spacingpar;
         texture = texturepar;
     }
 };
+
+
 vector<lives_type> vector_life_data;
 vector<sf::RectangleShape> vector_graphics_life;
 
@@ -295,6 +288,24 @@ struct logo_type
     }
 };
 
+struct barrier_type
+{
+    int x;
+    int y;
+
+    int width;
+    int length;
+
+    barrier_type(int xpar, int ypar,  int widthpar, int lengthpar)
+    {
+        x = xpar;
+        y = ypar;
+
+        width = widthpar;
+        length = lengthpar;
+    }
+};
+
 
 int block_rows = (SCREENSIZE_Y - (PLATFORM_INITIAL_Y / 1.2)) / BLOCK_LEN;
 int block_columns = (SCREENSIZE_X - 2 * BLOCK_WIDTH) / BLOCK_WIDTH - 1;
@@ -303,12 +314,15 @@ GameState curr_gamestate;
 
 void init_gamestate()
 {
-    ball_type ball_data(0.24, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY);
+    ball_type ball_data(0.3, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY);
     platform_type platform(PLATFORM_INITIAL_Y, 200, 12, 45, 25);
     curr_gamestate.init("000000", 3, block_rows * block_columns, ball_data, platform);
 }
 
-logo_type logo(300, 109, (SCREENSIZE_X / 2) - (logo.width / 2), 0);
+logo_type logo(300, 109, SCREENSIZE_X / 3 + 100, 0);
+
+int barrier_len = 10;
+barrier_type barrier_obj(0, SCREENSIZE_Y - barrier_len - 5, SCREENSIZE_X, barrier_len);
 
 //GAME STATUS
 game_status_type game_status = GAME_ACTIVE;

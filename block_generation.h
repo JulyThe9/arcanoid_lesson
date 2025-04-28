@@ -5,7 +5,7 @@ vector<int> random_blocks;
 
 
 sf::Texture curr_block_texture;
-texture_types current_texture_type;
+block_texture_types current_texture_type;
 int current_block_value;
 bool radius;
 
@@ -57,7 +57,7 @@ void set_as_explosion_large()
     radius = true;
 }
 
-void generate_row(texture_types starterblock, int row_number, int &localblockX, int &localblockY)
+void generate_row(block_texture_types starterblock, int row_number, int &localblockX, int &localblockY)
 {
     int currblockX = 0;
     int prevblockX = 0;
@@ -74,11 +74,11 @@ void generate_row(texture_types starterblock, int row_number, int &localblockX, 
         int random_block_type = (std::rand() % 100);
         if(random_number >= 60)
         {
-            if(random_block_type > 100)
+            if(random_block_type > 65)
             {
                 set_as_explosion();
             }
-            else if(random_block_type > 100)
+            else if(random_block_type > 45)
             {
                 set_as_explosion_large();
             }
@@ -150,7 +150,7 @@ int create_blocks_data()
     int localblockX = 0;
     int localblockY = 300;
 
-    texture_types starter_texture = TEXTURE_TYPE_DIRT;
+    block_texture_types starter_texture = TEXTURE_TYPE_DIRT;
 
     if(block_rows * BLOCK_WIDTH > SCREENSIZE_X)
     {

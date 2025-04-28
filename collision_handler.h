@@ -1,3 +1,5 @@
+
+
 // ---------------------------------
 // WALL COLLISION DETECTION HERE
 // ---------------------------------
@@ -152,7 +154,6 @@ void handle_collision_all_sides(int i, int j)
             cout << "[" << i << "][" << j << "]" << endl;
             cout << "top side: " << curr_gamestate.blocks[i][j].top_bside << endl;
             cout << "block_y before: " << curr_gamestate.ball.curr_y << endl;
-            curr_gamestate.ball.curr_y = curr_gamestate.blocks[i][j].top_bside - (2 * curr_gamestate.ball.size_radius);
             cout << "block_y after: " << curr_gamestate.ball.curr_y << endl;
             cout << "------------------------: " << endl;
             handle_collision(COLLISION_CASE_BOTTOM);
@@ -172,7 +173,6 @@ void handle_collision_all_sides(int i, int j)
             last_collision = COLLISION_CASE_RIGHT;
             cout << "left side: " << curr_gamestate.blocks[i][j].left_bside << endl;
             cout << "block_x before: " << curr_gamestate.ball.curr_x << endl;
-            curr_gamestate.ball.curr_x = curr_gamestate.blocks[i][j].left_bside - (2 * curr_gamestate.ball.size_radius);
             cout << "block_x after: " << curr_gamestate.ball.curr_x << endl;
             cout << "------------------------: " << endl;
             handle_collision(COLLISION_CASE_RIGHT);
@@ -192,7 +192,6 @@ void handle_collision_all_sides(int i, int j)
             last_collision = COLLISION_CASE_TOP;
             cout << "bottom side: " << curr_gamestate.blocks[i][j].bottom_bside << endl;
             cout << "block_y before: " << curr_gamestate.ball.curr_y << endl;
-            curr_gamestate.ball.curr_y = curr_gamestate.blocks[i][j].bottom_bside;
             cout << "block_y after: " << curr_gamestate.ball.curr_y << endl;
             cout << "------------------------: " << endl;
             handle_collision(COLLISION_CASE_TOP);
@@ -235,7 +234,7 @@ void handle_collision_block()
 //--------------------------
 void handle_collision_barrier()
 {
-    if(curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 > barrierY)
+    if(curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 > barrier_obj.y)
     {
         last_collision = COLLISION_CASE_BOTTOM;
         hit_barrier();

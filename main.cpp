@@ -10,21 +10,16 @@
 #include <chrono>
 
 #include "properties.h"
-#include "fu_ball.h"
-#include "fu_platform.h"
-#include "blocks.h"
+#include "ball.h"
+#include "object_initializations.h"
 #include "block_generation.h"
-#include "barriar.h"
 #include "get_new_angle.h"
-#include "fu_score_logic.h"
+#include "score_logic.h"
 #include "get_neighbours.h"
-#include "heart.h"
 #include "lives_generation.h"
 #include "text_animation.h"
-#include "fu_collision_handler.h"
-#include "fu_init_misc.h"
-#include "status_bar.h"
-#include "logo.h"
+#include "collision_handler.h"
+#include "init_misc.h"
 #include "drawing.h"
 
 
@@ -119,7 +114,6 @@ int main()
                 // default movement at the start of the game
                 curr_gamestate.ball.curr_x += get_new_x(curr_degrees);
                 curr_gamestate.ball.curr_y += get_new_y(curr_degrees);
-                //TODO needs to be debugged
             }
             else
             {
@@ -135,10 +129,9 @@ int main()
             handle_collision_platform();
             handle_collision_barrier();
 
-
             ball.setPosition(curr_gamestate.ball.curr_x, curr_gamestate.ball.curr_y);
             plat.setPosition(curr_gamestate.platform.x, curr_gamestate.platform.y);
-            barrier.setPosition(barrierX, barrierY);
+            barrier.setPosition(barrier_obj.x, barrier_obj.y);
 
             check_gamestate();
 
