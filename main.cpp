@@ -139,8 +139,8 @@ int main()
         else if(game_status == HEART_DEDUCTION)
         {
 
-            TextAnimation(lastTime, curTtime, timePassed);
-            DrawHeartDeductionText(main_window);
+            text_animation(lastTime, curTtime, timePassed);
+            draw_heart_deduction_text(main_window);
             while (main_window.pollEvent(event))
             {
 
@@ -160,8 +160,8 @@ int main()
         }
         else if(game_status == HEARTS_GONE)
         {
-            TextAnimation(lastTime, curTtime, timePassed);
-            DrawNoHeartsText(main_window);
+            text_animation(lastTime, curTtime, timePassed);
+            draw_no_hearts_text(main_window);
             while (main_window.pollEvent(event))
             {
                 if(event.key.code == sf::Keyboard::Space)
@@ -172,7 +172,7 @@ int main()
         }
         else
         {
-            DrawGameWonText(main_window);
+            draw_game_won_text(main_window);
             while (main_window.pollEvent(event))
             {
                 if(event.key.code == sf::Keyboard::Space)
@@ -182,14 +182,14 @@ int main()
             }
         }
 
-        DrawBlocks(main_window);
-        DrawPlat(main_window, plat);
-        DrawBarrier(main_window, barrier);
-        DrawBall(main_window, ball);
-        DrawStatusBar(main_window, status_bar);
-        DrawStatusBarLogo(main_window, status_bar_logo);
-        DrawScore(main_window);
-        DrawHearts(main_window);
+        draw_blocks(main_window);
+        draw_plat(main_window, plat);
+        draw_barrier(main_window, barrier);
+        draw_ball(main_window, ball);
+        draw_status_bar(main_window, status_bar);
+        draw_status_bar_logo(main_window, status_bar_logo);
+        draw_score(main_window);
+        draw_hearts(main_window);
 
         main_window.display();
 

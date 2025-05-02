@@ -1,3 +1,12 @@
+/**
+*@file properties.h
+*@brief contains all objects, all defines, all enums and most global variables
+
+*@author [Johannes Waldeck]
+*@date [28.04.2025]
+*/
+
+
 using namespace std;
 
 // GLOBAL DEFINES
@@ -12,10 +21,12 @@ using namespace std;
 #define BLOCK_LEN 30
 #define BLOCK_WIDTH 90
 
-bool textVisible = false;
+#define DEBUG
+//-------------------------------------------------------------------
+
+bool text_visible = false;
 
 const double PLATFORM_INITIAL_Y = SCREENSIZE_Y - 120;
-
 
 const int BALL_START_POSX = SCREENSIZE_X / 2;
 const int BALL_START_POSY = SCREENSIZE_Y / 2 + 100;
@@ -37,8 +48,10 @@ float alpha_y = 0;
 
 // godmode that makes you invinsible to barrier
 bool godmode_active = false;
+
 // active when true and block amount is under 4
 bool crazy_ballspeed = true;
+
 // godspeed if block amount are under 4 and ballspeed is true
 float godspeed = 0.45;
 
@@ -74,7 +87,25 @@ sf::Text heart_deduction_text;
 sf::Text no_hearts_text;
 sf::Text game_won_text;
 
+//-------------------------------------------------------------------
+/**
+*@enum all collision_cases
 
+*@var COLLISION_CASE_BOTTOM
+* hit bottom surface
+*@var COLLISION_CASE_TOP
+* hit top surface
+*@var COLLISION_CASE_LEFT
+* hit left surface
+*@var COLLISION_CASE_RIGHT
+* hit right surface
+*@var COLLISION_CASE_PLATFORM_RIGHT
+* hit right surface of platform
+*@var COLLISION_CASE_PLATFORM_LEFT
+* hit left surface of platform
+*@var COLLISION_CASE_RESET
+* reset everything to beginning after ball hit barrier
+*/
 enum collision_cases
 {
     COLLISION_CASE_BOTTOM,
@@ -86,6 +117,22 @@ enum collision_cases
     COLLISION_CASE_RESET,
 };
 
+/**
+*@enum block_texture_types
+
+*@var TEXTURE_TYPE_ICE
+* texture of ice
+*@var TEXTURE_TYPE_POISON
+* texture of poison
+*@var TEXTURE_TYPE_DIRT
+* texture of dirt
+*@var TEXTURE_TYPE_DIRT2
+* texture of second dirt
+*@var TEXTURE_TYPE_EXPLOSION_SMALL
+* texture of small explosion
+*@var TEXTURE_TYPE_EXPLOSION_LARGE
+* texture of large explosion
+*/
 enum block_texture_types
 {
     TEXTURE_TYPE_ICE,
@@ -96,6 +143,18 @@ enum block_texture_types
     TEXTURE_TYPE_EXPLOSION_LARGE,
 };
 
+/**
+*@enum game_status_type
+
+*@var GAME_ACTIVE
+* gamestate is active
+*@var HEART_DEDUCTION
+* gamestate in heart deduction
+*@var HEARTS_GONE
+* gamestate in game loss
+*@var BLOCKS_GONE
+* gamestate in game won
+*/
 enum game_status_type
 {
     GAME_ACTIVE,
@@ -104,6 +163,10 @@ enum game_status_type
     BLOCKS_GONE,
 };
 
+//-------------------------------------------------------------------
+/**
+*@brief a struct representing the block_type blocks logic
+*/
 //--------
 //used for collisions and block related data (!not used for textures!)
 //--------
@@ -146,6 +209,10 @@ struct block_type
     }
 };
 
+
+/**
+*@brief a struct representing the platform_type platform logic
+*/
 struct platform_type
 {
     float x;
@@ -181,6 +248,10 @@ struct platform_type
 };
 
 
+
+/**
+*@brief a struct representing the ball_type ball logic
+*/
 struct ball_type
 {
     float speed;
@@ -207,6 +278,10 @@ struct ball_type
     }
 };
 
+
+/**
+*@brief a struct representing the current gamestate
+*/
 struct GameState
 {
     bool isInitialized = false;
@@ -242,6 +317,10 @@ struct GameState
     }
 };
 
+
+/**
+*@brief a struct representing the lives_type current life
+*/
 struct lives_type
 {
     int x;
@@ -266,10 +345,13 @@ struct lives_type
     }
 };
 
-
 vector<lives_type> vector_life_data;
 vector<sf::RectangleShape> vector_graphics_life;
 
+
+/**
+*@brief a struct representing the logo_type game logo
+*/
 struct logo_type
 {
     int width;
@@ -288,6 +370,10 @@ struct logo_type
     }
 };
 
+
+/**
+*@brief a struct representing the barrier_type barrier
+*/
 struct barrier_type
 {
     int x;
@@ -307,14 +393,18 @@ struct barrier_type
 };
 
 
+//-------------------------------------------------------------------
 int block_rows = (SCREENSIZE_Y - (PLATFORM_INITIAL_Y / 1.2)) / BLOCK_LEN;
 int block_columns = (SCREENSIZE_X - 2 * BLOCK_WIDTH) / BLOCK_WIDTH - 1;
 
 GameState curr_gamestate;
 
+/**
+*@brief initializes GameState(called in main)
+*/
 void init_gamestate()
 {
-    ball_type ball_data(0.3, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY);
+    ball_type ball_data(0.24, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY);
     platform_type platform(PLATFORM_INITIAL_Y, 200, 12, 45, 25);
     curr_gamestate.init("000000", 3, block_rows * block_columns, ball_data, platform);
 }

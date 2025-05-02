@@ -1,34 +1,85 @@
-void DrawPlat(sf::RenderWindow &main_window, sf::RectangleShape plat)
+/**
+*@file init_misc.h
+*@brief all drawing done for UI
+
+*@author [Johannes Waldeck]
+*@date [02.05.2025]
+*/
+
+
+/**
+*@brief draws Platform
+
+*@param main_window current game/sfml window
+*@param plat object being drawn
+*/
+void draw_plat(sf::RenderWindow &main_window, sf::RectangleShape plat)
 {
     main_window.draw(plat);
 }
 
-void DrawBarrier(sf::RenderWindow &main_window, sf::RectangleShape barrier)
+/**
+*@brief draws Barrier
+
+*@param main_window current game/sfml window
+*@param barrier object being drawn
+*/
+void draw_barrier(sf::RenderWindow &main_window, sf::RectangleShape barrier)
 {
     main_window.draw(barrier);
 }
 
-void DrawBall(sf::RenderWindow &main_window, sf::CircleShape ball)
+/**
+*@brief draws Ball
+
+*@param main_window current game/sfml window
+*@param ball object being drawn
+*/
+void draw_ball(sf::RenderWindow &main_window, sf::CircleShape ball)
 {
     main_window.draw(ball);
 }
 
-void DrawStatusBar(sf::RenderWindow &main_window, sf::RectangleShape status_bar)
+/**
+*@brief draws statusbar(the gray background of entire statusbar)
+
+*@param main_window current game/sfml window
+*@param status_bar being drawn
+*/
+void draw_status_bar(sf::RenderWindow &main_window, sf::RectangleShape status_bar)
 {
     main_window.draw(status_bar);
 }
 
-void DrawStatusBarLogo(sf::RenderWindow &main_window, sf::RectangleShape status_bar_logo)
+/**
+*@brief draws logo on statusbar
+
+*@param main_window current game/sfml window
+*@param status_bar_logo object being drawn
+*/
+void draw_status_bar_logo(sf::RenderWindow &main_window, sf::RectangleShape status_bar_logo)
 {
     main_window.draw(status_bar_logo);
 }
 
-void DrawScore(sf::RenderWindow &main_window)
+/**
+*@brief draws score
+
+*@param main_window current game/sfml window
+*/
+void draw_score(sf::RenderWindow &main_window)
 {
     main_window.draw(score);
 }
 
-void DrawBlocks(sf::RenderWindow &main_window)
+/**
+*@brief draws blocks
+
+*draws blocks by i(rows) and j(cols)
+
+*@param main_window current game/sfml window
+*/
+void draw_blocks(sf::RenderWindow &main_window)
 {
     for (int i = 0; i < block_rows; i++)
     {
@@ -39,7 +90,14 @@ void DrawBlocks(sf::RenderWindow &main_window)
     }
 }
 
-void DrawHearts(sf::RenderWindow &main_window)
+/**
+*@brief draws Hearts
+
+*draws hearts by lives_amount(amount of lives)
+
+*@param main_window current game/sfml window
+*/
+void draw_hearts(sf::RenderWindow &main_window)
 {
     for(int i = 0; i < curr_gamestate.lives_amount; i++)
     {
@@ -47,17 +105,32 @@ void DrawHearts(sf::RenderWindow &main_window)
     }
 }
 
-void DrawGameWonText(sf::RenderWindow &main_window)
+/**
+*@brief draws Text of Game Won
+
+*@param main_window current game/sfml window
+*/
+void draw_game_won_text(sf::RenderWindow &main_window)
 {
     main_window.draw(game_won_text);
 }
 
-void DrawNoHeartsText(sf::RenderWindow &main_window)
+/**
+*@brief draws Text of no Hearts
+
+*@param main_window current game/sfml window
+*/
+void draw_no_hearts_text(sf::RenderWindow &main_window)
 {
     main_window.draw(no_hearts_text);
 }
 
-void DrawHeartDeductionText(sf::RenderWindow &main_window)
+/**
+*@brief draws Text of Life deduction
+
+*@param main_window current game/sfml window
+*/
+void draw_heart_deduction_text(sf::RenderWindow &main_window)
 {
     main_window.draw(heart_deduction_text);
 }

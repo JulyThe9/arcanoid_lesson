@@ -1,5 +1,20 @@
-//curr_gamestate.blocks[candidate_block_row][candidate_block_col].active == true
+/**
+*@file get_neighbours.h
+*@brief gets neighbours of explosion block
 
+*@author [Johannes Waldeck]
+*@date [01.05.2025]
+*/
+
+
+/**
+*@brief checks if neighbour is active
+
+*@param candidate_block_row row of candidate
+*@param candidate_block_col column of candidate
+
+*@return returns if current block is valid(true) or has already been hit(false)
+*/
 bool is_valid_neighbour(int candidate_block_row, int candidate_block_col)
 {
     if(candidate_block_row < block_rows &&
@@ -15,6 +30,15 @@ bool is_valid_neighbour(int candidate_block_row, int candidate_block_col)
     return false;
 }
 
+
+/**
+*@brief gets vector of neighboured blocks
+
+*@param row row of current block
+*@param col column of current block
+
+*@return returns a vector of positions of blocks around current block as pairs(row|col)
+*/
 vector<pair<int, int>> get_neighbours(int row, int col)
 {
     bool valid;
@@ -120,5 +144,14 @@ vector<pair<int, int>> get_neighbours(int row, int col)
             block_neighbours.push_back({left_left_row, left_left_col});
         }
     }
+#ifdef DEBUG
+    cout << "----EXPLOSION BLOCK NEIGHBOURS------" << endl;
+    for(int i = 0; i < block_neighbours.size(); i++)
+    {
+        cout << "-----" << endl;
+        cout << "block neighbour " << i << " row: " << block_neighbours[i].first << endl;
+        cout << "block neighbour " << i << " col: " << block_neighbours[i].second << endl;
+    }
+#endif
     return block_neighbours;
 }

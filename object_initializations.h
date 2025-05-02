@@ -1,3 +1,10 @@
+/**
+*@file object_initializations.h
+*@brief contains all initializations for objects on gamescreen like plat, ball, blocks etc.
+
+*@author [Johannes Waldeck]
+*@date [01.05.2025]
+*/
 sf::RectangleShape init_platform()
 {
     sf::RectangleShape platform(sf::Vector2f(curr_gamestate.platform.width,
@@ -7,6 +14,9 @@ sf::RectangleShape init_platform()
     return platform;
 }
 
+/**
+*@brief initialization of barrier
+*/
 sf::RectangleShape init_barrier()
 {
     sf::RectangleShape barrier(sf::Vector2f(barrier_obj.width, barrier_obj.length));
@@ -18,6 +28,9 @@ sf::RectangleShape init_barrier()
     return barrier;
 }
 
+/**
+*@brief initialization of ball
+*/
 sf::CircleShape init_ball()
 {
     sf::CircleShape ball(curr_gamestate.ball.size_radius);
@@ -29,6 +42,11 @@ sf::CircleShape init_ball()
     return ball;
 }
 
+/**
+*@brief initialization of block
+
+*@param current_block the initialization for current block including a variety of textures
+*/
 sf::RectangleShape init_block(block_type &current_block)
 {
     sf::RectangleShape block = sf::RectangleShape(sf::Vector2f(BLOCK_WIDTH, BLOCK_LEN));
@@ -42,6 +60,9 @@ sf::RectangleShape init_block(block_type &current_block)
     return block;
 }
 
+/**
+*@brief initialization of status_bar
+*/
 sf::RectangleShape init_status_bar()
 {
     sf::RectangleShape status_bar = sf::RectangleShape(sf::Vector2f(status_bar_width, status_bar_length));
@@ -53,6 +74,9 @@ sf::RectangleShape init_status_bar()
     return status_bar;
 }
 
+/**
+*@brief initialization of logo
+*/
 sf::RectangleShape init_logo()
 {
     sf::RectangleShape status_bar_logo = sf::RectangleShape(sf::Vector2f(logo.width,logo.length));
@@ -64,6 +88,9 @@ sf::RectangleShape init_logo()
     return status_bar_logo;
 }
 
+/**
+*@brief initialization of heart
+*/
 sf::RectangleShape init_heart(lives_type &current_life, int heart_index)
 {
     sf::RectangleShape status_bar_heart = sf::RectangleShape(sf::Vector2f(vector_life_data[heart_index].width,
@@ -73,4 +100,23 @@ sf::RectangleShape init_heart(lives_type &current_life, int heart_index)
     status_bar_heart.setPosition(current_life.x, current_life.y);
 
     return status_bar_heart;
+}
+
+/**
+*@brief initialization of score with font
+*/
+void init_score()
+{
+    if (!font.loadFromFile("fonts/ArialCEBoldItalic.ttf"))
+    {
+        // Handle error
+        throw std::runtime_error("Failed to load font: bank-gothic-font.ttf");
+    }
+
+    score.setFont(font);
+    score.setCharacterSize(60);
+    score.setFillColor(sf::Color::Red);
+    score.setStyle(sf::Text::Bold);
+    score.setPosition(SCREENSIZE_X - 300, 25);
+    score.setString(curr_gamestate.score_number);
 }

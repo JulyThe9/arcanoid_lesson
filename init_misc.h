@@ -1,3 +1,15 @@
+/**
+*@file init_misc.h
+*@brief loading of all fonts and png images
+
+*@author [Johannes Waldeck]
+*@date [01.05.2025]
+*/
+
+
+/**
+*@brief initialization of textures
+*/
 void init_textures()
 {
     if (!texture_ice.loadFromFile("textures/blocks/block_regular_1.png", sf::IntRect(0, 0, BLOCK_WIDTH, BLOCK_LEN)))
@@ -50,20 +62,4 @@ void init_textures()
         // Handle error
         throw std::runtime_error("Failed to load font: textures/status_bar/heart_empty.png");
     }
-}
-
-void init_score()
-{
-    if (!font.loadFromFile("fonts/ArialCEBoldItalic.ttf"))
-    {
-        // Handle error
-        throw std::runtime_error("Failed to load font: bank-gothic-font.ttf");
-    }
-
-    score.setFont(font);
-    score.setCharacterSize(60);
-    score.setFillColor(sf::Color::Red);
-    score.setStyle(sf::Text::Bold);
-    score.setPosition(SCREENSIZE_X - 300, 25);
-    score.setString(curr_gamestate.score_number);
 }

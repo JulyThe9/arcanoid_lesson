@@ -1,3 +1,19 @@
+/**
+*@file get_new_angle.h
+*@brief calculates new angle of ball if hit platform(different for every section of platform)
+
+*@author [Johannes Waldeck]
+*@date [01.05.2025]
+*/
+
+
+/**
+*@brief gets new angle of ball after hitting platform
+
+*calculates each section of platform and gives back appropriate angle for current section, that ball hit
+
+*@return curr_degrees the new degrees of balls flight
+*/
 int get_new_angle()
 {
     curr_degrees = 0;
@@ -34,18 +50,6 @@ int get_new_angle()
     {
         for(int i = 0; i < sections_per_side; i++)
         {
-            /*
-            cout << "section: " << section << "; sections per side: " << sections_per_side << endl;
-            cout << "plat_pos left: " << plat_posl << endl;
-            cout << "plat_pos right: " << plat_posr << endl;
-            cout << "plat_width / 2: " << plat_width / 2 << endl;
-            cout << "section * i: " << section * i << endl;
-            cout << "calculation1: " << (plat_width / 2) - (section * i) << endl;
-            cout << "calculation 2: " << (plat_width / 2) - section * (i + 1) << endl;
-            cout << "(plat_pos < (plat_width / 2) - (section * i) && plat_pos > (plat_width / 2) - section * (i + 1))" << endl;
-            cout << "-----------------------------" << endl;
-            */
-
             if(plat_pos < (curr_gamestate.platform.width / 2) - (section * i) && plat_pos > (curr_gamestate.platform.width / 2) - section * (i + 1))
             {
                 curr_degrees = (deg_per_section * (i + 1));
@@ -53,5 +57,11 @@ int get_new_angle()
             }
         }
     }
+
+#ifdef DEBUG
+            cout << "-------NEWLY CALCULATED ANGLE--------" << endl;
+            cout << "current ball pos: " << curr_gamestate.ball.curr_x << " | " << curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius << endl;
+            cout << "new curr_degrees: " << curr_degrees << endl;
+#endif
     return curr_degrees;
 }

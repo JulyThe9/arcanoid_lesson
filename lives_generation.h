@@ -1,7 +1,18 @@
-//forward decleration
+/**
+*@file lives_generation.h
+*@brief logic to generates lives
+
+*@author [Johannes Waldeck]
+*@date [01.05.2025]
+*/
+
+
 sf::RectangleShape init_lives(lives_type current_life);
 
-int set_life_data()
+/**
+*@brief sets data of hearts for graphics
+*/
+void set_life_data()
 {
     int currlifeX = 0;
     int prevlifeX = 0;
@@ -30,9 +41,12 @@ int set_life_data()
 
         prevlifeX = currlifeX;
     }
-    return 0;
 }
 
+
+/**
+*@brief calls initialization of heart for every life and adds it to vector_graphics_life(drawing called in main)
+*/
 int set_life_graphics()
 {
     for (int i = 0; i < curr_gamestate.lives_amount; i++)

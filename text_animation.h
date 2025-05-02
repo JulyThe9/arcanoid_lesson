@@ -1,4 +1,18 @@
-void SetGameWon()
+/**
+*@file text_animation.h
+*@brief all game text initializations and blinking logic
+
+*@author [Johannes Waldeck]
+*@date [01.05.2025]
+*/
+
+
+/**
+*@brief sets game won text
+
+*game won text once all blocks are gone, called in hit_block()
+*/
+void set_game_won()
 {
     game_won_text.setFont(font);
     game_won_text.setCharacterSize(50);
@@ -9,7 +23,15 @@ void SetGameWon()
     game_status = BLOCKS_GONE;
 }
 
-void SetGameLoss(int heart_number)
+/**
+*@brief sets game loss text
+
+*game loss text once all lives are gone, called in hit_barrier()
+
+
+*@param heart_number current heart number necessary to fill that space with empty heart texture;
+*/
+void set_game_loss(int heart_number)
 {
     vector_life_data[heart_number].texture = heart_texture_empty;
     no_hearts_text.setFont(font);
@@ -21,7 +43,16 @@ void SetGameLoss(int heart_number)
     game_status = HEARTS_GONE;
 }
 
-void SetLossOfLife(int &heart_number)
+
+/**
+*@brief sets loss of life text
+
+*game loss of life text once one life has been removed, but not all. Called in hit_barrier()
+
+
+*@param heart_number current number of heart necessary to fill that space with empty heart texture;
+*/
+void set_loss_of_life(int &heart_number)
 {
     vector_life_data[heart_number].texture = heart_texture_empty;
     heart_deduction_text.setFont(font);
@@ -34,21 +65,33 @@ void SetLossOfLife(int &heart_number)
     heart_number--;
 }
 
-void TextAnimation(std::chrono::time_point<std::chrono::high_resolution_clock> &lastTime,
+/**
+*@brief handles animations of texts like game loss text or loss of life text
+
+*cycles betwean visible and invisible period through timePassed
+
+*@param lastTime last timestamp
+*@param curTime current timestamp
+*@param timePassed time that has passed betwean those two
+*/
+void text_animation(std::chrono::time_point<std::chrono::high_resolution_clock> &lastTime,
                    std::chrono::time_point<std::chrono::high_resolution_clock> &curTtime,
                    std::chrono::milliseconds &timePassed)
 {
     // text visible case
-    if (textVisible)
+    if (text_visible)
     {
         // text has has been visible for a time long enough,
         // make it hidden
         if (timePassed.count() > TEXT_VISIBLE_PERIOD)
         {
+#ifdef DEBUG
+            cout << "-------------BLINK HIDDEN------------" << endl;
             cout << timePassed.count() << " ms passed, making text HIDDEN\n";
+#endif
             heart_deduction_text.setFillColor(sf::Color::Black);
             no_hearts_text.setFillColor(sf::Color::Black);
-            textVisible = false;
+            text_visible = false;
             lastTime = curTtime;
         }
     }
@@ -59,10 +102,13 @@ void TextAnimation(std::chrono::time_point<std::chrono::high_resolution_clock> &
         // make it visible
         if (timePassed.count() > TEXT_NOT_VISIBLE_PERIOD)
         {
+#ifdef DEBUG
+            cout << "-------------BLINK VISIBLE-----------" << endl;
             cout << timePassed.count() << " ms passed, making text VISIBLE\n";
+#endif
             heart_deduction_text.setFillColor(sf::Color::Yellow);
             no_hearts_text.setFillColor(sf::Color::Red);
-            textVisible = true;
+            text_visible = true;
             lastTime = curTtime;
         }
     }

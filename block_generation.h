@@ -1,3 +1,15 @@
+/**
+*@file block_generation.h
+*@brief all logic to generate blocks in correct order
+
+*@author [Johannes Waldeck]
+*@date [01.05.2025]
+*/
+
+/**
+*@brief initialization of platform
+*/
+
 #include <cassert>
 vector<block_type> vector_columns;
 vector<sf::RectangleShape> vector_graphics_block;
@@ -13,6 +25,9 @@ bool radius;
 //forward declaration: tells compiler "all good I have this covered"
 sf::RectangleShape init_block(block_type &current_block);
 
+/**
+*@brief sets current block texture related fields to dirt1
+*/
 void set_as_dirt1()
 {
     curr_block_texture = texture_dirt;
@@ -20,6 +35,9 @@ void set_as_dirt1()
     current_block_value = 1;
 }
 
+/**
+*@brief sets current block texture related fields to dirt2
+*/
 void set_as_dirt2()
 {
     curr_block_texture = texture_dirt2;
@@ -27,6 +45,9 @@ void set_as_dirt2()
     current_block_value = 5;
 }
 
+/**
+*@brief sets current block texture related fields to ice
+*/
 void set_as_ice()
 {
     curr_block_texture = texture_ice;
@@ -34,6 +55,9 @@ void set_as_ice()
     current_block_value = 10;
 }
 
+/**
+*@brief sets current block texture related fields to poison
+*/
 void set_as_poison()
 {
     curr_block_texture = texture_poison;
@@ -41,6 +65,9 @@ void set_as_poison()
     current_block_value = 20;
 }
 
+/**
+*@brief sets current block texture related fields to small explosion
+*/
 void set_as_explosion()
 {
     curr_block_texture = texture_explosion_small;
@@ -49,6 +76,9 @@ void set_as_explosion()
     radius = false;
 }
 
+/**
+*@brief sets current block texture related fields to large explosion
+*/
 void set_as_explosion_large()
 {
     curr_block_texture = texture_explosion_large;
@@ -57,7 +87,16 @@ void set_as_explosion_large()
     radius = true;
 }
 
-void generate_row(block_texture_types starterblock, int row_number, int &localblockX, int &localblockY)
+/**
+*@brief generates current row
+
+*generates current row to current row position and dirt starterblock
+
+*@param starterblock the dirt type of starterblock in row
+*@param localblockX the x-position of the first block in current row
+*@param localblockY the y-position of the first block in current row
+*/
+void generate_row(block_texture_types starterblock, int &localblockX, int &localblockY)
 {
     int currblockX = 0;
     int prevblockX = 0;
@@ -145,7 +184,11 @@ void generate_row(block_texture_types starterblock, int row_number, int &localbl
     }
 }
 
-int create_blocks_data()
+
+/**
+*@brief creates data of all blocks for graphics and generation of each block
+*/
+void create_blocks_data()
 {
     int localblockX = 0;
     int localblockY = 300;
@@ -169,16 +212,17 @@ int create_blocks_data()
             starter_texture = TEXTURE_TYPE_DIRT2;
         }
 
-        generate_row(starter_texture, curr_row_number, localblockX, localblockY);
+        generate_row(starter_texture, localblockX, localblockY);
         curr_gamestate.blocks.push_back(vector_columns);
 
         vector_columns.clear();
     }
-    return 0;
 }
 
-
-int create_blocks_graphics()
+/**
+*@brief call initialization of each block by row and col(drawing called in main)
+*/
+void create_blocks_graphics()
 {
     for (int i = 0; i < block_rows; i++)
     {
@@ -189,5 +233,4 @@ int create_blocks_graphics()
         curr_gamestate.blocks_graphics.push_back(vector_graphics_block);
         vector_graphics_block.clear();
     }
-    return 0;
 }

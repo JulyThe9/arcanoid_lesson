@@ -1,15 +1,44 @@
+/**
+*@file ball.h
+*@brief contains all ball directions
+
+*@author [Johannes Waldeck]
+*@date [01.05.2025]
+*/
+
+
+/**
+*@brief gets new x coordinate of ball for every frame
+
+*@param agr_deg the degrees of the balls flight
+
+*@return all added pixels to the balls x position
+*/
 float get_new_x(float agr_deg)
 {
     return curr_gamestate.ball.speed * sin(agr_deg * (M_PI / 180.0));
 }
 
-//-------------------------------------------------------------------
+/**
+*@brief gets new y coordinate of ball for every frame
+
+*@param agr_deg the degrees of the balls flight
+
+*@return all added pixels to the balls x position
+*/
 float get_new_y(float agr_deg)
 {
     return curr_gamestate.ball.speed * cos(agr_deg * (M_PI / 180.0));
 }
 
 //-------------------------------------------------------------------
+/**
+*@brief handles direction of balls flight
+
+*@param wall_side if it hit right, left, bottom or top
+
+*@return returns once found out what its new direction is
+*/
 void handle_collision(char wall_side)
 {
     alpha_x = get_new_x(curr_degrees);
