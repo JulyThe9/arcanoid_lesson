@@ -21,7 +21,7 @@ using namespace std;
 #define BLOCK_LEN 30
 #define BLOCK_WIDTH 90
 
-#define DEBUG
+//#define DEBUG
 //-------------------------------------------------------------------
 
 bool text_visible = false;
@@ -404,8 +404,8 @@ GameState curr_gamestate;
 */
 void init_gamestate()
 {
-    ball_type ball_data(0.24, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY);
-    platform_type platform(PLATFORM_INITIAL_Y, 200, 12, 45, 25);
+    ball_type ball_data(0.3, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY);
+    platform_type platform(PLATFORM_INITIAL_Y, 160, 12, 45, 25);
     curr_gamestate.init("000000", 3, block_rows * block_columns, ball_data, platform);
 }
 

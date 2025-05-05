@@ -30,7 +30,7 @@ int main()
 {
     // Create the main window
     sf::RenderWindow main_window(sf::VideoMode(SCREENSIZE_X, SCREENSIZE_Y), "SFML window");
-
+    main_window.setMouseCursorVisible(false);
     sf::Event event;
 
     init_textures();
@@ -60,6 +60,9 @@ int main()
     sf::RectangleShape status_bar_logo = init_logo();
 
     std::chrono::time_point<std::chrono::high_resolution_clock> lastTime = high_resolution_clock::now();
+
+    sf::Mouse::setPosition({curr_gamestate.platform.platform_starter_x, curr_gamestate.platform.y}, main_window); // window is a sf::Window
+
 	// Start the game loop
     while (main_window.isOpen() && game_active)
     {
@@ -77,32 +80,54 @@ int main()
                 {
                     main_window.close();
                 }
+                sf::Vector2i localPosition = sf::Mouse::getPosition(main_window);
 
-                else if(event.type == sf::Event::KeyPressed)
+                //X
+                if(curr_gamestate.platform.x > left_wall)
                 {
-                    if(event.key.code == sf::Keyboard::A)
-                    {
-                        if(curr_gamestate.platform.x - curr_gamestate.platform.plat_speed > left_wall)
-                        {
-                            curr_gamestate.platform.x -= curr_gamestate.platform.plat_speed;
-                        }
-                        else
-                        {
-                            curr_gamestate.platform.x = left_wall;
-                        }
-                    }
-                    else if(event.key.code == sf::Keyboard::D)
-                    {
-                        if (curr_gamestate.platform.x + curr_gamestate.platform.width + curr_gamestate.platform.plat_speed < right_wall)
-                        {
-                            curr_gamestate.platform.x += curr_gamestate.platform.plat_speed;
-                        }
-                        else
-                        {
-                            curr_gamestate.platform.x = right_wall - curr_gamestate.platform.width;
-                        }
-                    }
+                    curr_gamestate.platform.x = localPosition.x;
                 }
+                else
+                {
+                    curr_gamestate.platform.x = left_wall;
+                }
+
+                if (curr_gamestate.platform.x + curr_gamestate.platform.width < right_wall)
+                {
+                    curr_gamestate.platform.x = localPosition.x;
+                }
+                else
+                {
+                    curr_gamestate.platform.x = right_wall - curr_gamestate.platform.width;
+                }
+
+                //not for core game, used later for powerups
+                /*
+                curr_gamestate.platform.width = curr_gamestate.platform.y / 8;
+                sf::RectangleShape plat_new(sf::Vector2f(curr_gamestate.platform.width,
+                                             curr_gamestate.platform.len));
+
+                plat = plat_new;
+
+                //Y
+                if(curr_gamestate.platform.y > top_wall)
+                {
+                    curr_gamestate.platform.y = localPosition.y;
+                }
+                else
+                {
+                    curr_gamestate.platform.y = top_wall;
+                }
+
+                if (curr_gamestate.platform.y + curr_gamestate.platform.len < bottom_wall)
+                {
+                    curr_gamestate.platform.y = localPosition.y;
+                }
+                else
+                {
+                    curr_gamestate.platform.y = bottom_wall - curr_gamestate.platform.len;
+                }
+                */
             }
 
 
@@ -153,7 +178,7 @@ int main()
                         curr_gamestate.ball.curr_x = BALL_START_POSX;
                         curr_gamestate.ball.curr_y = BALL_START_POSY;
                         handle_collision(COLLISION_CASE_RESET);
-                        curr_gamestate.platform.x = curr_gamestate.platform.platform_starter_x;
+                        sf::Mouse::setPosition({curr_gamestate.platform.platform_starter_x, curr_gamestate.platform.y}, main_window);
                     }
                 }
             }
