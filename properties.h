@@ -21,6 +21,8 @@ using namespace std;
 #define BLOCK_LEN 30
 #define BLOCK_WIDTH 90
 
+#define BALL_SPEED 0.4
+
 //#define DEBUG
 //-------------------------------------------------------------------
 
@@ -54,6 +56,14 @@ bool crazy_ballspeed = true;
 
 // godspeed if block amount are under 4 and ballspeed is true
 float godspeed = 0.45;
+
+//--------
+// BLOCK SOUNDS
+//--------
+sf::SoundBuffer buffer_dirt1;
+sf::Sound sound_dirt1;
+sf::SoundBuffer buffer_dirt2;
+sf::Sound sound_dirt2;
 
 //--------
 // BLOCK TEXTURES
@@ -404,7 +414,7 @@ GameState curr_gamestate;
 */
 void init_gamestate()
 {
-    ball_type ball_data(0.3, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY);
+    ball_type ball_data(BALL_SPEED, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY);
     platform_type platform(PLATFORM_INITIAL_Y, 160, 12, 45, 25);
     curr_gamestate.init("000000", 3, block_rows * block_columns, ball_data, platform);
 }

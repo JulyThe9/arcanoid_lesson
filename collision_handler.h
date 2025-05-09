@@ -23,6 +23,8 @@ void handle_collision_walls()
 #endif
         last_collision = COLLISION_CASE_RIGHT;
         handle_collision(COLLISION_CASE_RIGHT);
+        sound_dirt1.setBuffer(buffer_dirt1);
+        sound_dirt1.play();
     }
     else if(curr_gamestate.ball.curr_y <= status_bar_length)
     {
@@ -32,6 +34,8 @@ void handle_collision_walls()
 #endif
         last_collision = COLLISION_CASE_TOP;
         handle_collision(COLLISION_CASE_TOP);
+        sound_dirt1.setBuffer(buffer_dirt1);
+        sound_dirt1.play();
     }
     else if(curr_gamestate.ball.curr_x <= left_wall)
     {
@@ -41,6 +45,8 @@ void handle_collision_walls()
 #endif
         last_collision = COLLISION_CASE_LEFT;
         handle_collision(COLLISION_CASE_LEFT);
+        sound_dirt1.setBuffer(buffer_dirt1);
+        sound_dirt1.play();
     }
 }
 
@@ -68,6 +74,8 @@ void handle_collision_platform()
         {
             last_collision = COLLISION_CASE_BOTTOM;
             curr_degrees = get_new_angle();
+            sound_dirt1.setBuffer(buffer_dirt1);
+            sound_dirt1.play();
         }
     }
 }
@@ -124,6 +132,19 @@ void hit_block(int row, int col)
     //this line is used to set the active variable of explosion block to false
     curr_gamestate.blocks_graphics[row][col].setFillColor(sf::Color(0, 0, 0));
     add_to_score(row, col);
+
+    int random_number = (std::rand() % 100);
+    if(random_number > 50)
+    {
+        sound_dirt1.setBuffer(buffer_dirt1);
+        sound_dirt1.play();
+    }
+    else
+    {
+        sound_dirt2.setBuffer(buffer_dirt2);
+        sound_dirt2.play();
+    }
+
 
     if(curr_gamestate.block_amount == 3)
     {

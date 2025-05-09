@@ -62,4 +62,10 @@ void init_textures()
         // Handle error
         throw std::runtime_error("Failed to load font: textures/status_bar/heart_empty.png");
     }
+    else if (!buffer_dirt1.loadFromFile("sounds/dirt_sound.wav")) {
+        throw std::runtime_error("Failed to load audio: sounds/dirt_sound.wav");
+    }
+    else if (!buffer_dirt2.loadFromFile("sounds/dirt_sound(1).wav")) {
+        throw std::runtime_error("Failed to load audio: sounds/dirt_sound(1).wav");
+    }
 }

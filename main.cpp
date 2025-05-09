@@ -8,6 +8,7 @@
 #include <cstdlib>  // For rand() and srand()
 #include <ctime>    // For time()
 #include <chrono>
+#include <SFML/Audio.hpp>
 
 #include "properties.h"
 #include "ball.h"
@@ -101,7 +102,6 @@ int main()
                     curr_gamestate.platform.x = right_wall - curr_gamestate.platform.width;
                 }
 
-                //not for core game, used later for powerups
                 /*
                 curr_gamestate.platform.width = curr_gamestate.platform.y / 8;
                 sf::RectangleShape plat_new(sf::Vector2f(curr_gamestate.platform.width,
