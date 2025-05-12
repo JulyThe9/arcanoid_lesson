@@ -130,7 +130,23 @@ void draw_no_hearts_text(sf::RenderWindow &main_window)
 
 *@param main_window current game/sfml window
 */
+
 void draw_heart_deduction_text(sf::RenderWindow &main_window)
 {
     main_window.draw(heart_deduction_text);
+}
+
+void draw_countdown_three(sf::RenderWindow &main_window)
+{
+    main_window.draw(countdown_three);
+}
+
+void draw_countdown_two(sf::RenderWindow &main_window)
+{
+    main_window.draw(countdown_two);
+}
+
+void draw_countdown_one(sf::RenderWindow &main_window)
+{
+    main_window.draw(countdown_one);
 }

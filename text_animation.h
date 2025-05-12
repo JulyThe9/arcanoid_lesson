@@ -65,6 +65,39 @@ void set_loss_of_life(int &heart_number)
     heart_number--;
 }
 
+void set_countdown_three()
+{
+    countdown_three.setFont(font);
+    countdown_three.setCharacterSize(50);
+    countdown_three.setFillColor(sf::Color::Green);
+    countdown_three.setStyle(sf::Text::Bold);
+    countdown_three.setPosition(SCREENSIZE_X / 2 - 150, 700);
+    countdown_three.setString("3");
+    game_status = COUNTDOWN_THREE;
+}
+
+void set_countdown_two()
+{
+    countdown_two.setFont(font);
+    countdown_two.setCharacterSize(50);
+    countdown_two.setFillColor(sf::Color::Yellow);
+    countdown_two.setStyle(sf::Text::Bold);
+    countdown_two.setPosition(SCREENSIZE_X / 2 - 150, 700);
+    countdown_two.setString("2");
+    game_status = COUNTDOWN_TWO;
+}
+
+void set_countdown_one()
+{
+    countdown_one.setFont(font);
+    countdown_one.setCharacterSize(50);
+    countdown_one.setFillColor(sf::Color::Red);
+    countdown_one.setStyle(sf::Text::Bold);
+    countdown_one.setPosition(SCREENSIZE_X / 2 - 150, 700);
+    countdown_one.setString("1");
+    game_status = GAME_ACTIVE;
+}
+
 /**
 *@brief handles animations of texts like game loss text or loss of life text
 
@@ -112,4 +145,15 @@ void text_animation(std::chrono::time_point<std::chrono::high_resolution_clock> 
             lastTime = curTtime;
         }
     }
+}
+
+std::chrono::milliseconds countdown_animation(std::chrono::time_point<std::chrono::high_resolution_clock> &lastTime,
+                        std::chrono::time_point<std::chrono::high_resolution_clock> &curTtime,
+                        std::chrono::milliseconds &timePassed)
+{
+    if (timePassed.count() > TEXT_VISIBLE_PERIOD)
+        {
+            lastTime = curTtime;
+        }
+    return timePassed;
 }

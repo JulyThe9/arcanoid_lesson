@@ -60,10 +60,21 @@ float godspeed = 0.45;
 //--------
 // BLOCK SOUNDS
 //--------
-sf::SoundBuffer buffer_dirt1;
-sf::Sound sound_dirt1;
-sf::SoundBuffer buffer_dirt2;
-sf::Sound sound_dirt2;
+sf::SoundBuffer buffer_dirt;
+sf::Sound sound_dirt;
+sf::SoundBuffer buffer_ice;
+sf::Sound sound_ice;
+sf::SoundBuffer buffer_poison;
+sf::Sound sound_poison;
+sf::SoundBuffer buffer_explosion;
+sf::Sound sound_explosion;
+sf::SoundBuffer buffer_wall;
+sf::Sound sound_wall;
+sf::SoundBuffer buffer_platform;
+sf::Sound sound_platform;
+
+sf::Sound current_sound;
+
 
 //--------
 // BLOCK TEXTURES
@@ -96,6 +107,9 @@ bool game_active = true;
 sf::Text heart_deduction_text;
 sf::Text no_hearts_text;
 sf::Text game_won_text;
+sf::Text countdown_three;
+sf::Text countdown_two;
+sf::Text countdown_one;
 
 //-------------------------------------------------------------------
 /**
@@ -171,6 +185,25 @@ enum game_status_type
     HEART_DEDUCTION,
     HEARTS_GONE,
     BLOCKS_GONE,
+    COUNTDOWN_THREE,
+    COUNTDOWN_TWO,
+    COUNTDOWN_ONE,
+};
+
+enum sound_type
+{
+    DIRT_SOUND,
+    EXPLOSION_SOUND,
+    ICE_SOUND,
+    POISON_SOUND,
+    WALL_SOUND,
+    PLATFORM_SOUND,
+    VICTORY_SOUND,
+    LOSS_SOUND,
+    HEART_DEDUCTION_SOUND,
+    BACKGROUND_SOUND,
+    HEART_INCREASE_SOUND,
+    HIT_BARRIER_SOUND,
 };
 
 //-------------------------------------------------------------------
@@ -196,8 +229,9 @@ struct block_type
     int block_value;
     //explosion radius to check if its large explosion radius(true) or small explosion radius(false), used in hit_block()
     bool radius;
+    sound_type block_sound;
 
-    block_type(int blockXPar, int blockYPar, sf::Texture texturepar, block_texture_types texturetypepar, int block_valuepar, bool radiuspar)
+    block_type(int blockXPar, int blockYPar, sf::Texture texturepar, block_texture_types texturetypepar, int block_valuepar, bool radiuspar, sound_type block_soundpar)
     {
         blockX = blockXPar;
         blockY = blockYPar;
@@ -216,6 +250,7 @@ struct block_type
         //value of score points a block type has
         block_value = block_valuepar;
         radius = radiuspar;
+        block_sound = block_soundpar;
     }
 };
 

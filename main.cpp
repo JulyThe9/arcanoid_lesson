@@ -27,6 +27,8 @@
 using namespace std::chrono;
 
 //-------------------------------------------------------------------
+
+
 int main()
 {
     // Create the main window
@@ -35,6 +37,8 @@ int main()
     sf::Event event;
 
     init_textures();
+
+    init_sounds();
 
     //for random block generation
     std::srand(std::time(0));
@@ -64,10 +68,10 @@ int main()
 
     sf::Mouse::setPosition({curr_gamestate.platform.platform_starter_x, curr_gamestate.platform.y}, main_window); // window is a sf::Window
 
+
 	// Start the game loop
     while (main_window.isOpen() && game_active)
     {
-
         std::chrono::time_point<std::chrono::high_resolution_clock> curTtime = high_resolution_clock::now();
         std::chrono::milliseconds timePassed = duration_cast<milliseconds>(curTtime - lastTime);
 

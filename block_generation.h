@@ -20,6 +20,7 @@ sf::Texture curr_block_texture;
 block_texture_types current_texture_type;
 int current_block_value;
 bool radius;
+sound_type block_sound;
 
 
 //forward declaration: tells compiler "all good I have this covered"
@@ -33,6 +34,7 @@ void set_as_dirt1()
     curr_block_texture = texture_dirt;
     current_texture_type = TEXTURE_TYPE_DIRT;
     current_block_value = 1;
+    block_sound = DIRT_SOUND;
 }
 
 /**
@@ -43,6 +45,7 @@ void set_as_dirt2()
     curr_block_texture = texture_dirt2;
     current_texture_type = TEXTURE_TYPE_DIRT2;
     current_block_value = 5;
+    block_sound = DIRT_SOUND;
 }
 
 /**
@@ -53,6 +56,7 @@ void set_as_ice()
     curr_block_texture = texture_ice;
     current_texture_type = TEXTURE_TYPE_ICE;
     current_block_value = 10;
+    block_sound = ICE_SOUND;
 }
 
 /**
@@ -63,6 +67,7 @@ void set_as_poison()
     curr_block_texture = texture_poison;
     current_texture_type = TEXTURE_TYPE_POISON;
     current_block_value = 20;
+    block_sound = POISON_SOUND;
 }
 
 /**
@@ -74,6 +79,8 @@ void set_as_explosion()
     current_texture_type = TEXTURE_TYPE_EXPLOSION_SMALL;
     current_block_value = 1;
     radius = false;
+    block_sound = EXPLOSION_SOUND;
+
 }
 
 /**
@@ -85,6 +92,7 @@ void set_as_explosion_large()
     current_texture_type = TEXTURE_TYPE_EXPLOSION_LARGE;
     current_block_value = 2;
     radius = true;
+    block_sound = EXPLOSION_SOUND;
 }
 
 /**
@@ -176,7 +184,7 @@ void generate_row(block_texture_types starterblock, int &localblockX, int &local
 
 
         vector_columns.push_back(block_type(localblockX, localblockY,
-                                                curr_block_texture, current_texture_type, current_block_value, radius));
+                                                curr_block_texture, current_texture_type, current_block_value, radius, block_sound));
         if(i + 1 == block_columns)
         {
             localblockY += BLOCK_LEN;
@@ -232,5 +240,26 @@ void create_blocks_graphics()
         }
         curr_gamestate.blocks_graphics.push_back(vector_graphics_block);
         vector_graphics_block.clear();
+    }
+}
+
+
+sf::SoundBuffer map_sounds(sound_type block_sound)
+{
+    if(block_sound == DIRT_SOUND)
+    {
+        return buffer_dirt;
+    }
+    else if(block_sound == ICE_SOUND)
+    {
+        return buffer_ice;
+    }
+    else if(block_sound == POISON_SOUND)
+    {
+        return buffer_poison;
+    }
+    else if(block_sound == EXPLOSION_SOUND)
+    {
+        return buffer_explosion;
     }
 }
