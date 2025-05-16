@@ -72,9 +72,8 @@ sf::SoundBuffer buffer_wall;
 sf::Sound sound_wall;
 sf::SoundBuffer buffer_platform;
 sf::Sound sound_platform;
-
 sf::Sound current_sound;
-
+sf::SoundBuffer current_buffer;
 
 //--------
 // BLOCK TEXTURES
@@ -107,9 +106,6 @@ bool game_active = true;
 sf::Text heart_deduction_text;
 sf::Text no_hearts_text;
 sf::Text game_won_text;
-sf::Text countdown_three;
-sf::Text countdown_two;
-sf::Text countdown_one;
 
 //-------------------------------------------------------------------
 /**
@@ -185,25 +181,16 @@ enum game_status_type
     HEART_DEDUCTION,
     HEARTS_GONE,
     BLOCKS_GONE,
-    COUNTDOWN_THREE,
-    COUNTDOWN_TWO,
-    COUNTDOWN_ONE,
 };
 
 enum sound_type
 {
     DIRT_SOUND,
-    EXPLOSION_SOUND,
     ICE_SOUND,
     POISON_SOUND,
+    EXPLOSION_SOUND,
     WALL_SOUND,
     PLATFORM_SOUND,
-    VICTORY_SOUND,
-    LOSS_SOUND,
-    HEART_DEDUCTION_SOUND,
-    BACKGROUND_SOUND,
-    HEART_INCREASE_SOUND,
-    HIT_BARRIER_SOUND,
 };
 
 //-------------------------------------------------------------------

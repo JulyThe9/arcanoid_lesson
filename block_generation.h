@@ -80,7 +80,6 @@ void set_as_explosion()
     current_block_value = 1;
     radius = false;
     block_sound = EXPLOSION_SOUND;
-
 }
 
 /**

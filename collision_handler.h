@@ -24,10 +24,8 @@ void handle_collision_walls()
         last_collision = COLLISION_CASE_RIGHT;
         handle_collision(COLLISION_CASE_RIGHT);
 
-        /*
-        sf::Sound current_sound(buffer_wall);
+        current_sound.setBuffer(buffer_wall);
         current_sound.play();
-        */
     }
     else if(curr_gamestate.ball.curr_y <= status_bar_length)
     {
@@ -38,10 +36,8 @@ void handle_collision_walls()
         last_collision = COLLISION_CASE_TOP;
         handle_collision(COLLISION_CASE_TOP);
 
-        /*
-        sf::Sound current_sound(buffer_wall);
+        current_sound.setBuffer(buffer_wall);
         current_sound.play();
-        */
     }
     else if(curr_gamestate.ball.curr_x <= left_wall)
     {
@@ -52,10 +48,8 @@ void handle_collision_walls()
         last_collision = COLLISION_CASE_LEFT;
         handle_collision(COLLISION_CASE_LEFT);
 
-        /*
-        sf::Sound current_sound(buffer_wall);
+        current_sound.setBuffer(buffer_wall);
         current_sound.play();
-        */
     }
 }
 
@@ -84,10 +78,8 @@ void handle_collision_platform()
             last_collision = COLLISION_CASE_BOTTOM;
             curr_degrees = get_new_angle();
 
-            /*
-            sf::Sound current_sound(buffer_platform);
+            current_sound.setBuffer(buffer_platform);
             current_sound.play();
-            */
         }
     }
 }
@@ -145,8 +137,8 @@ void hit_block(int row, int col)
     curr_gamestate.blocks_graphics[row][col].setFillColor(sf::Color(0, 0, 0));
     add_to_score(row, col);
 
-    sf::SoundBuffer current_buffer = map_sounds(curr_gamestate.blocks[row][col].block_sound);
-    current_buffer.setBuffer(current_buffer);
+    current_buffer = map_sounds(curr_gamestate.blocks[row][col].block_sound);
+    current_sound.setBuffer(current_buffer);
     current_sound.play();
 
 

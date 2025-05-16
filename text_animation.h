@@ -52,6 +52,7 @@ void set_game_loss(int heart_number)
 
 *@param heart_number current number of heart necessary to fill that space with empty heart texture;
 */
+
 void set_loss_of_life(int &heart_number)
 {
     vector_life_data[heart_number].texture = heart_texture_empty;
@@ -64,7 +65,7 @@ void set_loss_of_life(int &heart_number)
     game_status = HEART_DEDUCTION;
     heart_number--;
 }
-
+/*
 void set_countdown_three()
 {
     countdown_three.setFont(font);
@@ -97,6 +98,7 @@ void set_countdown_one()
     countdown_one.setString("1");
     game_status = GAME_ACTIVE;
 }
+*/
 
 /**
 *@brief handles animations of texts like game loss text or loss of life text

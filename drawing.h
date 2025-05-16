@@ -135,7 +135,7 @@ void draw_heart_deduction_text(sf::RenderWindow &main_window)
 {
     main_window.draw(heart_deduction_text);
 }
-
+/*
 void draw_countdown_three(sf::RenderWindow &main_window)
 {
     main_window.draw(countdown_three);
@@ -150,3 +150,4 @@ void draw_countdown_one(sf::RenderWindow &main_window)
 {
     main_window.draw(countdown_one);
 }
+*/
