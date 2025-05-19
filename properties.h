@@ -58,7 +58,7 @@ bool crazy_ballspeed = true;
 float godspeed = 0.45;
 
 //--------
-// BLOCK SOUNDS
+// SOUNDS
 //--------
 sf::SoundBuffer buffer_dirt;
 sf::Sound sound_dirt;
@@ -74,6 +74,9 @@ sf::SoundBuffer buffer_platform;
 sf::Sound sound_platform;
 sf::Sound current_sound;
 sf::SoundBuffer current_buffer;
+
+sf::Music music;
+
 
 //--------
 // BLOCK TEXTURES

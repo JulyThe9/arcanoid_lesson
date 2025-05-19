@@ -71,7 +71,7 @@ void init_sounds()
     {
         throw std::runtime_error("Failed to load audio: sounds/dirt_sound.wav");
     }
-    else if (!buffer_ice.loadFromFile("sounds/ice_sound.wav"))
+    else if (!buffer_ice.loadFromFile("sounds/ice_sound_one.wav"))
     {
         throw std::runtime_error("Failed to load audio: sounds/ice_sound.wav");
     }
@@ -79,7 +79,7 @@ void init_sounds()
     {
         throw std::runtime_error("Failed to load audio: sounds/poison_sound.wav");
     }
-    else if (!buffer_explosion.loadFromFile("sounds/explosion_sound.wav"))
+    else if (!buffer_explosion.loadFromFile("sounds/explosion_sound_two.wav"))
     {
         throw std::runtime_error("Failed to load audio: sounds/explosion_sound.wav");
     }
@@ -90,5 +90,18 @@ void init_sounds()
     else if (!buffer_platform.loadFromFile("sounds/dirt_sound.wav"))
     {
         throw std::runtime_error("Failed to load audio: sounds/dirt_sound.wav");
+    }
+    else if (!music.openFromFile("sounds/background_music.mp3"))
+    {
+        throw std::runtime_error("Failed to load audio: sounds/background_music.mp3");
+    }
+}
+
+void init_fonts()
+{
+    if (!font.loadFromFile("fonts/ArialCEBoldItalic.ttf"))
+    {
+        // Handle error
+        throw std::runtime_error("Failed to load font: bank-gothic-font.ttf");
     }
 }

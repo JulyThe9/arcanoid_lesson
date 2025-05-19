@@ -1,3 +1,12 @@
+void play_wall_sound()
+{
+    sound_wall.setBuffer(buffer_wall);
+    sound_wall.setVolume(10);
+    sound_wall.play();
+}
+
+
+
 /**
 *@file collision_handler.h
 *@brief handles collisions for blocks, walls, platform, etc.
@@ -24,8 +33,7 @@ void handle_collision_walls()
         last_collision = COLLISION_CASE_RIGHT;
         handle_collision(COLLISION_CASE_RIGHT);
 
-        current_sound.setBuffer(buffer_wall);
-        current_sound.play();
+        play_wall_sound();
     }
     else if(curr_gamestate.ball.curr_y <= status_bar_length)
     {
@@ -36,8 +44,7 @@ void handle_collision_walls()
         last_collision = COLLISION_CASE_TOP;
         handle_collision(COLLISION_CASE_TOP);
 
-        current_sound.setBuffer(buffer_wall);
-        current_sound.play();
+        play_wall_sound();
     }
     else if(curr_gamestate.ball.curr_x <= left_wall)
     {
@@ -48,8 +55,7 @@ void handle_collision_walls()
         last_collision = COLLISION_CASE_LEFT;
         handle_collision(COLLISION_CASE_LEFT);
 
-        current_sound.setBuffer(buffer_wall);
-        current_sound.play();
+        play_wall_sound();
     }
 }
 

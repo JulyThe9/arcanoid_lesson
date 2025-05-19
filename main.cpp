@@ -37,8 +37,11 @@ int main()
     sf::Event event;
 
     init_textures();
-
     init_sounds();
+    init_fonts();
+
+    init_music();
+    music.play();
 
     //for random block generation
     std::srand(std::time(0));
@@ -224,6 +227,11 @@ int main()
 
         // Clear screen
         main_window.clear();
+
+        if (music.getStatus() != sf::Music::Playing)
+        {
+            music.play();
+        }
 
     }
 

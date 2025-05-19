@@ -107,16 +107,18 @@ sf::RectangleShape init_heart(lives_type &current_life, int heart_index)
 */
 void init_score()
 {
-    if (!font.loadFromFile("fonts/ArialCEBoldItalic.ttf"))
-    {
-        // Handle error
-        throw std::runtime_error("Failed to load font: bank-gothic-font.ttf");
-    }
-
     score.setFont(font);
     score.setCharacterSize(60);
     score.setFillColor(sf::Color::Red);
     score.setStyle(sf::Text::Bold);
     score.setPosition(SCREENSIZE_X - 300, 25);
     score.setString(curr_gamestate.score_number);
+}
+
+
+void init_music()
+{
+    music.setLoop(true);
+    music.setPitch(1.0f);
+    music.setVolume(5.0f);
 }
