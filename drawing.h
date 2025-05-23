@@ -151,3 +151,36 @@ void draw_countdown_one(sf::RenderWindow &main_window)
     main_window.draw(countdown_one);
 }
 */
+
+void draw_powerup(sf::RenderWindow &main_window)
+{
+    for(int i = 0; i < powerups.size(); i++)
+    {
+        if(powerups[i].powerup_active)
+        {
+            float time;
+
+            if(powerups[i].first_activation)
+            {
+                powerups[i].powerup_clock.restart();
+                time = 0;
+                powerups[i].first_activation = false;
+            }
+            else
+            {
+                time = powerups[i].powerup_clock.restart().asSeconds();
+            }
+
+            sf::Vector2f position = powerups[i].graphic.getPosition();
+
+            position.y += powerups[i].powerupSpeed * time;
+            powerups[i].graphic.setPosition(position);
+
+            main_window.draw(powerups[i].graphic);
+        }
+        else
+        {
+            powerups[i].first_activation = true;
+        }
+    }
+}

@@ -1,3 +1,5 @@
+
+
 void play_wall_sound()
 {
     sound_wall.setBuffer(buffer_wall);
@@ -68,7 +70,7 @@ void handle_collision_walls()
 void handle_collision_platform()
 {
     // margin for collisions for normal speed
-    double collision_margin = curr_gamestate.ball.speed;
+    double collision_margin = curr_gamestate.ball.speed;//curr_gamestate.ball.speed;
     // margin for collisions for godspeed
     double collision_margin_godmode = godspeed;
 
@@ -86,6 +88,23 @@ void handle_collision_platform()
 
             current_sound.setBuffer(buffer_platform);
             current_sound.play();
+        }
+    }
+
+    for(int i = 0; i < powerups.size(); i++)
+    {
+        sf::Vector2f position = powerups[i].graphic.getPosition();
+
+        if(position.y > curr_gamestate.platform.y - curr_gamestate.platform.len - 20 &&
+           position.y < curr_gamestate.platform.y - curr_gamestate.platform.len - 20 + collision_margin)
+        {
+            if(position.x > curr_gamestate.platform.x &&
+               position.x < curr_gamestate.platform.x + curr_gamestate.platform.width)
+            {
+                powerup.setFillColor(sf::Color::Black);
+                powerups[i].powerup_active = false;
+                cout << "caught powerup" << endl;
+            }
         }
     }
 }
@@ -156,11 +175,18 @@ void hit_block(int row, int col)
             curr_gamestate.ball.speed = godspeed;
         }
     }
-
+    /*
     if(curr_gamestate.block_amount == 0)
     {
         set_game_won();
     }
+    */
+
+
+    powerup_type curr_powerup(curr_gamestate.blocks[row][col].blockX, curr_gamestate.blocks[row][col].blockY, POWERUP_SPEED, curr_gamestate.blocks[row][col]);
+    curr_powerup.powerup_active = true;
+    powerups.push_back(curr_powerup);
+
 }
 
 
@@ -334,7 +360,7 @@ void handle_collision_barrier()
             cout << "barrier y: " << barrier_obj.y << endl;
 #endif
         last_collision = COLLISION_CASE_BOTTOM;
-        hit_barrier();
+        //hit_barrier();
         handle_collision(COLLISION_CASE_BOTTOM);
 
         /*

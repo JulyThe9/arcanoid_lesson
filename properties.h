@@ -23,6 +23,8 @@ using namespace std;
 
 #define BALL_SPEED 0.4
 
+#define POWERUP_SPEED 400
+
 //#define DEBUG
 //-------------------------------------------------------------------
 
@@ -32,6 +34,7 @@ const double PLATFORM_INITIAL_Y = SCREENSIZE_Y - 120;
 
 const int BALL_START_POSX = SCREENSIZE_X / 2;
 const int BALL_START_POSY = SCREENSIZE_Y / 2 + 100;
+
 
 //--------
 // WALLS
@@ -77,6 +80,7 @@ sf::SoundBuffer current_buffer;
 
 sf::Music music;
 
+sf::RectangleShape powerup;
 
 //--------
 // BLOCK TEXTURES
@@ -197,6 +201,8 @@ enum sound_type
 };
 
 //-------------------------------------------------------------------
+
+
 /**
 *@brief a struct representing the block_type blocks logic
 */
@@ -241,6 +247,31 @@ struct block_type
         block_value = block_valuepar;
         radius = radiuspar;
         block_sound = block_soundpar;
+    }
+};
+
+
+sf::RectangleShape init_powerup(block_type &current_block);
+
+struct powerup_type
+{
+    bool powerup_active;
+    bool first_activation;
+
+    float x;
+    float y;
+    sf::Clock powerup_clock;
+    float powerupSpeed;
+    sf::RectangleShape graphic;
+
+    powerup_type(int xpar, int ypar, float powerupSpeedpar, block_type blockpar)
+    {
+        x = xpar;
+        y = ypar;
+        powerup_active = false;
+        first_activation = true;
+        powerupSpeed = powerupSpeedpar;
+        graphic = init_powerup(blockpar);
     }
 };
 
@@ -433,6 +464,9 @@ int block_rows = (SCREENSIZE_Y - (PLATFORM_INITIAL_Y / 1.2)) / BLOCK_LEN;
 int block_columns = (SCREENSIZE_X - 2 * BLOCK_WIDTH) / BLOCK_WIDTH - 1;
 
 GameState curr_gamestate;
+
+vector<powerup_type> powerups;
+
 
 /**
 *@brief initializes GameState(called in main)

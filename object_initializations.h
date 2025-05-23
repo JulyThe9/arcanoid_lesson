@@ -122,3 +122,14 @@ void init_music()
     music.setPitch(1.0f);
     music.setVolume(5.0f);
 }
+
+
+sf::RectangleShape init_powerup(block_type &current_block)
+{
+    powerup = sf::RectangleShape(sf::Vector2f(30, 30));
+    powerup.setFillColor(sf::Color::White);
+
+    powerup.setPosition(current_block.blockX, current_block.blockY);
+
+    return powerup;
+}

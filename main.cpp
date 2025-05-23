@@ -109,7 +109,6 @@ int main()
                     curr_gamestate.platform.x = right_wall - curr_gamestate.platform.width;
                 }
 
-                /*
                 curr_gamestate.platform.width = curr_gamestate.platform.y / 8;
                 sf::RectangleShape plat_new(sf::Vector2f(curr_gamestate.platform.width,
                                              curr_gamestate.platform.len));
@@ -134,7 +133,7 @@ int main()
                 {
                     curr_gamestate.platform.y = bottom_wall - curr_gamestate.platform.len;
                 }
-                */
+
             }
 
 
@@ -168,6 +167,7 @@ int main()
             check_gamestate();
 
         }
+        /*
         else if(game_status == HEART_DEDUCTION)
         {
 
@@ -213,6 +213,7 @@ int main()
                 }
             }
         }
+        */
 
         draw_blocks(main_window);
         draw_plat(main_window, plat);
@@ -222,6 +223,9 @@ int main()
         draw_status_bar_logo(main_window, status_bar_logo);
         draw_score(main_window);
         draw_hearts(main_window);
+        draw_powerup(main_window);
+
+        cout << powerups.size() << endl;
 
         main_window.display();
 
@@ -232,7 +236,6 @@ int main()
         {
             music.play();
         }
-
     }
 
     return EXIT_SUCCESS;
