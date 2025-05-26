@@ -24,6 +24,8 @@ using namespace std;
 #define BALL_SPEED 0.4
 
 #define POWERUP_SPEED 400
+#define POWERUP_WID 30
+#define POWERUP_LEN 30
 
 //#define DEBUG
 //-------------------------------------------------------------------
@@ -253,6 +255,7 @@ struct block_type
 
 sf::RectangleShape init_powerup(block_type &current_block);
 
+
 struct powerup_type
 {
     bool powerup_active;
@@ -264,7 +267,7 @@ struct powerup_type
     float powerupSpeed;
     sf::RectangleShape graphic;
 
-    powerup_type(int xpar, int ypar, float powerupSpeedpar, block_type blockpar)
+    powerup_type(int xpar, int ypar, float powerupSpeedpar, block_type &blockpar)
     {
         x = xpar;
         y = ypar;

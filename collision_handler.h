@@ -98,16 +98,16 @@ void handle_collision_platform()
         if(position.y > curr_gamestate.platform.y - curr_gamestate.platform.len - 20 &&
            position.y < curr_gamestate.platform.y - curr_gamestate.platform.len - 20 + collision_margin)
         {
-            if(position.x > curr_gamestate.platform.x &&
-               position.x < curr_gamestate.platform.x + curr_gamestate.platform.width)
+            if(position.x + POWERUP_WID > curr_gamestate.platform.x &&
+               position.x < curr_gamestate.platform.x + curr_gamestate.platform.width + POWERUP_WID)
             {
-                powerup.setFillColor(sf::Color::Black);
                 powerups[i].powerup_active = false;
-                cout << "caught powerup" << endl;
+                powerups.erase(powerups.begin() + i);
             }
         }
     }
 }
+
 
 //make block disappear
 /**
@@ -183,10 +183,12 @@ void hit_block(int row, int col)
     */
 
 
-    powerup_type curr_powerup(curr_gamestate.blocks[row][col].blockX, curr_gamestate.blocks[row][col].blockY, POWERUP_SPEED, curr_gamestate.blocks[row][col]);
+    powerup_type curr_powerup(curr_gamestate.blocks[row][col].blockX,
+                              curr_gamestate.blocks[row][col].blockY,
+                              POWERUP_SPEED,
+                              curr_gamestate.blocks[row][col]);
     curr_powerup.powerup_active = true;
     powerups.push_back(curr_powerup);
-
 }
 
 
@@ -360,13 +362,8 @@ void handle_collision_barrier()
             cout << "barrier y: " << barrier_obj.y << endl;
 #endif
         last_collision = COLLISION_CASE_BOTTOM;
-        //hit_barrier();
+        hit_barrier();
         handle_collision(COLLISION_CASE_BOTTOM);
-
-        /*
-        sf::Sound current_sound(buffer_wall);
-        current_sound.play();
-        */
     }
 }
 
@@ -378,4 +375,18 @@ void check_gamestate()
 {
     if(game_active == false)
     cout << "--Game Over--" << endl;
+}
+
+
+void handle_deletion_powerup()
+{
+    for(int i = 0; i < powerups.size(); i++)
+    {
+        sf::Vector2f position = powerups[i].graphic.getPosition();
+        if(position.y > barrier_obj.y - POWERUP_LEN)
+        {
+            powerups[i].powerup_active = false;
+            powerups.erase(powerups.begin() + i);
+        }
+    }
 }

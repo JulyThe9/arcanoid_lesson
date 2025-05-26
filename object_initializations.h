@@ -126,7 +126,7 @@ void init_music()
 
 sf::RectangleShape init_powerup(block_type &current_block)
 {
-    powerup = sf::RectangleShape(sf::Vector2f(30, 30));
+    powerup = sf::RectangleShape(sf::Vector2f(POWERUP_WID, POWERUP_LEN));
     powerup.setFillColor(sf::Color::White);
 
     powerup.setPosition(current_block.blockX, current_block.blockY);

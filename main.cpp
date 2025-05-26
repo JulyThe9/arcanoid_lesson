@@ -112,7 +112,7 @@ int main()
                 curr_gamestate.platform.width = curr_gamestate.platform.y / 8;
                 sf::RectangleShape plat_new(sf::Vector2f(curr_gamestate.platform.width,
                                              curr_gamestate.platform.len));
-
+                /*
                 plat = plat_new;
 
                 //Y
@@ -133,6 +133,7 @@ int main()
                 {
                     curr_gamestate.platform.y = bottom_wall - curr_gamestate.platform.len;
                 }
+                */
 
             }
 
@@ -160,6 +161,8 @@ int main()
             handle_collision_platform();
             handle_collision_barrier();
 
+            handle_deletion_powerup();
+
             ball.setPosition(curr_gamestate.ball.curr_x, curr_gamestate.ball.curr_y);
             plat.setPosition(curr_gamestate.platform.x, curr_gamestate.platform.y);
             barrier.setPosition(barrier_obj.x, barrier_obj.y);
@@ -167,7 +170,6 @@ int main()
             check_gamestate();
 
         }
-        /*
         else if(game_status == HEART_DEDUCTION)
         {
 
@@ -213,7 +215,6 @@ int main()
                 }
             }
         }
-        */
 
         draw_blocks(main_window);
         draw_plat(main_window, plat);
@@ -224,8 +225,6 @@ int main()
         draw_score(main_window);
         draw_hearts(main_window);
         draw_powerup(main_window);
-
-        cout << powerups.size() << endl;
 
         main_window.display();
 
