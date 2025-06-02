@@ -61,6 +61,29 @@ void handle_collision_walls()
     }
 }
 
+
+diff_powerups get_specific_powerup()
+{
+    int random_number = (std::rand() % 100);
+
+    if (random_number < 10)
+        return BALL_DUPLICATION;
+    else if (random_number < 20)
+        return TRAJECTORY_PREDICTION;
+    else if (random_number < 30)
+        return LAZER;
+    else if (random_number < 45)
+        return BALL_INVIS;
+    else if (random_number < 60)
+        return REVERSE_CONTROLS;
+    else if (random_number < 75)
+        return DIRECTION_RANDOMIZATION;
+    else if (random_number < 87)
+        return PLAT_Y_AXIS;
+    else
+        return REMIX_BLOCK_GENERATION;
+}
+
 // ---------------------------------
 // PLATFORM COLLISION DETECTION HERE
 // ---------------------------------
@@ -69,19 +92,15 @@ void handle_collision_walls()
 */
 void handle_collision_platform()
 {
-    // margin for collisions for normal speed
-    double collision_margin = curr_gamestate.ball.speed;//curr_gamestate.ball.speed;
-    // margin for collisions for godspeed
+    double collision_margin = curr_gamestate.ball.speed;
     double collision_margin_godmode = godspeed;
 
-    if(curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 >= curr_gamestate.platform.y &&
-       (curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 < curr_gamestate.platform.y + collision_margin ||
-        curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 < curr_gamestate.platform.y + collision_margin_godmode))
+    if (curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 >= curr_gamestate.platform.y &&
+        (curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 < curr_gamestate.platform.y + collision_margin ||
+         curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 < curr_gamestate.platform.y + collision_margin_godmode))
     {
-        if(curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius > curr_gamestate.platform.x &&
-           curr_gamestate.ball.curr_x < curr_gamestate.platform.x + curr_gamestate.platform.width)
-        if(curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius > curr_gamestate.platform.x &&
-           curr_gamestate.ball.curr_x < curr_gamestate.platform.x + curr_gamestate.platform.width)
+        if (curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius > curr_gamestate.platform.x &&
+            curr_gamestate.ball.curr_x < curr_gamestate.platform.x + curr_gamestate.platform.width)
         {
             last_collision = COLLISION_CASE_BOTTOM;
             curr_degrees = get_new_angle();
@@ -91,18 +110,45 @@ void handle_collision_platform()
         }
     }
 
-    for(int i = 0; i < powerups.size(); i++)
+
+    diff_powerups curr_spec_powerup = get_specific_powerup();
+
+    for (int i = 0; i < powerups.size(); i++)
     {
         sf::Vector2f position = powerups[i].graphic.getPosition();
 
-        if(position.y > curr_gamestate.platform.y - curr_gamestate.platform.len - 20 &&
-           position.y < curr_gamestate.platform.y - curr_gamestate.platform.len - 20 + collision_margin)
+        if (position.y > curr_gamestate.platform.y - curr_gamestate.platform.len - 20 &&
+            position.y < curr_gamestate.platform.y - curr_gamestate.platform.len - 20 + collision_margin)
         {
-            if(position.x + POWERUP_WID > curr_gamestate.platform.x &&
-               position.x < curr_gamestate.platform.x + curr_gamestate.platform.width + POWERUP_WID)
+            if (position.x + POWERUP_WID > curr_gamestate.platform.x &&
+                position.x < curr_gamestate.platform.x + curr_gamestate.platform.width + POWERUP_WID)
             {
+                powerup_status type = powerups[i].type;
+
+                bool timer_exists = false;
+                for (auto& timer : timers)
+                {
+                    if (timer.specific_powerup == curr_spec_powerup && timer.timer_active)
+                    {
+                        timer.powerup_clock.restart();
+                        timer_exists = true;
+                        break;
+                    }
+                }
+
+                if (timer_exists == false)
+                {
+                    int pos_x = SCREENSIZE_X - 110;
+                    int pos_y = SCREENSIZE_Y - 50 - (timers.size() * (TIMER_LEN + 10));
+
+                    timer_type new_timer(pos_x, pos_y, type, curr_spec_powerup);
+                    new_timer.timer_active = true;
+                    timers.push_back(new_timer);
+                }
+
                 powerups[i].powerup_active = false;
                 powerups.erase(powerups.begin() + i);
+                i--;
             }
         }
     }
@@ -175,20 +221,48 @@ void hit_block(int row, int col)
             curr_gamestate.ball.speed = godspeed;
         }
     }
-    /*
+
     if(curr_gamestate.block_amount == 0)
     {
         set_game_won();
     }
-    */
 
 
-    powerup_type curr_powerup(curr_gamestate.blocks[row][col].blockX,
-                              curr_gamestate.blocks[row][col].blockY,
-                              POWERUP_SPEED,
-                              curr_gamestate.blocks[row][col]);
-    curr_powerup.powerup_active = true;
-    powerups.push_back(curr_powerup);
+
+    int random_number = (std::rand() % 100);
+    int second_random_number = (std::rand() % 100);
+    if (random_number > 80)
+    {
+        powerup_type curr_powerup(0, 0, POWERUP_SPEED, curr_gamestate.blocks[row][col], BUFF_POWERUP);
+
+        if (second_random_number <= 60)
+        {
+            curr_powerup = powerup_type(curr_gamestate.blocks[row][col].blockX,
+                                        curr_gamestate.blocks[row][col].blockY,
+                                        POWERUP_SPEED,
+                                        curr_gamestate.blocks[row][col],
+                                        BUFF_POWERUP);
+        }
+        else if (random_number <= 90)
+        {
+            curr_powerup = powerup_type(curr_gamestate.blocks[row][col].blockX,
+                                        curr_gamestate.blocks[row][col].blockY,
+                                        POWERUP_SPEED,
+                                        curr_gamestate.blocks[row][col],
+                                        DEBUFF_POWERUP);
+        }
+        else
+        {
+            curr_powerup = powerup_type(curr_gamestate.blocks[row][col].blockX,
+                                        curr_gamestate.blocks[row][col].blockY,
+                                        POWERUP_SPEED,
+                                        curr_gamestate.blocks[row][col],
+                                        JOKER_POWERUP);
+        }
+
+        curr_powerup.powerup_active = true;
+        powerups.push_back(curr_powerup);
+    }
 }
 
 
@@ -229,7 +303,7 @@ void hit_barrier()
 void handle_collision_all_sides(int i, int j)
 {
     // margin for collisions for normal speed
-    double collision_margin = curr_gamestate.ball.speed;
+    double collision_margin = curr_gamestate.platform.len;//curr_gamestate.ball.speed;
     // margin for collisions for godspeed
     double collision_margin_godmode = godspeed;
 

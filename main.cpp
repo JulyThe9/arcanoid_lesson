@@ -225,6 +225,7 @@ int main()
         draw_score(main_window);
         draw_hearts(main_window);
         draw_powerup(main_window);
+        draw_timer(main_window);
 
         main_window.display();
 

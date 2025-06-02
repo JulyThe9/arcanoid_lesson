@@ -27,6 +27,9 @@ using namespace std;
 #define POWERUP_WID 30
 #define POWERUP_LEN 30
 
+#define TIMER_WIDTH 100
+#define TIMER_LEN 10
+
 //#define DEBUG
 //-------------------------------------------------------------------
 
@@ -60,7 +63,7 @@ bool godmode_active = false;
 bool crazy_ballspeed = true;
 
 // godspeed if block amount are under 4 and ballspeed is true
-float godspeed = 0.45;
+float godspeed = 0.8;
 
 //--------
 // SOUNDS
@@ -83,6 +86,8 @@ sf::SoundBuffer current_buffer;
 sf::Music music;
 
 sf::RectangleShape powerup;
+sf::RectangleShape timer;
+
 
 //--------
 // BLOCK TEXTURES
@@ -202,6 +207,28 @@ enum sound_type
     PLATFORM_SOUND,
 };
 
+enum powerup_status
+{
+    JOKER_POWERUP,
+    DEBUFF_POWERUP,
+    BUFF_POWERUP,
+};
+
+enum diff_powerups
+{
+    //BUFFS
+    BALL_DUPLICATION,
+    TRAJECTORY_PREDICTION,
+    LAZER,
+    //DEBUFFS
+    BALL_INVIS,
+    REVERSE_CONTROLS,
+    DIRECTION_RANDOMIZATION,
+    //JOKERS
+    PLAT_Y_AXIS,
+    REMIX_BLOCK_GENERATION,
+};
+
 //-------------------------------------------------------------------
 
 
@@ -253,7 +280,7 @@ struct block_type
 };
 
 
-sf::RectangleShape init_powerup(block_type &current_block);
+sf::RectangleShape init_powerup(block_type &current_block, powerup_status type);
 
 
 struct powerup_type
@@ -266,18 +293,52 @@ struct powerup_type
     sf::Clock powerup_clock;
     float powerupSpeed;
     sf::RectangleShape graphic;
+    powerup_status type;
 
-    powerup_type(int xpar, int ypar, float powerupSpeedpar, block_type &blockpar)
+
+    powerup_type(int xpar, int ypar, float powerupSpeedpar, block_type &blockpar, powerup_status typepar)
     {
         x = xpar;
         y = ypar;
         powerup_active = false;
         first_activation = true;
         powerupSpeed = powerupSpeedpar;
-        graphic = init_powerup(blockpar);
+        graphic = init_powerup(blockpar, typepar);
+        type = typepar;
     }
 };
 
+sf::RectangleShape init_timer_graphic(powerup_status type);
+
+struct timer_type
+{
+    int len;
+    int width;
+
+    float x;
+    float y;
+
+    bool timer_active;
+
+    sf::Clock powerup_clock;
+    sf::RectangleShape graphic;
+
+    float duration = 8;
+
+    diff_powerups specific_powerup;
+
+    timer_type(int xpar, int ypar, powerup_status typepar, diff_powerups specific_poweruppar)
+    {
+        len = TIMER_LEN;
+        width = TIMER_WIDTH;
+        x = xpar;
+        y = ypar;
+        timer_active = false;
+        graphic = init_timer_graphic(typepar);
+        graphic.setPosition(x, y);
+        specific_powerup = specific_poweruppar;
+    }
+};
 
 /**
 *@brief a struct representing the platform_type platform logic
@@ -469,6 +530,7 @@ int block_columns = (SCREENSIZE_X - 2 * BLOCK_WIDTH) / BLOCK_WIDTH - 1;
 GameState curr_gamestate;
 
 vector<powerup_type> powerups;
+vector<timer_type> timers;
 
 
 /**

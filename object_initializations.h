@@ -124,12 +124,32 @@ void init_music()
 }
 
 
-sf::RectangleShape init_powerup(block_type &current_block)
+sf::RectangleShape init_powerup(block_type &current_block, powerup_status type)
 {
     powerup = sf::RectangleShape(sf::Vector2f(POWERUP_WID, POWERUP_LEN));
-    powerup.setFillColor(sf::Color::White);
+
+    if(type == BUFF_POWERUP)
+        powerup.setFillColor(sf::Color::Yellow);
+    else if(type == DEBUFF_POWERUP)
+        powerup.setFillColor(sf::Color::Blue);
+    else
+        powerup.setFillColor(sf::Color::Green);
 
     powerup.setPosition(current_block.blockX, current_block.blockY);
 
     return powerup;
+}
+
+sf::RectangleShape init_timer_graphic(powerup_status type)
+{
+    sf::RectangleShape timer(sf::Vector2f(100, 10));
+
+    if (type == BUFF_POWERUP)
+        timer.setFillColor(sf::Color::Yellow);
+    else if (type == DEBUFF_POWERUP)
+        timer.setFillColor(sf::Color::Blue);
+    else
+        timer.setFillColor(sf::Color::Green);
+
+    return timer;
 }

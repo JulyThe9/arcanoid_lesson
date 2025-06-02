@@ -184,3 +184,34 @@ void draw_powerup(sf::RenderWindow &main_window)
         }
     }
 }
+
+void draw_timer(sf::RenderWindow &main_window)
+{
+    for (int i = 0; i < timers.size(); i++)
+    {
+        if (timers[i].timer_active)
+        {
+            float elapsed = timers[i].powerup_clock.getElapsedTime().asSeconds();
+            float remaining = timers[i].duration - elapsed;
+
+            if (remaining <= 0)
+            {
+                timers[i].timer_active = false;
+                continue;
+            }
+
+            // Shrink timer from left to right
+            float percentage = remaining / timers[i].duration;
+            float new_width = timers[i].width * percentage;
+
+            sf::RectangleShape& bar = timers[i].graphic;
+            bar.setSize(sf::Vector2f(new_width, timers[i].len));
+
+            // To keep left side fixed, set origin to left edge and adjust position
+            bar.setOrigin(0, 0);
+            bar.setPosition(timers[i].x, timers[i].y);
+
+            main_window.draw(bar);
+        }
+    }
+}
