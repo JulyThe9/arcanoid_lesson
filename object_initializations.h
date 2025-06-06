@@ -132,7 +132,7 @@ sf::RectangleShape init_powerup(block_type &current_block, powerup_status type)
         powerup.setFillColor(sf::Color::Yellow);
     else if(type == DEBUFF_POWERUP)
         powerup.setFillColor(sf::Color::Blue);
-    else
+    else if(type == JOKER_POWERUP)
         powerup.setFillColor(sf::Color::Green);
 
     powerup.setPosition(current_block.blockX, current_block.blockY);

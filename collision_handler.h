@@ -62,26 +62,36 @@ void handle_collision_walls()
 }
 
 
-diff_powerups get_specific_powerup()
+diff_powerups get_specific_powerup(powerup_status type)
 {
     int random_number = (std::rand() % 100);
 
-    if (random_number < 10)
-        return BALL_DUPLICATION;
-    else if (random_number < 20)
-        return TRAJECTORY_PREDICTION;
-    else if (random_number < 30)
-        return LAZER;
-    else if (random_number < 45)
-        return BALL_INVIS;
-    else if (random_number < 60)
-        return REVERSE_CONTROLS;
-    else if (random_number < 75)
-        return DIRECTION_RANDOMIZATION;
-    else if (random_number < 87)
-        return PLAT_Y_AXIS;
+    if(type == BUFF_POWERUP)
+    {
+        if (random_number <= 34)
+            return BALL_DUPLICATION;
+        else if (random_number <= 67)
+            return TRAJECTORY_PREDICTION;
+        else
+            return LAZER;
+    }
+    else if(type == DEBUFF_POWERUP)
+    {
+        if (random_number <= 34)
+            return BALL_INVIS;
+        else if (random_number <= 67)
+            return REVERSE_CONTROLS;
+        else
+            return DIRECTION_RANDOMIZATION;
+    }
     else
-        return REMIX_BLOCK_GENERATION;
+    {
+        if (random_number <= 50)
+            return PLAT_Y_AXIS;
+        else
+            return REMIX_BLOCK_GENERATION;
+    }
+
 }
 
 // ---------------------------------
@@ -111,7 +121,7 @@ void handle_collision_platform()
     }
 
 
-    diff_powerups curr_spec_powerup = get_specific_powerup();
+
 
     for (int i = 0; i < powerups.size(); i++)
     {
@@ -124,13 +134,15 @@ void handle_collision_platform()
                 position.x < curr_gamestate.platform.x + curr_gamestate.platform.width + POWERUP_WID)
             {
                 powerup_status type = powerups[i].type;
+                diff_powerups curr_spec_powerup = get_specific_powerup(powerups[i].type);
 
                 bool timer_exists = false;
-                for (auto& timer : timers)
+                for (int i = 0; i < timers.size(); ++i)
                 {
-                    if (timer.specific_powerup == curr_spec_powerup && timer.timer_active)
+                    cout << "spec powerup: " << timers[i].specific_powerup << " " << i << " " << powerups[i].type << endl;
+                    if (timers[i].specific_powerup == curr_spec_powerup && timers[i].timer_active)
                     {
-                        timer.powerup_clock.restart();
+                        timers[i].powerup_clock.restart();
                         timer_exists = true;
                         break;
                     }
@@ -231,11 +243,11 @@ void hit_block(int row, int col)
 
     int random_number = (std::rand() % 100);
     int second_random_number = (std::rand() % 100);
-    if (random_number > 80)
+    if (random_number > 0)
     {
         powerup_type curr_powerup(0, 0, POWERUP_SPEED, curr_gamestate.blocks[row][col], BUFF_POWERUP);
 
-        if (second_random_number <= 60)
+        if (second_random_number <= 34)
         {
             curr_powerup = powerup_type(curr_gamestate.blocks[row][col].blockX,
                                         curr_gamestate.blocks[row][col].blockY,
@@ -243,7 +255,7 @@ void hit_block(int row, int col)
                                         curr_gamestate.blocks[row][col],
                                         BUFF_POWERUP);
         }
-        else if (random_number <= 90)
+        else if (random_number <= 67)
         {
             curr_powerup = powerup_type(curr_gamestate.blocks[row][col].blockX,
                                         curr_gamestate.blocks[row][col].blockY,

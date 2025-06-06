@@ -21,7 +21,7 @@ using namespace std;
 #define BLOCK_LEN 30
 #define BLOCK_WIDTH 90
 
-#define BALL_SPEED 0.4
+#define BALL_SPEED 0.34
 
 #define POWERUP_SPEED 400
 #define POWERUP_WID 30
@@ -323,7 +323,7 @@ struct timer_type
     sf::Clock powerup_clock;
     sf::RectangleShape graphic;
 
-    float duration = 8;
+    float duration = 15;
 
     diff_powerups specific_powerup;
 
