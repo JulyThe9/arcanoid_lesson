@@ -154,62 +154,76 @@ void draw_countdown_one(sf::RenderWindow &main_window)
 
 void draw_powerup(sf::RenderWindow &main_window)
 {
-    for(int i = 0; i < powerups.size(); i++)
+    for(int i = 0; i < falling_powerups.size(); i++)
     {
-        if(powerups[i].powerup_active)
+        if(falling_powerups[i].powerup_active)
         {
             float time;
 
-            if(powerups[i].first_activation)
+            // if its the first frame that powerup is active
+            if(falling_powerups[i].first_activation)
             {
-                powerups[i].powerup_clock.restart();
+                // restart clock
+                falling_powerups[i].powerup_clock.restart();
+                // set passed time to zero so it doesn't move instantly
                 time = 0;
-                powerups[i].first_activation = false;
+                falling_powerups[i].first_activation = false;
             }
             else
             {
-                time = powerups[i].powerup_clock.restart().asSeconds();
+                // restart the clock and get how much time passed since the last frame
+                time = falling_powerups[i].powerup_clock.restart().asSeconds();
             }
 
-            sf::Vector2f position = powerups[i].graphic.getPosition();
+            // get position
+            sf::Vector2f position = falling_powerups[i].rectangle.getPosition();
 
-            position.y += powerups[i].powerupSpeed * time;
-            powerups[i].graphic.setPosition(position);
+            // move y axis accordingly downward
+            position.y += falling_powerups[i].powerupSpeed * time;
+            // set new position
+            falling_powerups[i].rectangle.setPosition(position);
 
-            main_window.draw(powerups[i].graphic);
+            main_window.draw(falling_powerups[i].rectangle);
         }
         else
         {
-            powerups[i].first_activation = true;
+            // if powerup is not active, reset first activation for a propper setup for next time
+            falling_powerups[i].first_activation = true;
         }
     }
 }
 
 void draw_timer(sf::RenderWindow &main_window)
 {
-    for (int i = 0; i < timers.size(); i++)
+    for (int i = 0; i < cooldown_bars.size(); i++)
     {
-        if (timers[i].timer_active)
+        cooldown_bars[i].y = SCREENSIZE_Y - 50 - (i * (TIMER_HEIGHT + 10));
+        if (cooldown_bars[i].timer_active)
         {
-            float elapsed = timers[i].powerup_clock.getElapsedTime().asSeconds();
-            float remaining = timers[i].duration - elapsed;
+            // time since the timer started
+            float elapsed = cooldown_bars[i].powerup_clock.getElapsedTime().asSeconds();
+            // time left before the timer expires
+            float remaining = cooldown_bars[i].duration - elapsed;
 
             if (remaining <= 0)
             {
-                timers[i].timer_active = false;
+                cooldown_bars[i].timer_active = false;
+                cooldown_bars.erase(cooldown_bars.begin() + i);
+                i--;
                 continue;
             }
 
-            // Shrink timer from left to right
-            float percentage = remaining / timers[i].duration;
-            float new_width = timers[i].width * percentage;
+            // calculates how much of the timer bar should still be visible based on time left
+            float percentage = remaining / cooldown_bars[i].duration;
+            float new_width = cooldown_bars[i].width * percentage;
 
-            sf::RectangleShape& bar = timers[i].graphic;
-            bar.setSize(sf::Vector2f(new_width, timers[i].len));
+            // resizes the width of the bar to reflect the remaining time
+            sf::RectangleShape& bar = cooldown_bars[i].graphic;
+            bar.setSize(sf::Vector2f(new_width, cooldown_bars[i].len));
 
-            // To keep left side fixed, set origin to left edge and adjust position
+            // to keep left side fixed, set origin to left edge and adjust position
             bar.setOrigin(0, 0);
-            bar.setPosition(timers[i].x, timers[i].y);
+            bar.setPosition(cooldown_bars[i].x, cooldown_bars[i].y);
 
             main_window.draw(bar);
         }

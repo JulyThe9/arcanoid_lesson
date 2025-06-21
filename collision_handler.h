@@ -62,36 +62,118 @@ void handle_collision_walls()
 }
 
 
-diff_powerups get_specific_powerup(powerup_status type)
+void does_timer_exist(bool &timer_exists, std::variant<powerup_buff_effect_types, powerup_debuff_effect_types, powerup_joker_effect_types> curr_spec_powerup)
 {
-    int random_number = (std::rand() % 100);
+    for (int i = 0; i < cooldown_bars.size(); ++i)
+    {
+        if (cooldown_bars[i].powerup_effect == curr_spec_powerup && cooldown_bars[i].timer_active)
+        {
+            cooldown_bars[i].powerup_clock.restart();
+            timer_exists = true;
+            break;
+        }
+    }
+}
 
-    if(type == BUFF_POWERUP)
-    {
-        if (random_number <= 34)
-            return BALL_DUPLICATION;
-        else if (random_number <= 67)
-            return TRAJECTORY_PREDICTION;
-        else
-            return LAZER;
-    }
-    else if(type == DEBUFF_POWERUP)
-    {
-        if (random_number <= 34)
-            return BALL_INVIS;
-        else if (random_number <= 67)
-            return REVERSE_CONTROLS;
-        else
-            return DIRECTION_RANDOMIZATION;
-    }
-    else
-    {
-        if (random_number <= 50)
-            return PLAT_Y_AXIS;
-        else
-            return REMIX_BLOCK_GENERATION;
-    }
 
+void create_new_timers(bool &timer_exists, std::variant<powerup_buff_effect_types, powerup_debuff_effect_types, powerup_joker_effect_types> curr_spec_powerup, int i)
+{
+    if (timer_exists == false)
+    {
+        int pos_x = SCREENSIZE_X - 110;
+        int pos_y = SCREENSIZE_Y - 50 - (cooldown_bars.size() * (TIMER_HEIGHT + 10));
+
+        timer_type new_timer(pos_x, pos_y, falling_powerups[i].type, curr_spec_powerup);
+        new_timer.timer_active = true;
+        cooldown_bars.push_back(new_timer);
+    }
+}
+
+
+void clean_up_timers()
+{
+    for (int i = 0; i < falling_powerups.size(); i++)
+    {
+        falling_powerups[i].powerup_active = false;
+    }
+    for (int i = 0; i < cooldown_bars.size(); i++)
+    {
+        cooldown_bars[i].timer_active = false;
+    }
+    cooldown_bars.clear();
+}
+
+void create_powerup(int row, int col)
+{
+    int powerup_generation_chance = (std::rand() % 100);
+    if (powerup_generation_chance >= 0)
+    {
+        int powerup_type_chance = (std::rand() % 100);
+        falling_powerup_type curr_falling_powerup(0, 0, POWERUP_SPEED, curr_gamestate.blocks[row][col], BUFF);
+
+        powerup_class_types curr_powerup_type = get_weighted_random(powerup_class_map);
+        //cout << "type: " << curr_powerup_type << endl;
+
+        if (curr_powerup_type == BUFF)
+        {
+            powerup_buff_effect_types buff = get_weighted_random(buff_map);
+            //cout << "buff: " << buff << endl;
+            //cout << "---------" << endl;
+        }
+        else if (curr_powerup_type == DEBUFF)
+        {
+            powerup_debuff_effect_types debuff = get_weighted_random(debuff_map);
+            //cout << "debuff: " << debuff << endl;
+            //cout << "---------" << endl;
+        }
+        else
+        {
+            powerup_joker_effect_types joker = get_weighted_random(joker_map);
+            //cout << "joker: " << joker << endl;
+            //cout << "---------" << endl;
+        }
+
+        int curr_powerup_x = curr_gamestate.blocks[row][col].blockX + ((BLOCK_WIDTH - POWERUP_WIDTH) / 2);
+        int curr_powerup_y = curr_gamestate.blocks[row][col].blockY;
+
+        curr_falling_powerup = falling_powerup_type(curr_powerup_x,
+                                    curr_powerup_y,
+                                    POWERUP_SPEED,
+                                    curr_gamestate.blocks[row][col],
+                                    curr_powerup_type);
+
+        curr_falling_powerup.powerup_active = true;
+        falling_powerups.push_back(curr_falling_powerup);
+    }
+}
+
+void handle_collision_powerup()
+{
+    double collision_margin = curr_gamestate.ball.speed;
+
+    for (int i = 0; i < falling_powerups.size(); i++)
+    {
+        sf::Vector2f position = falling_powerups[i].rectangle.getPosition();
+
+        if (position.y > curr_gamestate.platform.y - curr_gamestate.platform.len - 20 &&
+            position.y < curr_gamestate.platform.y - curr_gamestate.platform.len - 20 + collision_margin)
+        {
+            if (position.x + POWERUP_WIDTH > curr_gamestate.platform.x &&
+                position.x < curr_gamestate.platform.x + curr_gamestate.platform.width + POWERUP_WIDTH)
+            {
+                std::variant<powerup_buff_effect_types, powerup_debuff_effect_types, powerup_joker_effect_types> curr_powerup_effect = falling_powerups[i].powerup_effect;
+
+                bool timer_exists = false;
+
+                does_timer_exist(timer_exists, curr_powerup_effect);
+                create_new_timers(timer_exists, curr_powerup_effect, i);
+
+                falling_powerups[i].powerup_active = false;
+                falling_powerups.erase(falling_powerups.begin() + i);
+                i--;
+            }
+        }
+    }
 }
 
 // ---------------------------------
@@ -117,51 +199,6 @@ void handle_collision_platform()
 
             current_sound.setBuffer(buffer_platform);
             current_sound.play();
-        }
-    }
-
-
-
-
-    for (int i = 0; i < powerups.size(); i++)
-    {
-        sf::Vector2f position = powerups[i].graphic.getPosition();
-
-        if (position.y > curr_gamestate.platform.y - curr_gamestate.platform.len - 20 &&
-            position.y < curr_gamestate.platform.y - curr_gamestate.platform.len - 20 + collision_margin)
-        {
-            if (position.x + POWERUP_WID > curr_gamestate.platform.x &&
-                position.x < curr_gamestate.platform.x + curr_gamestate.platform.width + POWERUP_WID)
-            {
-                powerup_status type = powerups[i].type;
-                diff_powerups curr_spec_powerup = get_specific_powerup(powerups[i].type);
-
-                bool timer_exists = false;
-                for (int i = 0; i < timers.size(); ++i)
-                {
-                    cout << "spec powerup: " << timers[i].specific_powerup << " " << i << " " << powerups[i].type << endl;
-                    if (timers[i].specific_powerup == curr_spec_powerup && timers[i].timer_active)
-                    {
-                        timers[i].powerup_clock.restart();
-                        timer_exists = true;
-                        break;
-                    }
-                }
-
-                if (timer_exists == false)
-                {
-                    int pos_x = SCREENSIZE_X - 110;
-                    int pos_y = SCREENSIZE_Y - 50 - (timers.size() * (TIMER_LEN + 10));
-
-                    timer_type new_timer(pos_x, pos_y, type, curr_spec_powerup);
-                    new_timer.timer_active = true;
-                    timers.push_back(new_timer);
-                }
-
-                powerups[i].powerup_active = false;
-                powerups.erase(powerups.begin() + i);
-                i--;
-            }
         }
     }
 }
@@ -201,6 +238,7 @@ void hit_block(int row, int col)
         curr_gamestate.blocks[curr_row][curr_col].active = false;
         curr_gamestate.blocks_graphics[curr_row][curr_col].setFillColor(sf::Color(0, 0, 0));
         add_to_score(curr_row, curr_col);
+        create_powerup(curr_row, curr_col);
     }
 
 
@@ -239,42 +277,7 @@ void hit_block(int row, int col)
         set_game_won();
     }
 
-
-
-    int random_number = (std::rand() % 100);
-    int second_random_number = (std::rand() % 100);
-    if (random_number > 0)
-    {
-        powerup_type curr_powerup(0, 0, POWERUP_SPEED, curr_gamestate.blocks[row][col], BUFF_POWERUP);
-
-        if (second_random_number <= 34)
-        {
-            curr_powerup = powerup_type(curr_gamestate.blocks[row][col].blockX,
-                                        curr_gamestate.blocks[row][col].blockY,
-                                        POWERUP_SPEED,
-                                        curr_gamestate.blocks[row][col],
-                                        BUFF_POWERUP);
-        }
-        else if (random_number <= 67)
-        {
-            curr_powerup = powerup_type(curr_gamestate.blocks[row][col].blockX,
-                                        curr_gamestate.blocks[row][col].blockY,
-                                        POWERUP_SPEED,
-                                        curr_gamestate.blocks[row][col],
-                                        DEBUFF_POWERUP);
-        }
-        else
-        {
-            curr_powerup = powerup_type(curr_gamestate.blocks[row][col].blockX,
-                                        curr_gamestate.blocks[row][col].blockY,
-                                        POWERUP_SPEED,
-                                        curr_gamestate.blocks[row][col],
-                                        JOKER_POWERUP);
-        }
-
-        curr_powerup.powerup_active = true;
-        powerups.push_back(curr_powerup);
-    }
+    create_powerup(row, col);
 }
 
 
@@ -315,7 +318,7 @@ void hit_barrier()
 void handle_collision_all_sides(int i, int j)
 {
     // margin for collisions for normal speed
-    double collision_margin = curr_gamestate.platform.len;//curr_gamestate.ball.speed;
+    double collision_margin = curr_gamestate.ball.speed;
     // margin for collisions for godspeed
     double collision_margin_godmode = godspeed;
 
@@ -466,13 +469,13 @@ void check_gamestate()
 
 void handle_deletion_powerup()
 {
-    for(int i = 0; i < powerups.size(); i++)
+    for(int i = 0; i < falling_powerups.size(); i++)
     {
-        sf::Vector2f position = powerups[i].graphic.getPosition();
+        sf::Vector2f position = falling_powerups[i].rectangle.getPosition();
         if(position.y > barrier_obj.y - POWERUP_LEN)
         {
-            powerups[i].powerup_active = false;
-            powerups.erase(powerups.begin() + i);
+            falling_powerups[i].powerup_active = false;
+            falling_powerups.erase(falling_powerups.begin() + i);
         }
     }
 }

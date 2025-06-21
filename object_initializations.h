@@ -124,29 +124,29 @@ void init_music()
 }
 
 
-sf::RectangleShape init_powerup(block_type &current_block, powerup_status type)
+sf::RectangleShape init_powerup(powerup_class_types type, int curr_powerup_x, int curr_powerup_y)
 {
-    powerup = sf::RectangleShape(sf::Vector2f(POWERUP_WID, POWERUP_LEN));
+    powerup = sf::RectangleShape(sf::Vector2f(POWERUP_WIDTH, POWERUP_LEN));
 
-    if(type == BUFF_POWERUP)
+    if(type == BUFF)
         powerup.setFillColor(sf::Color::Yellow);
-    else if(type == DEBUFF_POWERUP)
+    else if(type == DEBUFF)
         powerup.setFillColor(sf::Color::Blue);
-    else if(type == JOKER_POWERUP)
+    else
         powerup.setFillColor(sf::Color::Green);
 
-    powerup.setPosition(current_block.blockX, current_block.blockY);
+    powerup.setPosition(curr_powerup_x, curr_powerup_y);
 
     return powerup;
 }
 
-sf::RectangleShape init_timer_graphic(powerup_status type)
+sf::RectangleShape init_timer_graphic(powerup_class_types type)
 {
-    sf::RectangleShape timer(sf::Vector2f(100, 10));
+    sf::RectangleShape timer(sf::Vector2f(200, 10));
 
-    if (type == BUFF_POWERUP)
+    if (type == BUFF)
         timer.setFillColor(sf::Color::Yellow);
-    else if (type == DEBUFF_POWERUP)
+    else if (type == DEBUFF)
         timer.setFillColor(sf::Color::Blue);
     else
         timer.setFillColor(sf::Color::Green);

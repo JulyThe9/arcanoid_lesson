@@ -1,3 +1,11 @@
+#include <iostream>
+#include <map>
+#include <random>
+#include <string>
+#include <cmath>
+#include <iomanip>
+#include <variant>
+
 /**
 *@file properties.h
 *@brief contains all objects, all defines, all enums and most global variables
@@ -21,14 +29,14 @@ using namespace std;
 #define BLOCK_LEN 30
 #define BLOCK_WIDTH 90
 
-#define BALL_SPEED 0.34
+#define BALL_SPEED 0.2
 
 #define POWERUP_SPEED 400
-#define POWERUP_WID 30
+#define POWERUP_WIDTH 30
 #define POWERUP_LEN 30
 
 #define TIMER_WIDTH 100
-#define TIMER_LEN 10
+#define TIMER_HEIGHT 10
 
 //#define DEBUG
 //-------------------------------------------------------------------
@@ -64,6 +72,7 @@ bool crazy_ballspeed = true;
 
 // godspeed if block amount are under 4 and ballspeed is true
 float godspeed = 0.8;
+
 
 //--------
 // SOUNDS
@@ -197,6 +206,7 @@ enum game_status_type
     BLOCKS_GONE,
 };
 
+
 enum sound_type
 {
     DIRT_SOUND,
@@ -207,14 +217,10 @@ enum sound_type
     PLATFORM_SOUND,
 };
 
-enum powerup_status
-{
-    JOKER_POWERUP,
-    DEBUFF_POWERUP,
-    BUFF_POWERUP,
-};
 
-enum diff_powerups
+
+/*
+enum powerup_effect_types
 {
     //BUFFS
     BALL_DUPLICATION,
@@ -228,6 +234,138 @@ enum diff_powerups
     PLAT_Y_AXIS,
     REMIX_BLOCK_GENERATION,
 };
+*/
+
+
+enum powerup_buff_effect_types
+{
+    BALL_DUPLICATION,
+    TRAJECTORY_PREDICTION,
+    LAZER,
+};
+
+
+enum powerup_debuff_effect_types
+{
+    BALL_INVIS,
+    REVERSE_CONTROLS,
+    DIRECTION_RANDOMIZATION,
+};
+
+
+enum powerup_joker_effect_types
+{
+    PLAT_Y_AXIS,
+    REMIX_BLOCK_GENERATION,
+};
+
+
+enum powerup_class_types
+{
+    JOKER,
+    BUFF,
+    DEBUFF,
+};
+
+
+
+std::map<double, powerup_buff_effect_types> buff_map =
+{
+    {25, BALL_DUPLICATION},
+    {45, TRAJECTORY_PREDICTION},
+    {50, LAZER}
+
+};
+
+
+std::map<double, powerup_debuff_effect_types> debuff_map =
+{
+    {17, BALL_INVIS},
+    {16, REVERSE_CONTROLS},
+    {15, DIRECTION_RANDOMIZATION}
+
+};
+
+
+std::map<double, powerup_joker_effect_types> joker_map =
+{
+    {14, PLAT_Y_AXIS},
+    {13, REMIX_BLOCK_GENERATION}
+
+};
+
+
+std::map<double, powerup_class_types> powerup_class_map =
+{
+    {25, JOKER},
+    {50, BUFF},
+    {35, DEBUFF}
+};
+
+
+template <typename T>
+T get_weighted_random(const std::map<double, T> &powerup_chances) {
+
+    // temporary map to store the normalized values (because percentage values can add up to > 100)
+    std::map<std::string, T> temp_map;
+
+    T new_val;
+
+    int total_weight = 0;
+    double key = 0;
+
+    // calculate total weight
+    for (const auto& pair_elem : powerup_chances)
+    {
+        total_weight += pair_elem.first;
+    }
+
+    // normalizing weights(adjust percentages based on 100%),
+    // we assume that map keys represent a value between 0 and 100%
+    for (const auto& pair_elem : powerup_chances)
+    {
+        // value normalization
+        key = (pair_elem.first * 100) / total_weight;
+
+        // to make sure that the keys are correctly formatted -
+        // for accessing values in the future we convert double in to string
+        std::ostringstream ss;
+        ss << std::fixed << std::setprecision(2) << key;
+        std::string keystring = ss.str();
+
+        // create new map entry with normalized values
+        new_val = pair_elem.second;
+        temp_map[keystring] = new_val;
+    }
+
+    // fancy way of getting a number between 0 and 100
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+
+    // we use 100 because we have normalized the weights
+    std::uniform_real_distribution<> dis(0, 100);
+
+
+    // place the random number into 'r'
+    double r_temp = dis(gen);
+
+    // round down r (in cases when double is 99.999)
+    double r = static_cast<int>(std::floor(r_temp));
+
+    // for calculating normalized weight intervals
+    double upto = 0;
+    double weight = 0;
+
+    for (const auto& pair_elem : temp_map)
+    {
+        weight = std::stod(pair_elem.first);  // convert string key back to double
+        upto += weight;
+        if (r < upto)
+            return pair_elem.second;  // return this powerup
+    }
+    // this should never happen
+    return powerup_chances.begin()->second;
+}
 
 //-------------------------------------------------------------------
 
@@ -279,11 +417,45 @@ struct block_type
     }
 };
 
+/*
+powerup_effect_types get_powerup_effect(powerup_status type)
+{
+    int random_number = (std::rand() % 100);
 
-sf::RectangleShape init_powerup(block_type &current_block, powerup_status type);
+    if(type == BUFF_POWERUP)
+    {
+        if (random_number <= 34)
+            return BALL_DUPLICATION;
+        else if (random_number <= 67)
+            return TRAJECTORY_PREDICTION;
+        else
+            return LAZER;
+    }
+    else if(type == DEBUFF_POWERUP)
+    {
+        if (random_number <= 34)
+            return BALL_INVIS;
+        else if (random_number <= 67)
+            return REVERSE_CONTROLS;
+        else
+            return DIRECTION_RANDOMIZATION;
+    }
+    else
+    {
+        if (random_number <= 50)
+            return PLAT_Y_AXIS;
+        else
+            return REMIX_BLOCK_GENERATION;
+    }
+
+}
+*/
 
 
-struct powerup_type
+sf::RectangleShape init_powerup(powerup_class_types type, int x, int y);
+
+
+struct falling_powerup_type
 {
     bool powerup_active;
     bool first_activation;
@@ -292,23 +464,37 @@ struct powerup_type
     float y;
     sf::Clock powerup_clock;
     float powerupSpeed;
-    sf::RectangleShape graphic;
-    powerup_status type;
+
+    sf::RectangleShape rectangle;
+    sf::Texture texture;
+
+    powerup_class_types type;
+    std::variant<powerup_buff_effect_types, powerup_debuff_effect_types, powerup_joker_effect_types> powerup_effect;
+
+    int chance_of_appearence;
 
 
-    powerup_type(int xpar, int ypar, float powerupSpeedpar, block_type &blockpar, powerup_status typepar)
+    falling_powerup_type(int xpar, int ypar, float powerupSpeedpar, block_type &blockpar, powerup_class_types typepar)
     {
         x = xpar;
         y = ypar;
         powerup_active = false;
         first_activation = true;
         powerupSpeed = powerupSpeedpar;
-        graphic = init_powerup(blockpar, typepar);
         type = typepar;
+
+        if (type == BUFF)
+            powerup_effect = get_weighted_random(buff_map);
+        else if (type == DEBUFF)
+            powerup_effect = get_weighted_random(debuff_map);
+        else
+            powerup_effect = get_weighted_random(joker_map);
+
+        rectangle = init_powerup(typepar, xpar, ypar);
     }
 };
 
-sf::RectangleShape init_timer_graphic(powerup_status type);
+sf::RectangleShape init_timer_graphic(powerup_class_types type);
 
 struct timer_type
 {
@@ -325,18 +511,18 @@ struct timer_type
 
     float duration = 15;
 
-    diff_powerups specific_powerup;
+    std::variant<powerup_buff_effect_types, powerup_debuff_effect_types, powerup_joker_effect_types> powerup_effect;
 
-    timer_type(int xpar, int ypar, powerup_status typepar, diff_powerups specific_poweruppar)
+    timer_type(int xpar, int ypar, powerup_class_types typepar, std::variant<powerup_buff_effect_types, powerup_debuff_effect_types, powerup_joker_effect_types> powerup_effectpar)
     {
-        len = TIMER_LEN;
+        len = TIMER_HEIGHT;
         width = TIMER_WIDTH;
         x = xpar;
         y = ypar;
         timer_active = false;
         graphic = init_timer_graphic(typepar);
         graphic.setPosition(x, y);
-        specific_powerup = specific_poweruppar;
+        powerup_effect = powerup_effectpar;
     }
 };
 
@@ -529,8 +715,8 @@ int block_columns = (SCREENSIZE_X - 2 * BLOCK_WIDTH) / BLOCK_WIDTH - 1;
 
 GameState curr_gamestate;
 
-vector<powerup_type> powerups;
-vector<timer_type> timers;
+vector<falling_powerup_type> falling_powerups;
+vector<timer_type> cooldown_bars;
 
 
 /**

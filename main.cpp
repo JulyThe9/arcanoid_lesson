@@ -160,6 +160,7 @@ int main()
             handle_collision_block();
             handle_collision_platform();
             handle_collision_barrier();
+            handle_collision_powerup();
 
             handle_deletion_powerup();
 
@@ -172,7 +173,7 @@ int main()
         }
         else if(game_status == HEART_DEDUCTION)
         {
-
+            clean_up_timers();
             text_animation(lastTime, curTtime, timePassed);
             draw_heart_deduction_text(main_window);
             while (main_window.pollEvent(event))
@@ -217,6 +218,8 @@ int main()
         }
 
         draw_blocks(main_window);
+        draw_powerup(main_window);
+        draw_timer(main_window);
         draw_plat(main_window, plat);
         draw_barrier(main_window, barrier);
         draw_ball(main_window, ball);
@@ -224,8 +227,6 @@ int main()
         draw_status_bar_logo(main_window, status_bar_logo);
         draw_score(main_window);
         draw_hearts(main_window);
-        draw_powerup(main_window);
-        draw_timer(main_window);
 
         main_window.display();
 
