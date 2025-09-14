@@ -21,6 +21,8 @@ using namespace std;
 #define TEXT_VISIBLE_PERIOD 750
 #define TEXT_NOT_VISIBLE_PERIOD 750
 
+#define COUNTDOWN_PERIOD 800
+
 #define SCREENSIZE_X 1500
 #define SCREENSIZE_Y 1200
 
@@ -29,7 +31,7 @@ using namespace std;
 #define BLOCK_LEN 30
 #define BLOCK_WIDTH 90
 
-#define BALL_SPEED 0.2
+#define BALL_SPEED 0.4
 
 #define POWERUP_SPEED 400
 #define POWERUP_WIDTH 30
@@ -130,6 +132,12 @@ sf::Text heart_deduction_text;
 sf::Text no_hearts_text;
 sf::Text game_won_text;
 
+
+sf::Text countdown_one;
+sf::Text countdown_two;
+sf::Text countdown_three;
+
+
 //-------------------------------------------------------------------
 /**
 *@enum all collision_cases
@@ -218,23 +226,12 @@ enum sound_type
 };
 
 
-
-/*
-enum powerup_effect_types
+enum countdown_type
 {
-    //BUFFS
-    BALL_DUPLICATION,
-    TRAJECTORY_PREDICTION,
-    LAZER,
-    //DEBUFFS
-    BALL_INVIS,
-    REVERSE_CONTROLS,
-    DIRECTION_RANDOMIZATION,
-    //JOKERS
-    PLAT_Y_AXIS,
-    REMIX_BLOCK_GENERATION,
+    COUNTDOWN_THREE,
+    COUNTDOWN_TWO,
+    COUNTDOWN_ONE,
 };
-*/
 
 
 enum powerup_buff_effect_types
@@ -710,6 +707,11 @@ struct barrier_type
 
 
 //-------------------------------------------------------------------
+countdown_type curr_countdown_num;
+bool countdown_active = false;
+
+std::chrono::time_point<std::chrono::high_resolution_clock> countdown_start_time;
+
 int block_rows = (SCREENSIZE_Y - (PLATFORM_INITIAL_Y / 1.2)) / BLOCK_LEN;
 int block_columns = (SCREENSIZE_X - 2 * BLOCK_WIDTH) / BLOCK_WIDTH - 1;
 

@@ -120,7 +120,7 @@ void init_music()
 {
     music.setLoop(true);
     music.setPitch(1.0f);
-    music.setVolume(5.0f);
+    music.setVolume(0.0f);
 }
 
 

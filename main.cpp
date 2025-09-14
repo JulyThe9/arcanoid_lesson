@@ -41,7 +41,7 @@ int main()
     init_fonts();
 
     init_music();
-    music.play();
+    //music.play();
 
     //for random block generation
     std::srand(std::time(0));
@@ -171,32 +171,71 @@ int main()
             check_gamestate();
 
         }
-        else if(game_status == HEART_DEDUCTION)
+        else if (game_status == HEART_DEDUCTION)
         {
             clean_up_timers();
+            // Track whether we've started the countdown for this HEART_DEDUCTION phase
+            static bool countdown_started = false;
             text_animation(lastTime, curTtime, timePassed);
-            draw_heart_deduction_text(main_window);
+
+            if(countdown_started)
+            {
+                text_visible = false;
+            }
+            if (text_visible)
+                draw_heart_deduction_text(main_window);
+
             while (main_window.pollEvent(event))
             {
-
-                if(event.type == sf::Event::KeyPressed)
+                if (event.type == sf::Event::Closed)
                 {
-                    if(event.key.code == sf::Keyboard::Space)
+                    main_window.close();
+                }
+
+                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
+                {
+                    // Start the countdown only once
+                    if (!countdown_started)
                     {
-                        game_status = GAME_ACTIVE;
-                        curr_degrees = BALL_STARTER_DEG;
-                        curr_gamestate.ball.curr_x = BALL_START_POSX;
-                        curr_gamestate.ball.curr_y = BALL_START_POSY;
-                        handle_collision(COLLISION_CASE_RESET);
-                        sf::Mouse::setPosition({curr_gamestate.platform.platform_starter_x, curr_gamestate.platform.y}, main_window);
+                        countdown_active = true;
+                        countdown_start_time = std::chrono::high_resolution_clock::now();
+                        curr_countdown_num = COUNTDOWN_THREE;
+                        set_countdown_three();
+                        countdown_started = true;
                     }
                 }
+            }
+
+            countdown_animation(curTtime);
+
+            // Draw current countdown number if active
+            if (countdown_active)
+            {
+                if (curr_countdown_num == COUNTDOWN_THREE)
+                    main_window.draw(countdown_three);
+                else if (curr_countdown_num == COUNTDOWN_TWO)
+                    main_window.draw(countdown_two);
+                else if (curr_countdown_num == COUNTDOWN_ONE)
+                    main_window.draw(countdown_one);
+            }
+
+            // When countdown finishes, resume the game
+            if (countdown_started && !countdown_active)
+            {
+                countdown_started = false; // reset for next HEART_DEDUCTION
+                game_status = GAME_ACTIVE;
+                curr_degrees = BALL_STARTER_DEG;
+                curr_gamestate.ball.curr_x = BALL_START_POSX;
+                curr_gamestate.ball.curr_y = BALL_START_POSY;
+                handle_collision(COLLISION_CASE_RESET);
+                sf::Mouse::setPosition({curr_gamestate.platform.platform_starter_x, curr_gamestate.platform.y}, main_window);
             }
         }
         else if(game_status == HEARTS_GONE)
         {
             text_animation(lastTime, curTtime, timePassed);
-            draw_no_hearts_text(main_window);
+            if(text_visible)
+                draw_no_hearts_text(main_window);
             while (main_window.pollEvent(event))
             {
                 if(event.key.code == sf::Keyboard::Space)
@@ -205,9 +244,12 @@ int main()
                 }
             }
         }
-        else
+        else if(game_status == BLOCKS_GONE)
         {
-            draw_game_won_text(main_window);
+            clean_up_timers();
+            text_animation(lastTime, curTtime, timePassed);
+            if(text_visible)
+                draw_game_won_text(main_window);
             while (main_window.pollEvent(event))
             {
                 if(event.key.code == sf::Keyboard::Space)

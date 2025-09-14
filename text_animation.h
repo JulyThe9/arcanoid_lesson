@@ -65,40 +65,41 @@ void set_loss_of_life(int &heart_number)
     game_status = HEART_DEDUCTION;
     heart_number--;
 }
-/*
+
+
 void set_countdown_three()
 {
     countdown_three.setFont(font);
-    countdown_three.setCharacterSize(50);
+    countdown_three.setCharacterSize(100);
     countdown_three.setFillColor(sf::Color::Green);
     countdown_three.setStyle(sf::Text::Bold);
-    countdown_three.setPosition(SCREENSIZE_X / 2 - 150, 700);
+    countdown_three.setPosition(SCREENSIZE_X / 2, 700);
     countdown_three.setString("3");
-    game_status = COUNTDOWN_THREE;
+    curr_countdown_num = COUNTDOWN_THREE;
 }
 
 void set_countdown_two()
 {
     countdown_two.setFont(font);
-    countdown_two.setCharacterSize(50);
+    countdown_two.setCharacterSize(100);
     countdown_two.setFillColor(sf::Color::Yellow);
     countdown_two.setStyle(sf::Text::Bold);
-    countdown_two.setPosition(SCREENSIZE_X / 2 - 150, 700);
+    countdown_two.setPosition(SCREENSIZE_X / 2, 700);
     countdown_two.setString("2");
-    game_status = COUNTDOWN_TWO;
+    curr_countdown_num = COUNTDOWN_TWO;
 }
 
 void set_countdown_one()
 {
     countdown_one.setFont(font);
-    countdown_one.setCharacterSize(50);
+    countdown_one.setCharacterSize(100);
     countdown_one.setFillColor(sf::Color::Red);
     countdown_one.setStyle(sf::Text::Bold);
-    countdown_one.setPosition(SCREENSIZE_X / 2 - 150, 700);
+    countdown_one.setPosition(SCREENSIZE_X / 2, 700);
     countdown_one.setString("1");
-    game_status = GAME_ACTIVE;
+    curr_countdown_num = COUNTDOWN_ONE;
 }
-*/
+
 
 /**
 *@brief handles animations of texts like game loss text or loss of life text
@@ -124,8 +125,6 @@ void text_animation(std::chrono::time_point<std::chrono::high_resolution_clock> 
             cout << "-------------BLINK HIDDEN------------" << endl;
             cout << timePassed.count() << " ms passed, making text HIDDEN\n";
 #endif
-            heart_deduction_text.setFillColor(sf::Color::Black);
-            no_hearts_text.setFillColor(sf::Color::Black);
             text_visible = false;
             lastTime = curTtime;
         }
@@ -141,21 +140,43 @@ void text_animation(std::chrono::time_point<std::chrono::high_resolution_clock> 
             cout << "-------------BLINK VISIBLE-----------" << endl;
             cout << timePassed.count() << " ms passed, making text VISIBLE\n";
 #endif
-            heart_deduction_text.setFillColor(sf::Color::Yellow);
-            no_hearts_text.setFillColor(sf::Color::Red);
             text_visible = true;
             lastTime = curTtime;
         }
     }
 }
 
-std::chrono::milliseconds countdown_animation(std::chrono::time_point<std::chrono::high_resolution_clock> &lastTime,
-                        std::chrono::time_point<std::chrono::high_resolution_clock> &curTtime,
-                        std::chrono::milliseconds &timePassed)
+
+void countdown_animation(std::chrono::time_point<std::chrono::high_resolution_clock> &curTtime)
 {
-    if (timePassed.count() > TEXT_VISIBLE_PERIOD)
+    if (!countdown_active) return;
+
+    // recalc timePassed based on countdown start
+    auto timePassed = std::chrono::duration_cast<std::chrono::milliseconds>(curTtime - countdown_start_time);
+
+    if (timePassed.count() >= COUNTDOWN_PERIOD * 3)
+    {
+        countdown_active = false; // finished
+    }
+    else if (timePassed.count() >= COUNTDOWN_PERIOD * 2)
+    {
+        if (curr_countdown_num != COUNTDOWN_ONE)
         {
-            lastTime = curTtime;
+            set_countdown_one();
         }
-    return timePassed;
+    }
+    else if (timePassed.count() >= COUNTDOWN_PERIOD)
+    {
+        if (curr_countdown_num != COUNTDOWN_TWO)
+        {
+            set_countdown_two();
+        }
+    }
+    else
+    {
+        if (curr_countdown_num != COUNTDOWN_THREE)
+        {
+            set_countdown_three();
+        }
+    }
 }
