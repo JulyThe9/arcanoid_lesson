@@ -31,7 +31,7 @@ using namespace std;
 #define BLOCK_LEN 30
 #define BLOCK_WIDTH 90
 
-#define BALL_SPEED 0.4
+#define BALL_SPEED 0.3
 
 #define POWERUP_SPEED 400
 #define POWERUP_WIDTH 30
@@ -137,6 +137,8 @@ sf::Text countdown_one;
 sf::Text countdown_two;
 sf::Text countdown_three;
 
+bool plat_y_axis_joker = false;
+bool mouse_reset_done = false;
 
 //-------------------------------------------------------------------
 /**

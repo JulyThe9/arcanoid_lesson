@@ -151,7 +151,6 @@ void countdown_animation(std::chrono::time_point<std::chrono::high_resolution_cl
 {
     if (!countdown_active) return;
 
-    // recalc timePassed based on countdown start
     auto timePassed = std::chrono::duration_cast<std::chrono::milliseconds>(curTtime - countdown_start_time);
 
     if (timePassed.count() >= COUNTDOWN_PERIOD * 3)

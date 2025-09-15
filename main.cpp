@@ -112,29 +112,37 @@ int main()
                 curr_gamestate.platform.width = curr_gamestate.platform.y / 8;
                 sf::RectangleShape plat_new(sf::Vector2f(curr_gamestate.platform.width,
                                              curr_gamestate.platform.len));
-                /*
-                plat = plat_new;
-
-                //Y
-                if(curr_gamestate.platform.y > top_wall)
+                if (plat_y_axis_joker)
                 {
-                    curr_gamestate.platform.y = localPosition.y;
+                    if (!mouse_reset_done)
+                    {
+                        sf::Mouse::setPosition(sf::Vector2i(curr_gamestate.platform.x, curr_gamestate.platform.y), main_window);
+                        mouse_reset_done = true;
+                    }
+
+                    // Y
+                    if (curr_gamestate.platform.y > top_wall)
+                    {
+                        curr_gamestate.platform.y = localPosition.y;
+                    }
+                    else
+                    {
+                        curr_gamestate.platform.y = top_wall;
+                    }
+
+                    if (curr_gamestate.platform.y + curr_gamestate.platform.len < bottom_wall)
+                    {
+                        curr_gamestate.platform.y = localPosition.y;
+                    }
+                    else
+                    {
+                        curr_gamestate.platform.y = bottom_wall - curr_gamestate.platform.len;
+                    }
                 }
                 else
                 {
-                    curr_gamestate.platform.y = top_wall;
+                    mouse_reset_done = false;
                 }
-
-                if (curr_gamestate.platform.y + curr_gamestate.platform.len < bottom_wall)
-                {
-                    curr_gamestate.platform.y = localPosition.y;
-                }
-                else
-                {
-                    curr_gamestate.platform.y = bottom_wall - curr_gamestate.platform.len;
-                }
-                */
-
             }
 
 
@@ -174,7 +182,8 @@ int main()
         else if (game_status == HEART_DEDUCTION)
         {
             clean_up_timers();
-            // Track whether we've started the countdown for this HEART_DEDUCTION phase
+            reset_powerups();
+            curr_gamestate.platform.y = PLATFORM_INITIAL_Y;
             static bool countdown_started = false;
             text_animation(lastTime, curTtime, timePassed);
 
@@ -194,7 +203,6 @@ int main()
 
                 if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
                 {
-                    // Start the countdown only once
                     if (!countdown_started)
                     {
                         countdown_active = true;
@@ -208,7 +216,6 @@ int main()
 
             countdown_animation(curTtime);
 
-            // Draw current countdown number if active
             if (countdown_active)
             {
                 if (curr_countdown_num == COUNTDOWN_THREE)
@@ -219,7 +226,6 @@ int main()
                     main_window.draw(countdown_one);
             }
 
-            // When countdown finishes, resume the game
             if (countdown_started && !countdown_active)
             {
                 countdown_started = false; // reset for next HEART_DEDUCTION

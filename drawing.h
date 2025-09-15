@@ -207,7 +207,25 @@ void draw_timer(sf::RenderWindow &main_window)
 
             if (remaining <= 0)
             {
+                // WHEN TIMER RUNS OUT
                 cooldown_bars[i].timer_active = false;
+                for (int i = 0; i < cooldown_bars.size(); i++)
+                {
+                    if (cooldown_bars[i].timer_active)
+                    {
+                        if (cooldown_bars[i].powerup_effect.index() == 2)
+                        {
+                            powerup_joker_effect_types joker_type = std::get<powerup_joker_effect_types>(cooldown_bars[i].powerup_effect);
+
+                            if (joker_type == PLAT_Y_AXIS)
+                            {
+                                cout << "ran out" << endl;
+                                plat_y_axis_joker = false;
+                                curr_gamestate.platform.y = PLATFORM_INITIAL_Y;
+                            }
+                        }
+                    }
+                }
                 cooldown_bars.erase(cooldown_bars.begin() + i);
                 i--;
                 continue;

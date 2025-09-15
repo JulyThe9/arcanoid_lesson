@@ -62,6 +62,26 @@ void handle_collision_walls()
 }
 
 
+void powerup_activity()
+{
+    for (int i = 0; i < cooldown_bars.size(); i++)
+    {
+        if (cooldown_bars[i].timer_active)
+        {
+            if (cooldown_bars[i].powerup_effect.index() == 2)
+            {
+                powerup_joker_effect_types joker_type = std::get<powerup_joker_effect_types>(cooldown_bars[i].powerup_effect);
+
+                if (joker_type == PLAT_Y_AXIS)
+                {
+                    plat_y_axis_joker = true;
+                }
+            }
+        }
+    }
+}
+
+
 void does_timer_exist(bool &timer_exists, std::variant<powerup_buff_effect_types, powerup_debuff_effect_types, powerup_joker_effect_types> curr_spec_powerup)
 {
     for (int i = 0; i < cooldown_bars.size(); ++i)
@@ -76,17 +96,14 @@ void does_timer_exist(bool &timer_exists, std::variant<powerup_buff_effect_types
 }
 
 
-void create_new_timers(bool &timer_exists, std::variant<powerup_buff_effect_types, powerup_debuff_effect_types, powerup_joker_effect_types> curr_spec_powerup, int i)
+void create_new_timers(std::variant<powerup_buff_effect_types, powerup_debuff_effect_types, powerup_joker_effect_types> curr_spec_powerup, int i)
 {
-    if (timer_exists == false)
-    {
-        int pos_x = SCREENSIZE_X - 110;
-        int pos_y = SCREENSIZE_Y - 50 - (cooldown_bars.size() * (TIMER_HEIGHT + 10));
+    int pos_x = SCREENSIZE_X - 110;
+    int pos_y = SCREENSIZE_Y - 50 - (cooldown_bars.size() * (TIMER_HEIGHT + 10));
 
-        timer_type new_timer(pos_x, pos_y, falling_powerups[i].type, curr_spec_powerup);
-        new_timer.timer_active = true;
-        cooldown_bars.push_back(new_timer);
-    }
+    timer_type new_timer(pos_x, pos_y, falling_powerups[i].type, curr_spec_powerup);
+    new_timer.timer_active = true;
+    cooldown_bars.push_back(new_timer);
 }
 
 
@@ -102,6 +119,13 @@ void clean_up_timers()
     }
     cooldown_bars.clear();
 }
+
+
+void reset_powerups()
+{
+    plat_y_axis_joker = false;
+}
+
 
 void create_powerup(int row, int col)
 {
@@ -147,9 +171,33 @@ void create_powerup(int row, int col)
     }
 }
 
+
+sf::Vector2i lastMousePosition;
+sf::Clock mouseSpeedClock;
+
+/*
+// CHATGPT TO GET MOUSE SPEED
+float get_mouse_speed()
+{
+    sf::Vector2i currentMousePosition = sf::Mouse::getPosition(); // No window parameter
+    float deltaTime = mouseSpeedClock.restart().asSeconds();
+
+    int dx = currentMousePosition.x - lastMousePosition.x;
+    int dy = currentMousePosition.y - lastMousePosition.y;
+
+    lastMousePosition = currentMousePosition;
+
+    float distance = std::sqrt(dx * dx + dy * dy); // Euclidean distance
+    float speed = distance / deltaTime;            // pixels per second
+
+    return speed;
+}
+*/
+
 void handle_collision_powerup()
 {
-    double collision_margin = curr_gamestate.ball.speed;
+    double collision_margin;
+    collision_margin = curr_gamestate.ball.speed;
 
     for (int i = 0; i < falling_powerups.size(); i++)
     {
@@ -165,9 +213,11 @@ void handle_collision_powerup()
 
                 bool timer_exists = false;
 
+                // checks if a timer already exists
                 does_timer_exist(timer_exists, curr_powerup_effect);
-                create_new_timers(timer_exists, curr_powerup_effect, i);
-
+                if(!timer_exists)
+                    create_new_timers(curr_powerup_effect, i);
+                powerup_activity();
                 falling_powerups[i].powerup_active = false;
                 falling_powerups.erase(falling_powerups.begin() + i);
                 i--;
@@ -184,7 +234,11 @@ void handle_collision_powerup()
 */
 void handle_collision_platform()
 {
-    double collision_margin = curr_gamestate.ball.speed;
+    double collision_margin;
+    //if(!plat_y_axis_joker)
+    collision_margin = curr_gamestate.ball.speed;
+    //else if(plat_y_axis_joker)
+        //collision_margin = get_mouse_speed();
     double collision_margin_godmode = godspeed;
 
     if (curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 >= curr_gamestate.platform.y &&
