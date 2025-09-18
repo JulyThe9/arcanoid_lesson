@@ -5,6 +5,7 @@
 #include <cmath>
 #include <iomanip>
 #include <variant>
+#include <windows.h>
 
 /**
 *@file properties.h
@@ -288,7 +289,7 @@ std::map<double, powerup_debuff_effect_types> debuff_map =
 
 std::map<double, powerup_joker_effect_types> joker_map =
 {
-    {14, PLAT_Y_AXIS},
+    {100, PLAT_Y_AXIS},
     {13, REMIX_BLOCK_GENERATION}
 
 };
@@ -296,7 +297,7 @@ std::map<double, powerup_joker_effect_types> joker_map =
 
 std::map<double, powerup_class_types> powerup_class_map =
 {
-    {25, JOKER},
+    {200, JOKER},
     {50, BUFF},
     {35, DEBUFF}
 };

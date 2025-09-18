@@ -175,24 +175,43 @@ void create_powerup(int row, int col)
 sf::Vector2i lastMousePosition;
 sf::Clock mouseSpeedClock;
 
-/*
+
 // CHATGPT TO GET MOUSE SPEED
-float get_mouse_speed()
+float get_mouse_vertical_speed()
 {
-    sf::Vector2i currentMousePosition = sf::Mouse::getPosition(); // No window parameter
-    float deltaTime = mouseSpeedClock.restart().asSeconds();
+    static sf::Vector2i lastMousePosition = sf::Mouse::getPosition();
+    static sf::Clock clock;
 
-    int dx = currentMousePosition.x - lastMousePosition.x;
+    sf::Vector2i currentMousePosition = sf::Mouse::getPosition();
+    float deltaTime = clock.restart().asSeconds();
+
+    // Prevent division by near-zero or zero deltaTime
+    if (deltaTime < 0.001f)
+        deltaTime = 0.001f; // minimum deltaTime to avoid spikes
+
     int dy = currentMousePosition.y - lastMousePosition.y;
-
     lastMousePosition = currentMousePosition;
 
-    float distance = std::sqrt(dx * dx + dy * dy); // Euclidean distance
-    float speed = distance / deltaTime;            // pixels per second
+    // If dy is 0 (no vertical movement), speed is zero
+    if (dy == 0)
+        return 0.0f;
 
-    return speed;
+    float verticalSpeed = std::abs(static_cast<float>(dy)) / deltaTime;
+
+    int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+    float normalizedVerticalSpeed = verticalSpeed / static_cast<float>(screenHeight);
+
+    // Clamp very tiny speeds to a minimum threshold
+    const float minSpeedThreshold = 0.01f; // 1% of screen height per second
+    if (normalizedVerticalSpeed < minSpeedThreshold)
+        normalizedVerticalSpeed = minSpeedThreshold;
+
+    return normalizedVerticalSpeed;
 }
-*/
+
+
+
+
 
 void handle_collision_powerup()
 {
@@ -234,11 +253,15 @@ void handle_collision_powerup()
 */
 void handle_collision_platform()
 {
+    // 🟢 Get mouse speed only once
+    double curr_mousespeed = get_mouse_vertical_speed();
+
     double collision_margin;
-    //if(!plat_y_axis_joker)
-    collision_margin = curr_gamestate.ball.speed;
-    //else if(plat_y_axis_joker)
-        //collision_margin = get_mouse_speed();
+    if (!plat_y_axis_joker)
+        collision_margin = curr_gamestate.ball.speed;
+    else
+        collision_margin = curr_mousespeed + curr_gamestate.ball.speed;
+
     double collision_margin_godmode = godspeed;
 
     if (curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 >= curr_gamestate.platform.y &&
@@ -248,6 +271,9 @@ void handle_collision_platform()
         if (curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius > curr_gamestate.platform.x &&
             curr_gamestate.ball.curr_x < curr_gamestate.platform.x + curr_gamestate.platform.width)
         {
+            std::cout << "joker_col_margin: " << curr_mousespeed << " + " << curr_gamestate.ball.speed
+                      << " = " << curr_mousespeed + curr_gamestate.ball.speed << std::endl;
+
             last_collision = COLLISION_CASE_BOTTOM;
             curr_degrees = get_new_angle();
 
