@@ -135,22 +135,7 @@ void draw_heart_deduction_text(sf::RenderWindow &main_window)
 {
     main_window.draw(heart_deduction_text);
 }
-/*
-void draw_countdown_three(sf::RenderWindow &main_window)
-{
-    main_window.draw(countdown_three);
-}
 
-void draw_countdown_two(sf::RenderWindow &main_window)
-{
-    main_window.draw(countdown_two);
-}
-
-void draw_countdown_one(sf::RenderWindow &main_window)
-{
-    main_window.draw(countdown_one);
-}
-*/
 
 void draw_powerup(sf::RenderWindow &main_window)
 {
@@ -211,7 +196,7 @@ void draw_timer(sf::RenderWindow &main_window)
                 cooldown_bars[i].timer_active = false;
                 for (int i = 0; i < cooldown_bars.size(); i++)
                 {
-                    if (cooldown_bars[i].timer_active)
+                    if (!cooldown_bars[i].timer_active)
                     {
                         if (cooldown_bars[i].powerup_effect.index() == 2)
                         {

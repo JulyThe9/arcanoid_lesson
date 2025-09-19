@@ -177,37 +177,37 @@ sf::Clock mouseSpeedClock;
 
 
 // CHATGPT TO GET MOUSE SPEED
-float get_mouse_vertical_speed()
+double get_mouse_vertical_speed()
 {
     static sf::Vector2i lastMousePosition = sf::Mouse::getPosition();
     static sf::Clock clock;
 
     sf::Vector2i currentMousePosition = sf::Mouse::getPosition();
-    float deltaTime = clock.restart().asSeconds();
+    double deltaTime = clock.restart().asSeconds();
 
-    // Prevent division by near-zero or zero deltaTime
-    if (deltaTime < 0.001f)
-        deltaTime = 0.001f; // minimum deltaTime to avoid spikes
+    if (deltaTime <= 0.0001)
+        deltaTime = 0.0001; // avoid division by zero
 
     int dy = currentMousePosition.y - lastMousePosition.y;
     lastMousePosition = currentMousePosition;
 
-    // If dy is 0 (no vertical movement), speed is zero
+    // No movement -> speed 0
     if (dy == 0)
-        return 0.0f;
+        return 0.0;
 
-    float verticalSpeed = std::abs(static_cast<float>(dy)) / deltaTime;
+    // Pixels per second
+    double verticalSpeed = std::abs(static_cast<double>(dy)) / deltaTime;
 
-    int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-    float normalizedVerticalSpeed = verticalSpeed / static_cast<float>(screenHeight);
+    // Scale into a friendlier range [0 .. 20]
+    // Adjust divisor to taste: larger divisor = smaller numbers
+    double scaledSpeed = verticalSpeed / 50.0;
 
-    // Clamp very tiny speeds to a minimum threshold
-    const float minSpeedThreshold = 0.01f; // 1% of screen height per second
-    if (normalizedVerticalSpeed < minSpeedThreshold)
-        normalizedVerticalSpeed = minSpeedThreshold;
+    std::cout << "speed2: " << scaledSpeed << std::endl;
 
-    return normalizedVerticalSpeed;
+    return scaledSpeed;
 }
+
+
 
 
 
@@ -215,15 +215,26 @@ float get_mouse_vertical_speed()
 
 void handle_collision_powerup()
 {
+    double curr_mousespeed = get_mouse_vertical_speed();
+
     double collision_margin;
-    collision_margin = curr_gamestate.ball.speed;
+
+    if (!plat_y_axis_joker)
+        collision_margin = curr_gamestate.ball.speed;
+    else
+    {
+        collision_margin = curr_mousespeed + curr_gamestate.ball.speed;
+        //cout << "col marg: " << curr_mousespeed + curr_gamestate.ball.speed << endl;
+    }
+
+
 
     for (int i = 0; i < falling_powerups.size(); i++)
     {
         sf::Vector2f position = falling_powerups[i].rectangle.getPosition();
 
         if (position.y > curr_gamestate.platform.y - curr_gamestate.platform.len - 20 &&
-            position.y < curr_gamestate.platform.y - curr_gamestate.platform.len - 20 + collision_margin)
+            position.y < curr_gamestate.platform.y - curr_gamestate.platform.len + collision_margin)
         {
             if (position.x + POWERUP_WIDTH > curr_gamestate.platform.x &&
                 position.x < curr_gamestate.platform.x + curr_gamestate.platform.width + POWERUP_WIDTH)
@@ -253,10 +264,10 @@ void handle_collision_powerup()
 */
 void handle_collision_platform()
 {
-    // 🟢 Get mouse speed only once
     double curr_mousespeed = get_mouse_vertical_speed();
 
     double collision_margin;
+
     if (!plat_y_axis_joker)
         collision_margin = curr_gamestate.ball.speed;
     else
@@ -269,10 +280,14 @@ void handle_collision_platform()
          curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 < curr_gamestate.platform.y + collision_margin_godmode))
     {
         if (curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius > curr_gamestate.platform.x &&
-            curr_gamestate.ball.curr_x < curr_gamestate.platform.x + curr_gamestate.platform.width)
+            curr_gamestate.ball.curr_x < curr_gamestate.platform.x + curr_gamestate.platform.width &&
+            last_collision != COLLISION_CASE_BOTTOM)
         {
-            std::cout << "joker_col_margin: " << curr_mousespeed << " + " << curr_gamestate.ball.speed
-                      << " = " << curr_mousespeed + curr_gamestate.ball.speed << std::endl;
+            /*
+            cout << "joker_col_margin: " << curr_mousespeed << " + " << curr_gamestate.ball.speed
+                      << " = " << curr_mousespeed + curr_gamestate.ball.speed << endl;
+            cout << "alpha: " << alpha_y << endl;
+            */
 
             last_collision = COLLISION_CASE_BOTTOM;
             curr_degrees = get_new_angle();

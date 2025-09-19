@@ -54,8 +54,6 @@ int main()
 
     sf::CircleShape ball = init_ball();
 
-    sf::RectangleShape plat = init_platform();
-
     sf::RectangleShape barrier = init_barrier();
 
     set_life_data();
@@ -78,6 +76,7 @@ int main()
         std::chrono::time_point<std::chrono::high_resolution_clock> curTtime = high_resolution_clock::now();
         std::chrono::milliseconds timePassed = duration_cast<milliseconds>(curTtime - lastTime);
 
+        sf::RectangleShape plat = init_platform();
 
         if(game_status == GAME_ACTIVE)
         {
@@ -114,6 +113,7 @@ int main()
                                              curr_gamestate.platform.len));
                 if (plat_y_axis_joker)
                 {
+                    curr_gamestate.platform.width = curr_gamestate.platform.y / 4;
                     if (!mouse_reset_done)
                     {
                         sf::Mouse::setPosition(sf::Vector2i(curr_gamestate.platform.x, curr_gamestate.platform.y), main_window);
@@ -161,7 +161,6 @@ int main()
                 curr_gamestate.ball.curr_x += alpha_x;
                 curr_gamestate.ball.curr_y += alpha_y;
             }
-
 
             // MAIN COLLISIONS
             handle_collision_walls();
@@ -264,6 +263,7 @@ int main()
                 }
             }
         }
+
 
         draw_blocks(main_window);
         draw_powerup(main_window);
