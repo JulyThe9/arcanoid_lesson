@@ -71,7 +71,7 @@ void set_countdown_three()
 {
     countdown_three.setFont(font);
     countdown_three.setCharacterSize(100);
-    countdown_three.setFillColor(sf::Color::Green);
+    countdown_three.setFillColor(sf::Color::Yellow);
     countdown_three.setStyle(sf::Text::Bold);
     countdown_three.setPosition(SCREENSIZE_X / 2, 700);
     countdown_three.setString("3");
@@ -93,7 +93,7 @@ void set_countdown_one()
 {
     countdown_one.setFont(font);
     countdown_one.setCharacterSize(100);
-    countdown_one.setFillColor(sf::Color::Red);
+    countdown_one.setFillColor(sf::Color::Yellow);
     countdown_one.setStyle(sf::Text::Bold);
     countdown_one.setPosition(SCREENSIZE_X / 2, 700);
     countdown_one.setString("1");
@@ -149,13 +149,12 @@ void text_animation(std::chrono::time_point<std::chrono::high_resolution_clock> 
 
 void countdown_animation(std::chrono::time_point<std::chrono::high_resolution_clock> &curTtime)
 {
-    if (!countdown_active) return;
-
     auto timePassed = std::chrono::duration_cast<std::chrono::milliseconds>(curTtime - countdown_start_time);
 
     if (timePassed.count() >= COUNTDOWN_PERIOD * 3)
     {
-        countdown_active = false; // finished
+        countdown_active = false;
+        return;
     }
     else if (timePassed.count() >= COUNTDOWN_PERIOD * 2)
     {

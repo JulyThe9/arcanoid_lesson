@@ -41,7 +41,7 @@ int main()
     init_fonts();
 
     init_music();
-    //music.play();
+    music.play();
 
     //for random block generation
     std::srand(std::time(0));
@@ -67,7 +67,7 @@ int main()
 
     std::chrono::time_point<std::chrono::high_resolution_clock> lastTime = high_resolution_clock::now();
 
-    sf::Mouse::setPosition({curr_gamestate.platform.platform_starter_x, curr_gamestate.platform.y}, main_window); // window is a sf::Window
+    sf::Mouse::setPosition({curr_gamestate.platform.x, curr_gamestate.platform.y}, main_window); // window is a sf::Window
 
 
 	// Start the game loop
@@ -82,7 +82,6 @@ int main()
         {
             while (main_window.pollEvent(event))
             {
-                // Close window : exit
                 if (event.type == sf::Event::Closed)
                 {
                     main_window.close();
@@ -108,12 +107,9 @@ int main()
                     curr_gamestate.platform.x = right_wall - curr_gamestate.platform.width;
                 }
 
-                curr_gamestate.platform.width = curr_gamestate.platform.y / 8;
-                sf::RectangleShape plat_new(sf::Vector2f(curr_gamestate.platform.width,
-                                             curr_gamestate.platform.len));
                 if (plat_y_axis_joker)
                 {
-                    curr_gamestate.platform.width = curr_gamestate.platform.y / 4;
+                    curr_gamestate.platform.width = curr_gamestate.platform.y / 7;
                     if (!mouse_reset_done)
                     {
                         sf::Mouse::setPosition(sf::Vector2i(curr_gamestate.platform.x, curr_gamestate.platform.y), main_window);
@@ -182,13 +178,14 @@ int main()
         {
             clean_up_timers();
             reset_powerups();
-            curr_gamestate.platform.y = PLATFORM_INITIAL_Y;
             static bool countdown_started = false;
             text_animation(lastTime, curTtime, timePassed);
 
             if(countdown_started)
             {
                 text_visible = false;
+                reset_platform(plat, main_window);
+                reset_ball(ball);
             }
             if (text_visible)
                 draw_heart_deduction_text(main_window);
@@ -204,6 +201,7 @@ int main()
                 {
                     if (!countdown_started)
                     {
+
                         countdown_active = true;
                         countdown_start_time = std::chrono::high_resolution_clock::now();
                         curr_countdown_num = COUNTDOWN_THREE;
@@ -227,13 +225,10 @@ int main()
 
             if (countdown_started && !countdown_active)
             {
-                countdown_started = false; // reset for next HEART_DEDUCTION
+                countdown_started = false;
                 game_status = GAME_ACTIVE;
-                curr_degrees = BALL_STARTER_DEG;
-                curr_gamestate.ball.curr_x = BALL_START_POSX;
-                curr_gamestate.ball.curr_y = BALL_START_POSY;
                 handle_collision(COLLISION_CASE_RESET);
-                sf::Mouse::setPosition({curr_gamestate.platform.platform_starter_x, curr_gamestate.platform.y}, main_window);
+                last_collision = COLLISION_CASE_RESET;
             }
         }
         else if(game_status == HEARTS_GONE)

@@ -27,12 +27,12 @@ using namespace std;
 #define SCREENSIZE_X 1500
 #define SCREENSIZE_Y 1200
 
-#define BALL_STARTER_DEG 30
+#define BALL_STARTER_DEG 20
 
 #define BLOCK_LEN 30
 #define BLOCK_WIDTH 90
 
-#define BALL_SPEED 0.3
+#define BALL_SPEED 0.35
 
 #define POWERUP_SPEED 400
 #define POWERUP_WIDTH 30
@@ -41,12 +41,16 @@ using namespace std;
 #define TIMER_WIDTH 100
 #define TIMER_HEIGHT 10
 
+#define PLATFORM_WIDTH 160
+
 //#define DEBUG
 //-------------------------------------------------------------------
 
 bool text_visible = false;
 
+const double PLATFORM_INITIAL_X = SCREENSIZE_X / 2 + PLATFORM_WIDTH;
 const double PLATFORM_INITIAL_Y = SCREENSIZE_Y - 120;
+
 
 const int BALL_START_POSX = SCREENSIZE_X / 2;
 const int BALL_START_POSY = SCREENSIZE_Y / 2 + 100;
@@ -66,15 +70,6 @@ float curr_degrees = BALL_STARTER_DEG;
 // direction +/- of flight
 float alpha_x = 0;
 float alpha_y = 0;
-
-// godmode that makes you invinsible to barrier
-bool godmode_active = false;
-
-// active when true and block amount is under 4
-bool crazy_ballspeed = true;
-
-// godspeed if block amount are under 4 and ballspeed is true
-float godspeed = 0.8;
 
 
 //--------
@@ -140,6 +135,8 @@ sf::Text countdown_three;
 
 bool plat_y_axis_joker = false;
 bool mouse_reset_done = false;
+
+bool trajectory_prediction_buff = false;
 
 //-------------------------------------------------------------------
 /**
@@ -290,14 +287,14 @@ std::map<double, powerup_debuff_effect_types> debuff_map =
 std::map<double, powerup_joker_effect_types> joker_map =
 {
     {100, PLAT_Y_AXIS},
-    {0, REMIX_BLOCK_GENERATION}
+    {30, REMIX_BLOCK_GENERATION}
 
 };
 
 
 std::map<double, powerup_class_types> powerup_class_map =
 {
-    {200, JOKER},
+    {100, JOKER},
     {50, BUFF},
     {35, DEBUFF}
 };
@@ -542,15 +539,11 @@ struct platform_type
     //used in get_new_angle() for sections of platform in each half to calculate new ball angle
     int reflection_steps;
 
-    float platform_starter_x;
-
     platform_type(){};
 
-    platform_type(float ypar, int widthpar, int lenpar, int plat_speedpar, int reflection_stepspar)
+    platform_type(float xpar, float ypar, int widthpar, int lenpar, int plat_speedpar, int reflection_stepspar)
     {
-        platform_starter_x = SCREENSIZE_X / 2 - widthpar / 2 + (35 * 4) + 156;
-
-        x = platform_starter_x;
+        x = xpar;
         y = ypar;
 
         width = widthpar;
@@ -730,7 +723,7 @@ vector<timer_type> cooldown_bars;
 void init_gamestate()
 {
     ball_type ball_data(BALL_SPEED, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY);
-    platform_type platform(PLATFORM_INITIAL_Y, 160, 12, 45, 25);
+    platform_type platform(PLATFORM_INITIAL_X, PLATFORM_INITIAL_Y, PLATFORM_WIDTH, 12, 45, 25);
     curr_gamestate.init("000000", 3, block_rows * block_columns, ball_data, platform);
 }
 

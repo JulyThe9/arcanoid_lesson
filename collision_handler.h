@@ -68,13 +68,28 @@ void powerup_activity()
     {
         if (cooldown_bars[i].timer_active)
         {
-            if (cooldown_bars[i].powerup_effect.index() == 2)
+            if(cooldown_bars[i].powerup_effect.index() == 0)
+            {
+                powerup_buff_effect_types buff_type = std::get<powerup_buff_effect_types>(cooldown_bars[i].powerup_effect);
+
+                if (buff_type == TRAJECTORY_PREDICTION)
+                {
+                    trajectory_prediction_buff = true;
+                    cout << "timer started :)" << endl;
+                }
+            }
+            else if(cooldown_bars[i].powerup_effect.index() == 1)
+            {
+                powerup_debuff_effect_types debuff_type = std::get<powerup_debuff_effect_types>(cooldown_bars[i].powerup_effect);
+            }
+            else if (cooldown_bars[i].powerup_effect.index() == 2)
             {
                 powerup_joker_effect_types joker_type = std::get<powerup_joker_effect_types>(cooldown_bars[i].powerup_effect);
 
                 if (joker_type == PLAT_Y_AXIS)
                 {
                     plat_y_axis_joker = true;
+                    cout << "timer started :)" << endl;
                 }
             }
         }
@@ -127,12 +142,30 @@ void reset_powerups()
 }
 
 
+void reset_platform(sf::RectangleShape &plat, sf::RenderWindow &main_window)
+{
+    curr_gamestate.platform.width = PLATFORM_WIDTH;
+    curr_gamestate.platform.x = PLATFORM_INITIAL_X;
+    curr_gamestate.platform.y = PLATFORM_INITIAL_Y;
+    sf::Mouse::setPosition({curr_gamestate.platform.x, curr_gamestate.platform.y}, main_window);
+    plat.setPosition(curr_gamestate.platform.x, curr_gamestate.platform.y);
+}
+
+
+void reset_ball(sf::CircleShape &ball)
+{
+    curr_gamestate.ball.curr_x = BALL_START_POSX;
+    curr_gamestate.ball.curr_y = BALL_START_POSY;
+    curr_degrees = BALL_STARTER_DEG;
+    ball.setPosition(curr_gamestate.ball.curr_x, curr_gamestate.ball.curr_y);
+}
+
+
 void create_powerup(int row, int col)
 {
     int powerup_generation_chance = (std::rand() % 100);
-    if (powerup_generation_chance >= 0)
+    if (powerup_generation_chance >= 70)
     {
-        int powerup_type_chance = (std::rand() % 100);
         falling_powerup_type curr_falling_powerup(0, 0, POWERUP_SPEED, curr_gamestate.blocks[row][col], BUFF);
 
         powerup_class_types curr_powerup_type = get_weighted_random(powerup_class_map);
@@ -198,19 +231,11 @@ double get_mouse_vertical_speed()
     // Pixels per second
     double verticalSpeed = std::abs(static_cast<double>(dy)) / deltaTime;
 
-    // Scale into a friendlier range [0 .. 20]
     // Adjust divisor to taste: larger divisor = smaller numbers
     double scaledSpeed = verticalSpeed / 50.0;
 
-    std::cout << "speed2: " << scaledSpeed << std::endl;
-
     return scaledSpeed;
 }
-
-
-
-
-
 
 
 void handle_collision_powerup()
@@ -223,10 +248,9 @@ void handle_collision_powerup()
         collision_margin = curr_gamestate.ball.speed;
     else
     {
-        collision_margin = curr_mousespeed + curr_gamestate.ball.speed;
+        collision_margin = (curr_mousespeed / 10) + curr_gamestate.ball.speed;
         //cout << "col marg: " << curr_mousespeed + curr_gamestate.ball.speed << endl;
     }
-
 
 
     for (int i = 0; i < falling_powerups.size(); i++)
@@ -247,6 +271,7 @@ void handle_collision_powerup()
                 does_timer_exist(timer_exists, curr_powerup_effect);
                 if(!timer_exists)
                     create_new_timers(curr_powerup_effect, i);
+
                 powerup_activity();
                 falling_powerups[i].powerup_active = false;
                 falling_powerups.erase(falling_powerups.begin() + i);
@@ -269,15 +294,14 @@ void handle_collision_platform()
     double collision_margin;
 
     if (!plat_y_axis_joker)
+    {
         collision_margin = curr_gamestate.ball.speed;
+    }
     else
         collision_margin = curr_mousespeed + curr_gamestate.ball.speed;
 
-    double collision_margin_godmode = godspeed;
-
     if (curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 >= curr_gamestate.platform.y &&
-        (curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 < curr_gamestate.platform.y + collision_margin ||
-         curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 < curr_gamestate.platform.y + collision_margin_godmode))
+        (curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 < curr_gamestate.platform.y + collision_margin))
     {
         if (curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius > curr_gamestate.platform.x &&
             curr_gamestate.ball.curr_x < curr_gamestate.platform.x + curr_gamestate.platform.width &&
@@ -288,7 +312,6 @@ void handle_collision_platform()
                       << " = " << curr_mousespeed + curr_gamestate.ball.speed << endl;
             cout << "alpha: " << alpha_y << endl;
             */
-
             last_collision = COLLISION_CASE_BOTTOM;
             curr_degrees = get_new_angle();
 
@@ -357,16 +380,6 @@ void hit_block(int row, int col)
     current_sound.setBuffer(current_buffer);
     current_sound.play();
 
-
-    if(curr_gamestate.block_amount == 3)
-    {
-        if(godmode_active)
-        {
-            crazy_ballspeed = true;
-            curr_gamestate.ball.speed = godspeed;
-        }
-    }
-
     if(curr_gamestate.block_amount == 0)
     {
         set_game_won();
@@ -385,19 +398,11 @@ void hit_barrier()
 
     if(heart_number != 0)
     {
-        if(!godmode_active)
-        {
-            last_collision = COLLISION_CASE_BOTTOM;
-            set_loss_of_life(heart_number);
-        }
+        set_loss_of_life(heart_number);
     }
     else
     {
-        if(!godmode_active)
-        {
-            last_collision = COLLISION_CASE_BOTTOM;
-            set_game_loss(heart_number);
-        }
+        set_game_loss(heart_number);
     }
 }
 
@@ -414,13 +419,10 @@ void handle_collision_all_sides(int i, int j)
 {
     // margin for collisions for normal speed
     double collision_margin = curr_gamestate.ball.speed;
-    // margin for collisions for godspeed
-    double collision_margin_godmode = godspeed;
 
     //hit top side
     if(curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 > curr_gamestate.blocks[i][j].top_bside &&
-       (curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 < curr_gamestate.blocks[i][j].top_bside + collision_margin ||
-       curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 < curr_gamestate.blocks[i][j].top_bside + collision_margin_godmode))
+       (curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 < curr_gamestate.blocks[i][j].top_bside + collision_margin))
     {
         if(curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius * 2 > curr_gamestate.blocks[i][j].blockX &&
            curr_gamestate.ball.curr_x < curr_gamestate.blocks[i][j].right_bside &&
@@ -442,8 +444,7 @@ void handle_collision_all_sides(int i, int j)
     }
     //hit left side
     else if(curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius * 2 > curr_gamestate.blocks[i][j].left_bside &&
-            (curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius * 2 < curr_gamestate.blocks[i][j].left_bside + collision_margin ||
-            curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius * 2 < curr_gamestate.blocks[i][j].left_bside + collision_margin_godmode))
+            (curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius * 2 < curr_gamestate.blocks[i][j].left_bside + collision_margin))
     {
         if(curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 > curr_gamestate.blocks[i][j].top_bside &&
            curr_gamestate.ball.curr_y < curr_gamestate.blocks[i][j].bottom_bside &&
@@ -465,8 +466,7 @@ void handle_collision_all_sides(int i, int j)
     }
     //hit bottom side
     else if(curr_gamestate.ball.curr_y < curr_gamestate.blocks[i][j].bottom_bside &&
-            (curr_gamestate.ball.curr_y > curr_gamestate.blocks[i][j].bottom_bside - collision_margin ||
-            curr_gamestate.ball.curr_y > curr_gamestate.blocks[i][j].bottom_bside - collision_margin_godmode))
+            (curr_gamestate.ball.curr_y > curr_gamestate.blocks[i][j].bottom_bside - collision_margin))
     {
         if(curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius * 2 > curr_gamestate.blocks[i][j].left_bside &&
            curr_gamestate.ball.curr_x < curr_gamestate.blocks[i][j].right_bside &&

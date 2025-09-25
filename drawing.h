@@ -178,6 +178,42 @@ void draw_powerup(sf::RenderWindow &main_window)
     }
 }
 
+
+void check_individual_effect_timer_buff(int i)
+{
+    powerup_buff_effect_types buff_type = std::get<powerup_buff_effect_types>(cooldown_bars[i].powerup_effect);
+
+    if (buff_type == TRAJECTORY_PREDICTION)
+    {
+        cout << "timer ran out :(" << endl;
+        trajectory_prediction_buff = false;
+    }
+}
+
+
+void check_individual_effect_timer_debuff(int i)
+{
+    powerup_debuff_effect_types debuff_type = std::get<powerup_debuff_effect_types>(cooldown_bars[i].powerup_effect);
+}
+
+
+void check_individual_effect_timer_joker(int i)
+{
+    powerup_joker_effect_types joker_type = std::get<powerup_joker_effect_types>(cooldown_bars[i].powerup_effect);
+
+    if (joker_type == PLAT_Y_AXIS)
+    {
+        cout << "timer ran out :(" << endl;
+        plat_y_axis_joker = false;
+        curr_gamestate.platform.width = PLATFORM_WIDTH;
+        curr_gamestate.platform.y = PLATFORM_INITIAL_Y;
+    }
+}
+
+
+
+
+
 void draw_timer(sf::RenderWindow &main_window)
 {
     for (int i = 0; i < cooldown_bars.size(); i++)
@@ -194,21 +230,19 @@ void draw_timer(sf::RenderWindow &main_window)
             {
                 // WHEN TIMER RUNS OUT
                 cooldown_bars[i].timer_active = false;
-                for (int i = 0; i < cooldown_bars.size(); i++)
+                if (!cooldown_bars[i].timer_active)
                 {
-                    if (!cooldown_bars[i].timer_active)
+                    if(cooldown_bars[i].powerup_effect.index() == 0)
                     {
-                        if (cooldown_bars[i].powerup_effect.index() == 2)
-                        {
-                            powerup_joker_effect_types joker_type = std::get<powerup_joker_effect_types>(cooldown_bars[i].powerup_effect);
-
-                            if (joker_type == PLAT_Y_AXIS)
-                            {
-                                cout << "ran out" << endl;
-                                plat_y_axis_joker = false;
-                                curr_gamestate.platform.y = PLATFORM_INITIAL_Y;
-                            }
-                        }
+                        check_individual_effect_timer_buff(i);
+                    }
+                    else if(cooldown_bars[i].powerup_effect.index() == 1)
+                    {
+                        check_individual_effect_timer_debuff(i);
+                    }
+                    else if (cooldown_bars[i].powerup_effect.index() == 2)
+                    {
+                        check_individual_effect_timer_joker(i);
                     }
                 }
                 cooldown_bars.erase(cooldown_bars.begin() + i);
