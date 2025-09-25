@@ -259,6 +259,13 @@ int main()
             }
         }
 
+        cout << "curr_pos_x: " << curr_gamestate.ball.curr_x << endl;
+        cout << "curr_pos_y: " << curr_gamestate.ball.curr_y << endl;
+        cout << "alpha_x: " << alpha_x << endl;
+        cout << "alpha_y: " << alpha_y << endl;
+        cout << "curr degrees: " << curr_degrees << endl;
+        cout << "-----------------" << endl;
+
 
         draw_blocks(main_window);
         draw_powerup(main_window);

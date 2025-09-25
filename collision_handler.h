@@ -281,6 +281,22 @@ void handle_collision_powerup()
     }
 }
 
+
+void predict_trajectory()
+{
+    double x_prediction = curr_gamestate.ball.curr_x;
+    double y_prediction = curr_gamestate.ball.curr_y - curr_gamestate.ball.speed;
+    bool collision_occured = false;
+
+    while(y_prediction != PLATFORM_INITIAL_Y)
+    {
+        while(!collision_occured)
+        {
+            //continue with each step. This is the path from 1 collision to the next.
+        }
+    }
+}
+
 // ---------------------------------
 // PLATFORM COLLISION DETECTION HERE
 // ---------------------------------
@@ -317,6 +333,13 @@ void handle_collision_platform()
 
             current_sound.setBuffer(buffer_platform);
             current_sound.play();
+
+            cout << "PLATFORM COLLISIONNN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
+
+            if(trajectory_prediction_buff)
+            {
+                predict_trajectory();
+            }
         }
     }
 }

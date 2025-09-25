@@ -137,6 +137,7 @@ void draw_heart_deduction_text(sf::RenderWindow &main_window)
 }
 
 
+//----------------------------------------------------------------------------------------------------
 void draw_powerup(sf::RenderWindow &main_window)
 {
     for(int i = 0; i < falling_powerups.size(); i++)
@@ -179,10 +180,10 @@ void draw_powerup(sf::RenderWindow &main_window)
 }
 
 
-void check_individual_effect_timer_buff(int i)
+//----------------------------------------------------------------------------------------------------
+void check_specific_effect_timer_buff(powerup_buff_effect_types buff_type)
 {
-    powerup_buff_effect_types buff_type = std::get<powerup_buff_effect_types>(cooldown_bars[i].powerup_effect);
-
+    //check for specific buffs
     if (buff_type == TRAJECTORY_PREDICTION)
     {
         cout << "timer ran out :(" << endl;
@@ -191,9 +192,38 @@ void check_individual_effect_timer_buff(int i)
 }
 
 
+void check_specific_effect_timer_debuff(powerup_debuff_effect_types debuff_type)
+{
+    //check for specific debuffs
+}
+
+
+void check_specific_effect_timer_joker(powerup_joker_effect_types joker_type)
+{
+    //check for specific jokers
+    if (joker_type == PLAT_Y_AXIS)
+    {
+        cout << "timer ran out :(" << endl;
+        curr_gamestate.platform.y = PLATFORM_INITIAL_Y;
+        plat_y_axis_joker = false;
+    }
+}
+
+
+//---------------------------------
+void check_individual_effect_timer_buff(int i)
+{
+    powerup_buff_effect_types buff_type = std::get<powerup_buff_effect_types>(cooldown_bars[i].powerup_effect);
+
+    check_specific_effect_timer_buff(buff_type);
+}
+
+
 void check_individual_effect_timer_debuff(int i)
 {
     powerup_debuff_effect_types debuff_type = std::get<powerup_debuff_effect_types>(cooldown_bars[i].powerup_effect);
+
+    check_specific_effect_timer_debuff(debuff_type);
 }
 
 
@@ -201,19 +231,11 @@ void check_individual_effect_timer_joker(int i)
 {
     powerup_joker_effect_types joker_type = std::get<powerup_joker_effect_types>(cooldown_bars[i].powerup_effect);
 
-    if (joker_type == PLAT_Y_AXIS)
-    {
-        cout << "timer ran out :(" << endl;
-        plat_y_axis_joker = false;
-        curr_gamestate.platform.width = PLATFORM_WIDTH;
-        curr_gamestate.platform.y = PLATFORM_INITIAL_Y;
-    }
+    check_specific_effect_timer_joker(joker_type);
 }
 
 
-
-
-
+//----------------------------------------------------------------------------------------------------
 void draw_timer(sf::RenderWindow &main_window)
 {
     for (int i = 0; i < cooldown_bars.size(); i++)
