@@ -14,22 +14,22 @@
 
 *@return curr_degrees the new degrees of balls flight
 */
-int get_new_angle()
+int get_new_angle(ball_type &curr_ball)
 {
     curr_degrees = 0;
     float plat_pos = 0.0;
     int sections_per_side = 20;
 
-    if(curr_gamestate.ball.curr_x - curr_gamestate.platform.x + curr_gamestate.ball.size_radius > curr_gamestate.platform.width / 2)
+    if(curr_ball.curr_x - curr_gamestate.platform.x + curr_ball.size_radius > curr_gamestate.platform.width / 2)
     {
-        plat_pos = curr_gamestate.ball.curr_x - curr_gamestate.platform.x;
+        plat_pos = curr_ball.curr_x - curr_gamestate.platform.x;
     }
-    else if(curr_gamestate.ball.curr_x - curr_gamestate.platform.x + curr_gamestate.ball.size_radius <= curr_gamestate.platform.width / 2)
+    else if(curr_ball.curr_x - curr_gamestate.platform.x + curr_ball.size_radius <= curr_gamestate.platform.width / 2)
     {
-        plat_pos = curr_gamestate.ball.curr_x - curr_gamestate.platform.x + curr_gamestate.ball.size_radius;
+        plat_pos = curr_ball.curr_x - curr_gamestate.platform.x + curr_ball.size_radius;
     }
 
-    float plat_posr = curr_gamestate.ball.curr_x - curr_gamestate.platform.x;
+    float plat_posr = curr_ball.curr_x - curr_gamestate.platform.x;
     double section = curr_gamestate.platform.width / (sections_per_side * 2.0);
     int deg_per_section = 90 / (sections_per_side + 1);
 
@@ -41,7 +41,7 @@ int get_new_angle()
             if(plat_posr > (curr_gamestate.platform.width / 2) + (section * i) && plat_posr < (curr_gamestate.platform.width / 2) + section * (i + 1))
             {
                 curr_degrees = (deg_per_section * (i + 1));
-                handle_collision(COLLISION_CASE_PLATFORM_RIGHT);
+                handle_collision(COLLISION_CASE_PLATFORM_RIGHT, curr_ball);
             }
         }
     }
@@ -53,14 +53,14 @@ int get_new_angle()
             if(plat_pos < (curr_gamestate.platform.width / 2) - (section * i) && plat_pos > (curr_gamestate.platform.width / 2) - section * (i + 1))
             {
                 curr_degrees = (deg_per_section * (i + 1));
-                handle_collision(COLLISION_CASE_PLATFORM_LEFT);
+                handle_collision(COLLISION_CASE_PLATFORM_LEFT, curr_ball);
             }
         }
     }
 
 #ifdef DEBUG
             cout << "-------NEWLY CALCULATED ANGLE--------" << endl;
-            cout << "current ball pos: " << curr_gamestate.ball.curr_x << " | " << curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius << endl;
+            cout << "current ball pos: " << curr_ball.curr_x << " | " << curr_ball.curr_y + curr_ball.size_radius << endl;
             cout << "new curr_degrees: " << curr_degrees << endl;
 #endif
     return curr_degrees;

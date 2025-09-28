@@ -148,8 +148,8 @@ int main()
             if (alpha_y == 0 && alpha_x == 0)
             {
                 // default movement at the start of the game
-                curr_gamestate.ball.curr_x += get_new_x(curr_degrees);
-                curr_gamestate.ball.curr_y += get_new_y(curr_degrees);
+                curr_gamestate.ball.curr_x += get_new_x(curr_degrees, curr_gamestate.ball);
+                curr_gamestate.ball.curr_y += get_new_y(curr_degrees, curr_gamestate.ball);
             }
             else
             {
@@ -159,10 +159,10 @@ int main()
             }
 
             // MAIN COLLISIONS
-            handle_collision_walls();
-            handle_collision_block();
-            handle_collision_platform();
-            handle_collision_barrier();
+            handle_collision_walls(curr_gamestate.ball);
+            handle_collision_block(curr_gamestate.ball);
+            handle_collision_platform(curr_gamestate.ball);
+            handle_collision_barrier(curr_gamestate.ball);
             handle_collision_powerup();
 
             handle_deletion_powerup();
@@ -227,7 +227,7 @@ int main()
             {
                 countdown_started = false;
                 game_status = GAME_ACTIVE;
-                handle_collision(COLLISION_CASE_RESET);
+                handle_collision(COLLISION_CASE_RESET, curr_gamestate.ball);
                 last_collision = COLLISION_CASE_RESET;
             }
         }
@@ -259,12 +259,12 @@ int main()
             }
         }
 
-        cout << "curr_pos_x: " << curr_gamestate.ball.curr_x << endl;
-        cout << "curr_pos_y: " << curr_gamestate.ball.curr_y << endl;
-        cout << "alpha_x: " << alpha_x << endl;
-        cout << "alpha_y: " << alpha_y << endl;
-        cout << "curr degrees: " << curr_degrees << endl;
-        cout << "-----------------" << endl;
+        // cout << "curr_pos_x: " << curr_gamestate.ball.curr_x << endl;
+        // cout << "curr_pos_y: " << curr_gamestate.ball.curr_y << endl;
+        // cout << "alpha_x: " << alpha_x << endl;
+        // cout << "alpha_y: " << alpha_y << endl;
+        // cout << "curr degrees: " << curr_degrees << endl;
+        // cout << "-----------------" << endl;
 
 
         draw_blocks(main_window);

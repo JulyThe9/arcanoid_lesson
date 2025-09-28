@@ -17,86 +17,7 @@ void play_wall_sound()
 *@date [01.05.2025]
 */
 
-
-// ---------------------------------
-// WALL COLLISION DETECTION HERE
-// ---------------------------------
-/**
-*@brief handles wall collision
-*/
-void handle_collision_walls()
-{
-    if(curr_gamestate.ball.curr_x >= right_wall - curr_gamestate.ball.size_radius * 2)
-    {
-#ifdef DEBUG
-        cout << "-------------RIGHT WALL--------------" << endl;
-        cout << "current ball pos: " << curr_gamestate.ball.curr_x << " | " << curr_gamestate.ball.curr_y << endl;
-#endif
-        last_collision = COLLISION_CASE_RIGHT;
-        handle_collision(COLLISION_CASE_RIGHT);
-
-        play_wall_sound();
-    }
-    else if(curr_gamestate.ball.curr_y <= status_bar_length)
-    {
-#ifdef DEBUG
-        cout << "-------------TOP WALL----------------" << endl;
-        cout << "current ball pos: " << curr_gamestate.ball.curr_x << " | " << curr_gamestate.ball.curr_y << endl;
-#endif
-        last_collision = COLLISION_CASE_TOP;
-        handle_collision(COLLISION_CASE_TOP);
-
-        play_wall_sound();
-    }
-    else if(curr_gamestate.ball.curr_x <= left_wall)
-    {
-#ifdef DEBUG
-        cout << "-------------LEFT WALL---------------" << endl;
-        cout << "current ball pos: " << curr_gamestate.ball.curr_x << " | " << curr_gamestate.ball.curr_y << endl;
-#endif
-        last_collision = COLLISION_CASE_LEFT;
-        handle_collision(COLLISION_CASE_LEFT);
-
-        play_wall_sound();
-    }
-}
-
-
-void powerup_activity()
-{
-    for (int i = 0; i < cooldown_bars.size(); i++)
-    {
-        if (cooldown_bars[i].timer_active)
-        {
-            if(cooldown_bars[i].powerup_effect.index() == 0)
-            {
-                powerup_buff_effect_types buff_type = std::get<powerup_buff_effect_types>(cooldown_bars[i].powerup_effect);
-
-                if (buff_type == TRAJECTORY_PREDICTION)
-                {
-                    trajectory_prediction_buff = true;
-                    cout << "timer started :)" << endl;
-                }
-            }
-            else if(cooldown_bars[i].powerup_effect.index() == 1)
-            {
-                powerup_debuff_effect_types debuff_type = std::get<powerup_debuff_effect_types>(cooldown_bars[i].powerup_effect);
-            }
-            else if (cooldown_bars[i].powerup_effect.index() == 2)
-            {
-                powerup_joker_effect_types joker_type = std::get<powerup_joker_effect_types>(cooldown_bars[i].powerup_effect);
-
-                if (joker_type == PLAT_Y_AXIS)
-                {
-                    plat_y_axis_joker = true;
-                    cout << "timer started :)" << endl;
-                }
-            }
-        }
-    }
-}
-
-
+//--------------------------------------------------------------------------------------------------
 void does_timer_exist(bool &timer_exists, std::variant<powerup_buff_effect_types, powerup_debuff_effect_types, powerup_joker_effect_types> curr_spec_powerup)
 {
     for (int i = 0; i < cooldown_bars.size(); ++i)
@@ -136,12 +57,7 @@ void clean_up_timers()
 }
 
 
-void reset_powerups()
-{
-    plat_y_axis_joker = false;
-}
-
-
+//--------------------------------------------------------------------------------------------------
 void reset_platform(sf::RectangleShape &plat, sf::RenderWindow &main_window)
 {
     curr_gamestate.platform.width = PLATFORM_WIDTH;
@@ -160,6 +76,11 @@ void reset_ball(sf::CircleShape &ball)
     ball.setPosition(curr_gamestate.ball.curr_x, curr_gamestate.ball.curr_y);
 }
 
+//--------------------------------------------------------------------------------------------------
+void reset_powerups()
+{
+    plat_y_axis_joker = false;
+}
 
 void create_powerup(int row, int col)
 {
@@ -205,9 +126,140 @@ void create_powerup(int row, int col)
 }
 
 
+void powerup_activity()
+{
+    for (int i = 0; i < cooldown_bars.size(); i++)
+    {
+        if (cooldown_bars[i].timer_active)
+        {
+            if(cooldown_bars[i].powerup_effect.index() == 0)
+            {
+                powerup_buff_effect_types buff_type = std::get<powerup_buff_effect_types>(cooldown_bars[i].powerup_effect);
+
+                if (buff_type == TRAJECTORY_PREDICTION)
+                {
+                    trajectory_prediction_buff = true;
+                    cout << "timer started :)" << endl;
+                }
+            }
+            else if(cooldown_bars[i].powerup_effect.index() == 1)
+            {
+                powerup_debuff_effect_types debuff_type = std::get<powerup_debuff_effect_types>(cooldown_bars[i].powerup_effect);
+            }
+            else if (cooldown_bars[i].powerup_effect.index() == 2)
+            {
+                powerup_joker_effect_types joker_type = std::get<powerup_joker_effect_types>(cooldown_bars[i].powerup_effect);
+
+                if (joker_type == PLAT_Y_AXIS)
+                {
+                    plat_y_axis_joker = true;
+                    cout << "timer started :)" << endl;
+                }
+            }
+        }
+    }
+}
+
+
+void predict_trajectory()
+{
+    double x_prediction = curr_gamestate.ball.curr_x;
+    double y_prediction = curr_gamestate.ball.curr_y - curr_gamestate.ball.speed;
+    bool collision_occured = false;
+
+    while(y_prediction != PLATFORM_INITIAL_Y)
+    {
+        while(!collision_occured)
+        {
+            //continue with each step. This is the path from 1 collision to the next.
+        }
+    }
+}
+
+
+void handle_deletion_powerup()
+{
+    for(int i = 0; i < falling_powerups.size(); i++)
+    {
+        sf::Vector2f position = falling_powerups[i].rectangle.getPosition();
+        if(position.y > barrier_obj.y - POWERUP_LEN)
+        {
+            falling_powerups[i].powerup_active = false;
+            falling_powerups.erase(falling_powerups.begin() + i);
+        }
+    }
+}
+
+
+//--------------------------------------------------------------------------------------------------
+/**
+*@brief makes block disappear
+
+*sets all necessary values to 0, to make it invisible to the user and basically non-existant
+*also checked for explosion block and if a chainreaction is occuring
+*also checks if game is won or still continuing in case all blocks have been hit
+
+*@param row current row of block that has been hit
+*@param col current column of block that has been hit
+*/
+void hit_block(int row, int col)
+{
+    if(curr_gamestate.blocks[row][col].active)
+        curr_gamestate.block_amount--;
+
+    curr_gamestate.blocks[row][col].active = false;
+    vector<pair<int, int>> neighbours;
+
+    if(curr_gamestate.blocks[row][col].texturetype == TEXTURE_TYPE_EXPLOSION_SMALL ||
+       curr_gamestate.blocks[row][col].texturetype == TEXTURE_TYPE_EXPLOSION_LARGE)
+    {
+        neighbours = get_neighbours(row, col);
+    }
+
+    for(unsigned int i = 0; i < neighbours.size(); i++)
+    {
+        curr_gamestate.block_amount--;
+        int curr_row = neighbours[i].first;
+        int curr_col = neighbours[i].second;
+        //this line is used to set the active variable of neighbours of explosion block to false
+        curr_gamestate.blocks[curr_row][curr_col].active = false;
+        curr_gamestate.blocks_graphics[curr_row][curr_col].setFillColor(sf::Color(0, 0, 0));
+        add_to_score(curr_row, curr_col);
+        create_powerup(curr_row, curr_col);
+    }
+
+
+    for(unsigned int i = 0; i < neighbours.size(); i++)
+    {
+        int curr_row = neighbours[i].first;
+        int curr_col = neighbours[i].second;
+
+        if(curr_gamestate.blocks[curr_row][curr_col].texturetype == TEXTURE_TYPE_EXPLOSION_SMALL ||
+           curr_gamestate.blocks[curr_row][curr_col].texturetype == TEXTURE_TYPE_EXPLOSION_LARGE)
+        {
+            hit_block(curr_row, curr_col);
+        }
+    }
+
+    //this line is used to set the active variable of explosion block to false
+    curr_gamestate.blocks_graphics[row][col].setFillColor(sf::Color(0, 0, 0));
+    add_to_score(row, col);
+
+    current_buffer = map_sounds(curr_gamestate.blocks[row][col].block_sound);
+    current_sound.setBuffer(current_buffer);
+    current_sound.play();
+
+    if(curr_gamestate.block_amount == 0)
+    {
+        set_game_won();
+    }
+
+    create_powerup(row, col);
+}
+
+
 sf::Vector2i lastMousePosition;
 sf::Clock mouseSpeedClock;
-
 
 // CHATGPT TO GET MOUSE SPEED
 double get_mouse_vertical_speed()
@@ -282,20 +334,49 @@ void handle_collision_powerup()
 }
 
 
-void predict_trajectory()
+// ---------------------------------
+// WALL COLLISION DETECTION HERE
+// ---------------------------------
+/**
+*@brief handles wall collision
+*/
+void handle_collision_walls(ball_type &curr_ball)
 {
-    double x_prediction = curr_gamestate.ball.curr_x;
-    double y_prediction = curr_gamestate.ball.curr_y - curr_gamestate.ball.speed;
-    bool collision_occured = false;
-
-    while(y_prediction != PLATFORM_INITIAL_Y)
+    if(curr_ball.curr_x >= right_wall - curr_ball.size_radius * 2)
     {
-        while(!collision_occured)
-        {
-            //continue with each step. This is the path from 1 collision to the next.
-        }
+#ifdef DEBUG
+        cout << "-------------RIGHT WALL--------------" << endl;
+        cout << "current ball pos: " << curr_ball.curr_x << " | " << curr_ball.curr_y << endl;
+#endif
+        last_collision = COLLISION_CASE_RIGHT;
+        handle_collision(COLLISION_CASE_RIGHT, curr_ball);
+
+        play_wall_sound();
+    }
+    else if(curr_ball.curr_y <= status_bar_length)
+    {
+#ifdef DEBUG
+        cout << "-------------TOP WALL----------------" << endl;
+        cout << "current ball pos: " << curr_ball.curr_x << " | " << curr_ball.curr_y << endl;
+#endif
+        last_collision = COLLISION_CASE_TOP;
+        handle_collision(COLLISION_CASE_TOP, curr_ball);
+
+        play_wall_sound();
+    }
+    else if(curr_ball.curr_x <= left_wall)
+    {
+#ifdef DEBUG
+        cout << "-------------LEFT WALL---------------" << endl;
+        cout << "current ball pos: " << curr_ball.curr_x << " | " << curr_ball.curr_y << endl;
+#endif
+        last_collision = COLLISION_CASE_LEFT;
+        handle_collision(COLLISION_CASE_LEFT, curr_ball);
+
+        play_wall_sound();
     }
 }
+
 
 // ---------------------------------
 // PLATFORM COLLISION DETECTION HERE
@@ -303,7 +384,7 @@ void predict_trajectory()
 /**
 *@brief handles platform collision
 */
-void handle_collision_platform()
+void handle_collision_platform(ball_type &curr_ball)
 {
     double curr_mousespeed = get_mouse_vertical_speed();
 
@@ -311,107 +392,164 @@ void handle_collision_platform()
 
     if (!plat_y_axis_joker)
     {
-        collision_margin = curr_gamestate.ball.speed;
+        collision_margin = curr_ball.speed;
     }
     else
-        collision_margin = curr_mousespeed + curr_gamestate.ball.speed;
+        collision_margin = curr_mousespeed + curr_ball.speed;
 
-    if (curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 >= curr_gamestate.platform.y &&
-        (curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 < curr_gamestate.platform.y + collision_margin))
+    if (curr_ball.curr_y + curr_ball.size_radius * 2 >= curr_gamestate.platform.y &&
+        (curr_ball.curr_y + curr_ball.size_radius * 2 < curr_gamestate.platform.y + collision_margin))
     {
-        if (curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius > curr_gamestate.platform.x &&
-            curr_gamestate.ball.curr_x < curr_gamestate.platform.x + curr_gamestate.platform.width &&
+        if (curr_ball.curr_x + curr_ball.size_radius > curr_gamestate.platform.x &&
+            curr_ball.curr_x < curr_gamestate.platform.x + curr_gamestate.platform.width &&
             last_collision != COLLISION_CASE_BOTTOM)
         {
             /*
-            cout << "joker_col_margin: " << curr_mousespeed << " + " << curr_gamestate.ball.speed
-                      << " = " << curr_mousespeed + curr_gamestate.ball.speed << endl;
+            cout << "joker_col_margin: " << curr_mousespeed << " + " << curr_ball.speed
+                      << " = " << curr_mousespeed + curr_ball.speed << endl;
             cout << "alpha: " << alpha_y << endl;
             */
             last_collision = COLLISION_CASE_BOTTOM;
-            curr_degrees = get_new_angle();
+            curr_degrees = get_new_angle(curr_ball);
 
             current_sound.setBuffer(buffer_platform);
             current_sound.play();
 
-            cout << "PLATFORM COLLISIONNN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
+            //cout << "PLATFORM COLLISIONNN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
 
             if(trajectory_prediction_buff)
             {
-                predict_trajectory();
+                // predict_trajectory();
             }
         }
     }
 }
 
 
-//make block disappear
 /**
-*@brief makes block disappear
+*@brief checks if any block has been hit
 
-*sets all necessary values to 0, to make it invisible to the user and basically non-existant
-*also checked for explosion block and if a chainreaction is occuring
-*also checks if game is won or still continuing in case all blocks have been hit
+*handles collisions for all active blocks
 
-*@param row current row of block that has been hit
-*@param col current column of block that has been hit
+*@param i row of block
+*@param j column of block
 */
-void hit_block(int row, int col)
+void handle_collision_all_sides(int i, int j, ball_type &curr_ball)
 {
-    if(curr_gamestate.blocks[row][col].active)
-        curr_gamestate.block_amount--;
+    // margin for collisions for normal speed
+    double collision_margin = curr_ball.speed;
 
-    curr_gamestate.blocks[row][col].active = false;
-    vector<pair<int, int>> neighbours;
-
-    if(curr_gamestate.blocks[row][col].texturetype == TEXTURE_TYPE_EXPLOSION_SMALL ||
-       curr_gamestate.blocks[row][col].texturetype == TEXTURE_TYPE_EXPLOSION_LARGE)
+    //hit top side
+    if(curr_ball.curr_y + curr_ball.size_radius * 2 > curr_gamestate.blocks[i][j].top_bside &&
+       (curr_ball.curr_y + curr_ball.size_radius * 2 < curr_gamestate.blocks[i][j].top_bside + collision_margin))
     {
-        neighbours = get_neighbours(row, col);
-    }
-
-    for(unsigned int i = 0; i < neighbours.size(); i++)
-    {
-        curr_gamestate.block_amount--;
-        int curr_row = neighbours[i].first;
-        int curr_col = neighbours[i].second;
-        //this line is used to set the active variable of neighbours of explosion block to false
-        curr_gamestate.blocks[curr_row][curr_col].active = false;
-        curr_gamestate.blocks_graphics[curr_row][curr_col].setFillColor(sf::Color(0, 0, 0));
-        add_to_score(curr_row, curr_col);
-        create_powerup(curr_row, curr_col);
-    }
-
-
-    for(unsigned int i = 0; i < neighbours.size(); i++)
-    {
-        int curr_row = neighbours[i].first;
-        int curr_col = neighbours[i].second;
-
-        if(curr_gamestate.blocks[curr_row][curr_col].texturetype == TEXTURE_TYPE_EXPLOSION_SMALL ||
-           curr_gamestate.blocks[curr_row][curr_col].texturetype == TEXTURE_TYPE_EXPLOSION_LARGE)
+        if(curr_ball.curr_x + curr_ball.size_radius * 2 > curr_gamestate.blocks[i][j].blockX &&
+           curr_ball.curr_x < curr_gamestate.blocks[i][j].right_bside &&
+           curr_gamestate.blocks[i][j].active &&
+           last_collision != COLLISION_CASE_BOTTOM)
         {
-            hit_block(curr_row, curr_col);
+#ifdef DEBUG
+            cout << "-------COLLISION CASE BOTTOM---------" << endl;
+            cout << "current ball pos: " << curr_ball.curr_x << " | " << curr_ball.curr_y << endl;
+            cout << "top block side: " << curr_gamestate.blocks[i][j].top_bside << endl;
+            cout << "left block side: " << curr_gamestate.blocks[i][j].left_bside << endl;
+            cout << "bottom block side: " << curr_gamestate.blocks[i][j].bottom_bside << endl;
+            cout << "right block side: " << curr_gamestate.blocks[i][j].right_bside << endl;
+#endif
+            last_collision = COLLISION_CASE_BOTTOM;
+            handle_collision(COLLISION_CASE_BOTTOM,curr_ball);
+            hit_block(i, j);
         }
     }
-
-    //this line is used to set the active variable of explosion block to false
-    curr_gamestate.blocks_graphics[row][col].setFillColor(sf::Color(0, 0, 0));
-    add_to_score(row, col);
-
-    current_buffer = map_sounds(curr_gamestate.blocks[row][col].block_sound);
-    current_sound.setBuffer(current_buffer);
-    current_sound.play();
-
-    if(curr_gamestate.block_amount == 0)
+    //hit left side
+    else if(curr_ball.curr_x + curr_ball.size_radius * 2 > curr_gamestate.blocks[i][j].left_bside &&
+            (curr_ball.curr_x + curr_ball.size_radius * 2 < curr_gamestate.blocks[i][j].left_bside + collision_margin))
     {
-        set_game_won();
+        if(curr_ball.curr_y + curr_ball.size_radius * 2 > curr_gamestate.blocks[i][j].top_bside &&
+           curr_ball.curr_y < curr_gamestate.blocks[i][j].bottom_bside &&
+           curr_gamestate.blocks[i][j].active &&
+           last_collision != COLLISION_CASE_RIGHT)
+        {
+#ifdef DEBUG
+            cout << "--------COLLISION CASE RIGHT---------" << endl;
+            cout << "current ball pos: " << curr_ball.curr_x << " | " << curr_ball.curr_y + curr_ball.size_radius << endl;
+            cout << "top block side: " << curr_gamestate.blocks[i][j].top_bside << endl;
+            cout << "left block side: " << curr_gamestate.blocks[i][j].left_bside << endl;
+            cout << "bottom block side: " << curr_gamestate.blocks[i][j].bottom_bside << endl;
+            cout << "right block side: " << curr_gamestate.blocks[i][j].right_bside << endl;
+#endif
+            last_collision = COLLISION_CASE_RIGHT;
+            handle_collision(COLLISION_CASE_RIGHT, curr_ball);
+            hit_block(i, j);
+        }
     }
-
-    create_powerup(row, col);
+    //hit bottom side
+    else if(curr_ball.curr_y < curr_gamestate.blocks[i][j].bottom_bside &&
+            (curr_ball.curr_y > curr_gamestate.blocks[i][j].bottom_bside - collision_margin))
+    {
+        if(curr_ball.curr_x + curr_ball.size_radius * 2 > curr_gamestate.blocks[i][j].left_bside &&
+           curr_ball.curr_x < curr_gamestate.blocks[i][j].right_bside &&
+           curr_gamestate.blocks[i][j].active &&
+           last_collision != COLLISION_CASE_TOP)
+        {
+#ifdef DEBUG
+            cout << "----------COLLISION CASE TOP---------" << endl;
+            cout << "current ball pos: " << curr_ball.curr_x << " | " << curr_ball.curr_y + curr_ball.size_radius << endl;
+            cout << "top block side: " << curr_gamestate.blocks[i][j].top_bside << endl;
+            cout << "left block side: " << curr_gamestate.blocks[i][j].left_bside << endl;
+            cout << "bottom block side: " << curr_gamestate.blocks[i][j].bottom_bside << endl;
+            cout << "right block side: " << curr_gamestate.blocks[i][j].right_bside << endl;
+#endif
+            last_collision = COLLISION_CASE_TOP;
+            handle_collision(COLLISION_CASE_TOP, curr_ball);
+            hit_block(i, j);
+        }
+    }
+    //hit right side
+    else if(curr_ball.curr_x <= curr_gamestate.blocks[i][j].right_bside &&
+            curr_ball.curr_x > curr_gamestate.blocks[i][j].right_bside - collision_margin)
+    {
+        if(curr_ball.curr_y + curr_ball.size_radius * 2 >= curr_gamestate.blocks[i][j].top_bside &&
+           curr_ball.curr_y <= curr_gamestate.blocks[i][j].bottom_bside &&
+           curr_gamestate.blocks[i][j].active &&
+           last_collision != COLLISION_CASE_LEFT)
+        {
+#ifdef DEBUG
+            cout << "--------COLLISION CASE LEFT----------" << endl;
+            cout << "current ball pos: " << curr_ball.curr_x << " | " << curr_ball.curr_y + curr_ball.size_radius << endl;
+            cout << "top block side: " << curr_gamestate.blocks[i][j].top_bside << endl;
+            cout << "left block side: " << curr_gamestate.blocks[i][j].left_bside << endl;
+            cout << "bottom block side: " << curr_gamestate.blocks[i][j].bottom_bside << endl;
+            cout << "right block side: " << curr_gamestate.blocks[i][j].right_bside << endl;
+#endif
+            last_collision = COLLISION_CASE_LEFT;
+            curr_ball.curr_x = curr_gamestate.blocks[i][j].right_bside;
+            handle_collision(COLLISION_CASE_LEFT, curr_ball);
+            hit_block(i, j);
+        }
+    }
 }
 
 
+// ---------------------------------
+// BLOCK COLLISION DETECTION HERE
+// ---------------------------------
+/**
+*@brief calls function to check all block side collisions
+*/
+void handle_collision_block(ball_type &curr_ball)
+{
+    for (int i = 0; i < block_rows; i++)
+    {
+        for(int j = 0; j < block_columns; j++)
+        {
+            handle_collision_all_sides(i, j, curr_ball);
+        }
+    }
+}
+
+
+//--------------------------------------------------------------------------------------------------
 /**
 *@brief changes game status and deducts a life if true
 */
@@ -431,150 +569,25 @@ void hit_barrier()
 
 
 /**
-*@brief checks if any block has been hit
-
-*handles collisions for all active blocks
-
-*@param i row of block
-*@param j column of block
-*/
-void handle_collision_all_sides(int i, int j)
-{
-    // margin for collisions for normal speed
-    double collision_margin = curr_gamestate.ball.speed;
-
-    //hit top side
-    if(curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 > curr_gamestate.blocks[i][j].top_bside &&
-       (curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 < curr_gamestate.blocks[i][j].top_bside + collision_margin))
-    {
-        if(curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius * 2 > curr_gamestate.blocks[i][j].blockX &&
-           curr_gamestate.ball.curr_x < curr_gamestate.blocks[i][j].right_bside &&
-           curr_gamestate.blocks[i][j].active &&
-           last_collision != COLLISION_CASE_BOTTOM)
-        {
-#ifdef DEBUG
-            cout << "-------COLLISION CASE BOTTOM---------" << endl;
-            cout << "current ball pos: " << curr_gamestate.ball.curr_x << " | " << curr_gamestate.ball.curr_y << endl;
-            cout << "top block side: " << curr_gamestate.blocks[i][j].top_bside << endl;
-            cout << "left block side: " << curr_gamestate.blocks[i][j].left_bside << endl;
-            cout << "bottom block side: " << curr_gamestate.blocks[i][j].bottom_bside << endl;
-            cout << "right block side: " << curr_gamestate.blocks[i][j].right_bside << endl;
-#endif
-            last_collision = COLLISION_CASE_BOTTOM;
-            handle_collision(COLLISION_CASE_BOTTOM);
-            hit_block(i, j);
-        }
-    }
-    //hit left side
-    else if(curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius * 2 > curr_gamestate.blocks[i][j].left_bside &&
-            (curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius * 2 < curr_gamestate.blocks[i][j].left_bside + collision_margin))
-    {
-        if(curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 > curr_gamestate.blocks[i][j].top_bside &&
-           curr_gamestate.ball.curr_y < curr_gamestate.blocks[i][j].bottom_bside &&
-           curr_gamestate.blocks[i][j].active &&
-           last_collision != COLLISION_CASE_RIGHT)
-        {
-#ifdef DEBUG
-            cout << "--------COLLISION CASE RIGHT---------" << endl;
-            cout << "current ball pos: " << curr_gamestate.ball.curr_x << " | " << curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius << endl;
-            cout << "top block side: " << curr_gamestate.blocks[i][j].top_bside << endl;
-            cout << "left block side: " << curr_gamestate.blocks[i][j].left_bside << endl;
-            cout << "bottom block side: " << curr_gamestate.blocks[i][j].bottom_bside << endl;
-            cout << "right block side: " << curr_gamestate.blocks[i][j].right_bside << endl;
-#endif
-            last_collision = COLLISION_CASE_RIGHT;
-            handle_collision(COLLISION_CASE_RIGHT);
-            hit_block(i, j);
-        }
-    }
-    //hit bottom side
-    else if(curr_gamestate.ball.curr_y < curr_gamestate.blocks[i][j].bottom_bside &&
-            (curr_gamestate.ball.curr_y > curr_gamestate.blocks[i][j].bottom_bside - collision_margin))
-    {
-        if(curr_gamestate.ball.curr_x + curr_gamestate.ball.size_radius * 2 > curr_gamestate.blocks[i][j].left_bside &&
-           curr_gamestate.ball.curr_x < curr_gamestate.blocks[i][j].right_bside &&
-           curr_gamestate.blocks[i][j].active &&
-           last_collision != COLLISION_CASE_TOP)
-        {
-#ifdef DEBUG
-            cout << "----------COLLISION CASE TOP---------" << endl;
-            cout << "current ball pos: " << curr_gamestate.ball.curr_x << " | " << curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius << endl;
-            cout << "top block side: " << curr_gamestate.blocks[i][j].top_bside << endl;
-            cout << "left block side: " << curr_gamestate.blocks[i][j].left_bside << endl;
-            cout << "bottom block side: " << curr_gamestate.blocks[i][j].bottom_bside << endl;
-            cout << "right block side: " << curr_gamestate.blocks[i][j].right_bside << endl;
-#endif
-            last_collision = COLLISION_CASE_TOP;
-            handle_collision(COLLISION_CASE_TOP);
-            hit_block(i, j);
-        }
-    }
-    //hit right side
-    else if(curr_gamestate.ball.curr_x <= curr_gamestate.blocks[i][j].right_bside &&
-            curr_gamestate.ball.curr_x > curr_gamestate.blocks[i][j].right_bside - collision_margin)
-    {
-        if(curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 >= curr_gamestate.blocks[i][j].top_bside &&
-           curr_gamestate.ball.curr_y <= curr_gamestate.blocks[i][j].bottom_bside &&
-           curr_gamestate.blocks[i][j].active &&
-           last_collision != COLLISION_CASE_LEFT)
-        {
-#ifdef DEBUG
-            cout << "--------COLLISION CASE LEFT----------" << endl;
-            cout << "current ball pos: " << curr_gamestate.ball.curr_x << " | " << curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius << endl;
-            cout << "top block side: " << curr_gamestate.blocks[i][j].top_bside << endl;
-            cout << "left block side: " << curr_gamestate.blocks[i][j].left_bside << endl;
-            cout << "bottom block side: " << curr_gamestate.blocks[i][j].bottom_bside << endl;
-            cout << "right block side: " << curr_gamestate.blocks[i][j].right_bside << endl;
-#endif
-            last_collision = COLLISION_CASE_LEFT;
-            curr_gamestate.ball.curr_x = curr_gamestate.blocks[i][j].right_bside;
-            handle_collision(COLLISION_CASE_LEFT);
-            hit_block(i, j);
-        }
-    }
-}
-
-
-// ---------------------------------
-// BLOCK COLLISION DETECTION HERE
-// ---------------------------------
-/**
-*@brief calls function to check all block side collisions
-*/
-void handle_collision_block()
-{
-    for (int i = 0; i < block_rows; i++)
-    {
-        for(int j = 0; j < block_columns; j++)
-        {
-            handle_collision_all_sides(i, j);
-        }
-    }
-}
-
-
-//--------------------------
-//COLLISIONDETECTION BARRIER
-//--------------------------
-/**
 *@brief handles barrier collision
 */
-void handle_collision_barrier()
+void handle_collision_barrier(ball_type &curr_ball)
 {
-    if(curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius * 2 > barrier_obj.y)
+    if(curr_ball.curr_y + curr_ball.size_radius * 2 > barrier_obj.y)
     {
 #ifdef DEBUG
             cout << "---------COLLISION BARRIER-----------" << endl;
-            cout << "current ball pos: " << curr_gamestate.ball.curr_x << " | " << curr_gamestate.ball.curr_y + curr_gamestate.ball.size_radius << endl;
+            cout << "current ball pos: " << curr_ball.curr_x << " | " << curr_ball.curr_y + curr_ball.size_radius << endl;
             cout << "barrier y: " << barrier_obj.y << endl;
 #endif
         last_collision = COLLISION_CASE_BOTTOM;
         hit_barrier();
-        handle_collision(COLLISION_CASE_BOTTOM);
+        handle_collision(COLLISION_CASE_BOTTOM, curr_ball);
     }
 }
 
 
+//--------------------------------------------------------------------------------------------------
 /**
 *@brief checks if state of game is off/false
 */
@@ -582,18 +595,4 @@ void check_gamestate()
 {
     if(game_active == false)
     cout << "--Game Over--" << endl;
-}
-
-
-void handle_deletion_powerup()
-{
-    for(int i = 0; i < falling_powerups.size(); i++)
-    {
-        sf::Vector2f position = falling_powerups[i].rectangle.getPosition();
-        if(position.y > barrier_obj.y - POWERUP_LEN)
-        {
-            falling_powerups[i].powerup_active = false;
-            falling_powerups.erase(falling_powerups.begin() + i);
-        }
-    }
 }
