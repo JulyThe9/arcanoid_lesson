@@ -19,9 +19,9 @@
 #include "get_neighbours.h"
 #include "lives_generation.h"
 #include "text_animation.h"
+#include "drawing.h"
 #include "collision_handler.h"
 #include "init_misc.h"
-#include "drawing.h"
 
 
 using namespace std::chrono;
@@ -52,7 +52,8 @@ int main()
     init_gamestate();
     assert(curr_gamestate.isInitialized);
 
-    sf::CircleShape ball = init_ball();
+    sf::CircleShape ball = init_ball(curr_gamestate.ball);
+    sf::CircleShape dupe_ball = init_ball(curr_gamestate.dupe_ball);
 
     sf::RectangleShape barrier = init_barrier();
 
@@ -89,6 +90,7 @@ int main()
                 sf::Vector2i localPosition = sf::Mouse::getPosition(main_window);
 
                 //X
+                /*
                 if(curr_gamestate.platform.x > left_wall)
                 {
                     curr_gamestate.platform.x = localPosition.x;
@@ -106,6 +108,7 @@ int main()
                 {
                     curr_gamestate.platform.x = right_wall - curr_gamestate.platform.width;
                 }
+                */
 
                 if (plat_y_axis_joker)
                 {
@@ -145,7 +148,7 @@ int main()
             // ---------------------------------
             // CORE GAME LOOP FROM HERE
             // ---------------------------------
-            if (alpha_y == 0 && alpha_x == 0)
+            if (curr_gamestate.ball.alpha_y == 0 && curr_gamestate.ball.alpha_x == 0)
             {
                 // default movement at the start of the game
                 curr_gamestate.ball.curr_x += get_new_x(curr_degrees, curr_gamestate.ball);
@@ -154,14 +157,14 @@ int main()
             else
             {
                 // all other movement
-                curr_gamestate.ball.curr_x += alpha_x;
-                curr_gamestate.ball.curr_y += alpha_y;
+                curr_gamestate.ball.curr_x += curr_gamestate.ball.alpha_x;
+                curr_gamestate.ball.curr_y += curr_gamestate.ball.alpha_y;
             }
 
             // MAIN COLLISIONS
             handle_collision_walls(curr_gamestate.ball);
             handle_collision_block(curr_gamestate.ball);
-            handle_collision_platform(curr_gamestate.ball);
+            handle_collision_platform(main_window, curr_gamestate.ball, dupe_ball);
             handle_collision_barrier(curr_gamestate.ball);
             handle_collision_powerup();
 
@@ -170,6 +173,7 @@ int main()
             ball.setPosition(curr_gamestate.ball.curr_x, curr_gamestate.ball.curr_y);
             plat.setPosition(curr_gamestate.platform.x, curr_gamestate.platform.y);
             barrier.setPosition(barrier_obj.x, barrier_obj.y);
+
 
             check_gamestate();
 
@@ -259,10 +263,10 @@ int main()
             }
         }
 
+
+        //cout << "alpha x: " << curr_gamestate.ball.alpha_x << endl;
+        //cout << "alpha y: " << curr_gamestate.ball.alpha_y << endl;
         // cout << "curr_pos_x: " << curr_gamestate.ball.curr_x << endl;
-        // cout << "curr_pos_y: " << curr_gamestate.ball.curr_y << endl;
-        // cout << "alpha_x: " << alpha_x << endl;
-        // cout << "alpha_y: " << alpha_y << endl;
         // cout << "curr degrees: " << curr_degrees << endl;
         // cout << "-----------------" << endl;
 

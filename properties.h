@@ -27,7 +27,7 @@ using namespace std;
 #define SCREENSIZE_X 1500
 #define SCREENSIZE_Y 1200
 
-#define BALL_STARTER_DEG 20
+#define BALL_STARTER_DEG 25
 
 #define BLOCK_LEN 30
 #define BLOCK_WIDTH 90
@@ -68,8 +68,8 @@ float bottom_wall = SCREENSIZE_Y;
 float curr_degrees = BALL_STARTER_DEG;
 
 // direction +/- of flight
-float alpha_x = 0;
-float alpha_y = 0;
+//float alpha_x = 0;
+//float alpha_y = 0;
 
 
 //--------
@@ -136,7 +136,7 @@ sf::Text countdown_three;
 bool plat_y_axis_joker = false;
 bool mouse_reset_done = false;
 
-bool trajectory_prediction_buff = false;
+bool trajectory_prediction_buff = true;
 
 //-------------------------------------------------------------------
 /**
@@ -269,7 +269,7 @@ enum powerup_class_types
 std::map<double, powerup_buff_effect_types> buff_map =
 {
     {25, BALL_DUPLICATION},
-    {45, TRAJECTORY_PREDICTION},
+    {1000, TRAJECTORY_PREDICTION},
     {50, LAZER}
 
 };
@@ -558,6 +558,23 @@ struct platform_type
 
 
 
+struct colour
+{
+    int r;
+    int g;
+    int b;
+
+    colour(){};
+
+    colour(int rpar, int gpar, int bpar)
+    {
+        r = rpar;
+        g = gpar;
+        b = bpar;
+    }
+};
+
+
 /**
 *@brief a struct representing the ball_type ball logic
 */
@@ -574,9 +591,16 @@ struct ball_type
     float recent_x;
     float recent_y;
 
+    float alpha_x;
+    float alpha_y;
+
+    colour col;
+
     ball_type(){};
 
-    ball_type(float speedpar, int size_radiuspar, float curr_xpar, float curr_ypar, float recent_xpar, float recent_ypar)
+
+    ball_type(float speedpar, int size_radiuspar, float curr_xpar, float curr_ypar, float recent_xpar, float recent_ypar,
+              float alpha_xpar, float alpha_ypar, colour colpar)
     {
         speed = speedpar;
         size_radius = size_radiuspar;
@@ -584,6 +608,9 @@ struct ball_type
         curr_y = curr_ypar;
         recent_x = recent_xpar;
         recent_y = recent_ypar;
+        alpha_x = alpha_xpar;
+        alpha_y = alpha_ypar;
+        col = colpar;
     }
 };
 
@@ -605,6 +632,7 @@ struct GameState
     int block_amount;
 
     ball_type ball;
+    ball_type dupe_ball;
     platform_type platform;
 
 
@@ -615,11 +643,12 @@ struct GameState
         isInitialized = false;
     };
 
-    void init(string score_numberpar, int lives_amountpar, int block_amountpar, ball_type ballpar, platform_type platformpar)
+    void init(string score_numberpar, int lives_amountpar, int block_amountpar, ball_type dupe_ballpar, ball_type ballpar, platform_type platformpar)
     {
         score_number = score_numberpar;
         lives_amount = lives_amountpar;
         block_amount = block_amountpar;
+        dupe_ball = dupe_ballpar;
         ball = ballpar;
         platform = platformpar;
         isInitialized = true;
@@ -703,6 +732,7 @@ struct barrier_type
 
 
 //-------------------------------------------------------------------
+
 countdown_type curr_countdown_num;
 bool countdown_active = false;
 
@@ -722,9 +752,12 @@ vector<timer_type> cooldown_bars;
 */
 void init_gamestate()
 {
-    ball_type ball_data(BALL_SPEED, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY);
+    colour gcol(150, 250, 50); // green
+    colour pcol(160, 32, 240); // purple
+    ball_type ball_data(BALL_SPEED, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY, 0, 0, gcol);
+    ball_type dupe_ball_data(BALL_SPEED, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY, 0, 0, pcol);
     platform_type platform(PLATFORM_INITIAL_X, PLATFORM_INITIAL_Y, PLATFORM_WIDTH, 12, 45, 25);
-    curr_gamestate.init("000000", 3, block_rows * block_columns, ball_data, platform);
+    curr_gamestate.init("000000", 3, block_rows * block_columns, dupe_ball_data, ball_data, platform);
 }
 
 logo_type logo(300, 109, SCREENSIZE_X / 3 + 100, 0);

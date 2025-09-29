@@ -31,7 +31,6 @@ void draw_barrier(sf::RenderWindow &main_window, sf::RectangleShape barrier)
 
 /**
 *@brief draws Ball
-
 *@param main_window current game/sfml window
 *@param ball object being drawn
 */

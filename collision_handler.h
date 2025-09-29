@@ -161,22 +161,6 @@ void powerup_activity()
 }
 
 
-void predict_trajectory()
-{
-    double x_prediction = curr_gamestate.ball.curr_x;
-    double y_prediction = curr_gamestate.ball.curr_y - curr_gamestate.ball.speed;
-    bool collision_occured = false;
-
-    while(y_prediction != PLATFORM_INITIAL_Y)
-    {
-        while(!collision_occured)
-        {
-            //continue with each step. This is the path from 1 collision to the next.
-        }
-    }
-}
-
-
 void handle_deletion_powerup()
 {
     for(int i = 0; i < falling_powerups.size(); i++)
@@ -363,6 +347,12 @@ void handle_collision_walls(ball_type &curr_ball)
         handle_collision(COLLISION_CASE_TOP, curr_ball);
 
         play_wall_sound();
+        static int counter = 0;
+        if(counter < 500)
+        {
+            cout << "handled collision wall 2" << endl;
+            counter++;
+        }
     }
     else if(curr_ball.curr_x <= left_wall)
     {
@@ -374,54 +364,7 @@ void handle_collision_walls(ball_type &curr_ball)
         handle_collision(COLLISION_CASE_LEFT, curr_ball);
 
         play_wall_sound();
-    }
-}
-
-
-// ---------------------------------
-// PLATFORM COLLISION DETECTION HERE
-// ---------------------------------
-/**
-*@brief handles platform collision
-*/
-void handle_collision_platform(ball_type &curr_ball)
-{
-    double curr_mousespeed = get_mouse_vertical_speed();
-
-    double collision_margin;
-
-    if (!plat_y_axis_joker)
-    {
-        collision_margin = curr_ball.speed;
-    }
-    else
-        collision_margin = curr_mousespeed + curr_ball.speed;
-
-    if (curr_ball.curr_y + curr_ball.size_radius * 2 >= curr_gamestate.platform.y &&
-        (curr_ball.curr_y + curr_ball.size_radius * 2 < curr_gamestate.platform.y + collision_margin))
-    {
-        if (curr_ball.curr_x + curr_ball.size_radius > curr_gamestate.platform.x &&
-            curr_ball.curr_x < curr_gamestate.platform.x + curr_gamestate.platform.width &&
-            last_collision != COLLISION_CASE_BOTTOM)
-        {
-            /*
-            cout << "joker_col_margin: " << curr_mousespeed << " + " << curr_ball.speed
-                      << " = " << curr_mousespeed + curr_ball.speed << endl;
-            cout << "alpha: " << alpha_y << endl;
-            */
-            last_collision = COLLISION_CASE_BOTTOM;
-            curr_degrees = get_new_angle(curr_ball);
-
-            current_sound.setBuffer(buffer_platform);
-            current_sound.play();
-
-            //cout << "PLATFORM COLLISIONNN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
-
-            if(trajectory_prediction_buff)
-            {
-                // predict_trajectory();
-            }
-        }
+        cout << "handled collision wall 3" << endl;
     }
 }
 
@@ -459,6 +402,7 @@ void handle_collision_all_sides(int i, int j, ball_type &curr_ball)
             last_collision = COLLISION_CASE_BOTTOM;
             handle_collision(COLLISION_CASE_BOTTOM,curr_ball);
             hit_block(i, j);
+            cout << "handled collision block top side" << endl;
         }
     }
     //hit left side
@@ -481,6 +425,7 @@ void handle_collision_all_sides(int i, int j, ball_type &curr_ball)
             last_collision = COLLISION_CASE_RIGHT;
             handle_collision(COLLISION_CASE_RIGHT, curr_ball);
             hit_block(i, j);
+            cout << "handled collision block left side" << endl;
         }
     }
     //hit bottom side
@@ -503,6 +448,8 @@ void handle_collision_all_sides(int i, int j, ball_type &curr_ball)
             last_collision = COLLISION_CASE_TOP;
             handle_collision(COLLISION_CASE_TOP, curr_ball);
             hit_block(i, j);
+            cout << "handled collision block bottom side" << endl;
+
         }
     }
     //hit right side
@@ -526,6 +473,7 @@ void handle_collision_all_sides(int i, int j, ball_type &curr_ball)
             curr_ball.curr_x = curr_gamestate.blocks[i][j].right_bside;
             handle_collision(COLLISION_CASE_LEFT, curr_ball);
             hit_block(i, j);
+            cout << "handled collision block right side" << endl;
         }
     }
 }
@@ -547,6 +495,110 @@ void handle_collision_block(ball_type &curr_ball)
         }
     }
 }
+
+
+void predict_trajectory(sf::RenderWindow &main_window, ball_type &curr_ball, sf::CircleShape dupe_ball)
+{
+    curr_gamestate.dupe_ball.speed = 10;
+    curr_gamestate.dupe_ball.curr_x = curr_ball.curr_x;
+    curr_gamestate.dupe_ball.curr_y = curr_ball.curr_y - curr_ball.speed;
+
+    curr_gamestate.dupe_ball.recent_x = curr_ball.recent_x;
+    curr_gamestate.dupe_ball.recent_y = curr_ball.recent_y;
+
+    curr_gamestate.dupe_ball.alpha_x = curr_ball.alpha_x;
+    curr_gamestate.dupe_ball.alpha_y = curr_ball.alpha_y;
+
+    cout << "curr x after: " << curr_ball.curr_x << endl;
+    cout << "curr y after: " << curr_ball.curr_y << endl;
+    cout << "------------------------" << endl;
+
+
+
+    while(curr_gamestate.dupe_ball.curr_y < PLATFORM_INITIAL_Y)
+    {
+        curr_gamestate.dupe_ball.curr_x += curr_gamestate.dupe_ball.alpha_x;
+        curr_gamestate.dupe_ball.curr_y += curr_gamestate.dupe_ball.alpha_y;
+
+        dupe_ball.setPosition(curr_gamestate.dupe_ball.curr_x, curr_gamestate.dupe_ball.curr_y);
+
+        handle_collision_walls(curr_gamestate.dupe_ball);
+        handle_collision_block(curr_gamestate.dupe_ball);
+
+        draw_ball(main_window, dupe_ball);
+
+        main_window.display();
+
+        // Clear screen
+        main_window.clear();
+
+        // cout << "drawing ball" << endl;
+        /*
+        if(curr_gamestate.dupe_ball.curr_x > -100 && curr_gamestate.dupe_ball.curr_x < 1000)
+            cout << "duped ball x pos: " << curr_gamestate.dupe_ball.curr_x << endl;
+
+        if(curr_gamestate.dupe_ball.curr_y > -100 && curr_gamestate.dupe_ball.curr_y < 1000)
+            cout << "duped ball y pos: " << curr_gamestate.dupe_ball.curr_y << endl;
+        */
+
+    }
+    cout << "predicting x: " << curr_gamestate.dupe_ball.curr_x << endl;
+    cout << "predicting y: " << curr_gamestate.dupe_ball.curr_y << endl;
+    cout << "HURRAYYYY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
+}
+
+
+// ---------------------------------
+// PLATFORM COLLISION DETECTION HERE
+// ---------------------------------
+/**
+*@brief handles platform collision
+*/
+void handle_collision_platform(sf::RenderWindow &main_window, ball_type &curr_ball, sf::CircleShape dupe_ball)
+{
+    double curr_mousespeed = get_mouse_vertical_speed();
+
+    double collision_margin;
+
+    if (!plat_y_axis_joker)
+    {
+        collision_margin = curr_ball.speed;
+    }
+    else
+        collision_margin = curr_mousespeed + curr_ball.speed;
+
+    if (curr_ball.curr_y + curr_ball.size_radius * 2 >= curr_gamestate.platform.y &&
+        (curr_ball.curr_y + curr_ball.size_radius * 2 < curr_gamestate.platform.y + collision_margin))
+    {
+        if (curr_ball.curr_x + curr_ball.size_radius > curr_gamestate.platform.x &&
+            curr_ball.curr_x < curr_gamestate.platform.x + curr_gamestate.platform.width &&
+            last_collision != COLLISION_CASE_BOTTOM)
+        {
+            /*
+            cout << "joker_col_margin: " << curr_mousespeed << " + " << curr_ball.speed
+                      << " = " << curr_mousespeed + curr_ball.speed << endl;
+            cout << "alpha: " << alpha_y << endl;
+            */
+            last_collision = COLLISION_CASE_BOTTOM;
+            curr_degrees = get_new_angle(curr_ball);
+
+            current_sound.setBuffer(buffer_platform);
+            current_sound.play();
+
+            //cout << "PLATFORM COLLISIONNN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
+            cout << "curr x before: " << curr_ball.curr_x << endl;
+            cout << "curr y before: " << curr_ball.curr_y << endl;
+            cout << "------------------------" << endl;
+            if(trajectory_prediction_buff)
+            {
+                predict_trajectory(main_window, curr_ball, dupe_ball);
+            }
+        }
+    }
+}
+
+
+
 
 
 //--------------------------------------------------------------------------------------------------

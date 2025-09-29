@@ -31,13 +31,13 @@ sf::RectangleShape init_barrier()
 /**
 *@brief initialization of ball
 */
-sf::CircleShape init_ball()
+sf::CircleShape init_ball(ball_type &curr_ball)
 {
-    sf::CircleShape ball(curr_gamestate.ball.size_radius);
+    sf::CircleShape ball(curr_ball.size_radius);
 
-    ball.setFillColor(sf::Color(150, 250, 50));
+    ball.setFillColor(sf::Color(curr_ball.col.r, curr_ball.col.g, curr_ball.col.b));
 
-    ball.setPosition(curr_gamestate.ball.curr_x, curr_gamestate.ball.curr_y);
+    ball.setPosition(curr_ball.curr_x, curr_ball.curr_y);
 
     return ball;
 }
