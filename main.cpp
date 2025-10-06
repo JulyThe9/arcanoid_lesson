@@ -52,19 +52,19 @@ int main()
     init_gamestate();
     assert(curr_gamestate.isInitialized);
 
-    sf::CircleShape ball = init_ball(curr_gamestate.ball);
+    ball = init_ball(curr_gamestate.ball);
     sf::CircleShape dupe_ball = init_ball(curr_gamestate.dupe_ball);
 
-    sf::RectangleShape barrier = init_barrier();
+    barrier = init_barrier();
 
     set_life_data();
     set_life_graphics();
 
     init_score();
 
-    sf::RectangleShape status_bar = init_status_bar();
+    status_bar = init_status_bar();
 
-    sf::RectangleShape status_bar_logo = init_logo();
+    status_bar_logo = init_logo();
 
     std::chrono::time_point<std::chrono::high_resolution_clock> lastTime = high_resolution_clock::now();
 
@@ -77,7 +77,7 @@ int main()
         std::chrono::time_point<std::chrono::high_resolution_clock> curTtime = high_resolution_clock::now();
         std::chrono::milliseconds timePassed = duration_cast<milliseconds>(curTtime - lastTime);
 
-        sf::RectangleShape plat = init_platform();
+        plat = init_platform();
 
         if(game_status == GAME_ACTIVE)
         {
@@ -87,61 +87,7 @@ int main()
                 {
                     main_window.close();
                 }
-                sf::Vector2i localPosition = sf::Mouse::getPosition(main_window);
-
-                //X
-                /*
-                if(curr_gamestate.platform.x > left_wall)
-                {
-                    curr_gamestate.platform.x = localPosition.x;
-                }
-                else
-                {
-                    curr_gamestate.platform.x = left_wall;
-                }
-
-                if (curr_gamestate.platform.x + curr_gamestate.platform.width < right_wall)
-                {
-                    curr_gamestate.platform.x = localPosition.x;
-                }
-                else
-                {
-                    curr_gamestate.platform.x = right_wall - curr_gamestate.platform.width;
-                }
-                */
-
-                if (plat_y_axis_joker)
-                {
-                    curr_gamestate.platform.width = curr_gamestate.platform.y / 7;
-                    if (!mouse_reset_done)
-                    {
-                        sf::Mouse::setPosition(sf::Vector2i(curr_gamestate.platform.x, curr_gamestate.platform.y), main_window);
-                        mouse_reset_done = true;
-                    }
-
-                    // Y
-                    if (curr_gamestate.platform.y > top_wall)
-                    {
-                        curr_gamestate.platform.y = localPosition.y;
-                    }
-                    else
-                    {
-                        curr_gamestate.platform.y = top_wall;
-                    }
-
-                    if (curr_gamestate.platform.y + curr_gamestate.platform.len < bottom_wall)
-                    {
-                        curr_gamestate.platform.y = localPosition.y;
-                    }
-                    else
-                    {
-                        curr_gamestate.platform.y = bottom_wall - curr_gamestate.platform.len;
-                    }
-                }
-                else
-                {
-                    mouse_reset_done = false;
-                }
+                plat_movement(main_window);
             }
 
 
@@ -163,9 +109,9 @@ int main()
 
             // MAIN COLLISIONS
             handle_collision_walls(curr_gamestate.ball);
-            handle_collision_block(curr_gamestate.ball);
-            handle_collision_platform(main_window, curr_gamestate.ball, dupe_ball);
-            handle_collision_barrier(curr_gamestate.ball);
+            handle_collision_block(curr_gamestate.ball, curr_gamestate.blocks, curr_gamestate.blocks_graphics);
+            handle_collision_platform(main_window, curr_gamestate.ball, dupe_ball, curr_gamestate.blocks, curr_gamestate.blocks_graphics);
+            handle_collision_barrier(curr_gamestate.ball, curr_gamestate.blocks);
             handle_collision_powerup();
 
             handle_deletion_powerup();
@@ -232,7 +178,7 @@ int main()
                 countdown_started = false;
                 game_status = GAME_ACTIVE;
                 handle_collision(COLLISION_CASE_RESET, curr_gamestate.ball);
-                last_collision = COLLISION_CASE_RESET;
+                curr_gamestate.ball.last_collision = COLLISION_CASE_RESET;
             }
         }
         else if(game_status == HEARTS_GONE)
@@ -271,16 +217,9 @@ int main()
         // cout << "-----------------" << endl;
 
 
-        draw_blocks(main_window);
-        draw_powerup(main_window);
-        draw_timer(main_window);
-        draw_plat(main_window, plat);
-        draw_barrier(main_window, barrier);
-        draw_ball(main_window, ball);
-        draw_status_bar(main_window, status_bar);
-        draw_status_bar_logo(main_window, status_bar_logo);
-        draw_score(main_window);
-        draw_hearts(main_window);
+        draw_everything(main_window);
+        dupe_ball.setPosition(curr_gamestate.dupe_ball.curr_x, curr_gamestate.dupe_ball.curr_y);
+        draw_ball(main_window, dupe_ball);
 
         main_window.display();
 

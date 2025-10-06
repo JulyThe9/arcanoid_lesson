@@ -186,7 +186,7 @@ void check_specific_effect_timer_buff(powerup_buff_effect_types buff_type)
     if (buff_type == TRAJECTORY_PREDICTION)
     {
         cout << "timer ran out :(" << endl;
-        trajectory_prediction_buff = false;
+        //trajectory_prediction_buff = false;
     }
 }
 
@@ -286,4 +286,19 @@ void draw_timer(sf::RenderWindow &main_window)
             main_window.draw(bar);
         }
     }
+}
+
+
+void draw_everything(sf::RenderWindow &main_window)
+{
+    draw_blocks(main_window);
+    draw_powerup(main_window);
+    draw_timer(main_window);
+    draw_plat(main_window, plat);
+    draw_barrier(main_window, barrier);
+    draw_ball(main_window, ball);
+    draw_status_bar(main_window, status_bar);
+    draw_status_bar_logo(main_window, status_bar_logo);
+    draw_score(main_window);
+    draw_hearts(main_window);
 }

@@ -186,18 +186,22 @@ void handle_deletion_powerup()
 *@param row current row of block that has been hit
 *@param col current column of block that has been hit
 */
-void hit_block(int row, int col)
+void hit_block(int row, int col, vector<vector<block_type>> &curr_blocks,
+               vector<vector<sf::RectangleShape>> &curr_blocks_graphics, ball_type &curr_ball)
 {
-    if(curr_gamestate.blocks[row][col].active)
-        curr_gamestate.block_amount--;
+    if(!curr_ball.fake)
+    {
+        if(curr_gamestate.blocks[row][col].active)
+            curr_gamestate.block_amount--;
+    }
 
-    curr_gamestate.blocks[row][col].active = false;
+    curr_blocks[row][col].active = false;
     vector<pair<int, int>> neighbours;
 
-    if(curr_gamestate.blocks[row][col].texturetype == TEXTURE_TYPE_EXPLOSION_SMALL ||
-       curr_gamestate.blocks[row][col].texturetype == TEXTURE_TYPE_EXPLOSION_LARGE)
+    if(curr_blocks[row][col].texturetype == TEXTURE_TYPE_EXPLOSION_SMALL ||
+       curr_blocks[row][col].texturetype == TEXTURE_TYPE_EXPLOSION_LARGE)
     {
-        neighbours = get_neighbours(row, col);
+        neighbours = get_neighbours(row, col, curr_blocks);
     }
 
     for(unsigned int i = 0; i < neighbours.size(); i++)
@@ -206,39 +210,44 @@ void hit_block(int row, int col)
         int curr_row = neighbours[i].first;
         int curr_col = neighbours[i].second;
         //this line is used to set the active variable of neighbours of explosion block to false
-        curr_gamestate.blocks[curr_row][curr_col].active = false;
-        curr_gamestate.blocks_graphics[curr_row][curr_col].setFillColor(sf::Color(0, 0, 0));
+        curr_blocks[curr_row][curr_col].active = false;
+        curr_blocks_graphics[curr_row][curr_col].setFillColor(sf::Color(0, 0, 0));
         add_to_score(curr_row, curr_col);
         create_powerup(curr_row, curr_col);
     }
-
 
     for(unsigned int i = 0; i < neighbours.size(); i++)
     {
         int curr_row = neighbours[i].first;
         int curr_col = neighbours[i].second;
 
-        if(curr_gamestate.blocks[curr_row][curr_col].texturetype == TEXTURE_TYPE_EXPLOSION_SMALL ||
-           curr_gamestate.blocks[curr_row][curr_col].texturetype == TEXTURE_TYPE_EXPLOSION_LARGE)
+        if (curr_blocks[curr_row][curr_col].texturetype == TEXTURE_TYPE_EXPLOSION_SMALL ||
+             curr_blocks[curr_row][curr_col].texturetype == TEXTURE_TYPE_EXPLOSION_LARGE)
         {
-            hit_block(curr_row, curr_col);
+            hit_block(curr_row, curr_col, curr_blocks, curr_blocks_graphics, curr_ball);
         }
     }
-
     //this line is used to set the active variable of explosion block to false
-    curr_gamestate.blocks_graphics[row][col].setFillColor(sf::Color(0, 0, 0));
-    add_to_score(row, col);
+    curr_blocks_graphics[row][col].setFillColor(sf::Color(0, 0, 0));
 
-    current_buffer = map_sounds(curr_gamestate.blocks[row][col].block_sound);
-    current_sound.setBuffer(current_buffer);
-    current_sound.play();
+    if(!curr_ball.fake)
+    {
+        add_to_score(row, col);
+        current_buffer = map_sounds(curr_gamestate.blocks[row][col].block_sound);
+        current_sound.setBuffer(current_buffer);
+        current_sound.play();
+    }
+
 
     if(curr_gamestate.block_amount == 0)
     {
         set_game_won();
     }
 
-    create_powerup(row, col);
+    cout << "block amount: " << curr_gamestate.block_amount << endl;
+
+    if(!curr_ball.fake)
+        create_powerup(row, col);
 }
 
 
@@ -332,10 +341,11 @@ void handle_collision_walls(ball_type &curr_ball)
         cout << "-------------RIGHT WALL--------------" << endl;
         cout << "current ball pos: " << curr_ball.curr_x << " | " << curr_ball.curr_y << endl;
 #endif
-        last_collision = COLLISION_CASE_RIGHT;
+        curr_ball.last_collision = COLLISION_CASE_RIGHT;
         handle_collision(COLLISION_CASE_RIGHT, curr_ball);
 
-        play_wall_sound();
+        if(!curr_ball.fake)
+            play_wall_sound();
     }
     else if(curr_ball.curr_y <= status_bar_length)
     {
@@ -343,10 +353,11 @@ void handle_collision_walls(ball_type &curr_ball)
         cout << "-------------TOP WALL----------------" << endl;
         cout << "current ball pos: " << curr_ball.curr_x << " | " << curr_ball.curr_y << endl;
 #endif
-        last_collision = COLLISION_CASE_TOP;
+        curr_ball.last_collision = COLLISION_CASE_TOP;
         handle_collision(COLLISION_CASE_TOP, curr_ball);
 
-        play_wall_sound();
+        if(!curr_ball.fake)
+            play_wall_sound();
         static int counter = 0;
         if(counter < 500)
         {
@@ -360,10 +371,11 @@ void handle_collision_walls(ball_type &curr_ball)
         cout << "-------------LEFT WALL---------------" << endl;
         cout << "current ball pos: " << curr_ball.curr_x << " | " << curr_ball.curr_y << endl;
 #endif
-        last_collision = COLLISION_CASE_LEFT;
+        curr_ball.last_collision = COLLISION_CASE_LEFT;
         handle_collision(COLLISION_CASE_LEFT, curr_ball);
 
-        play_wall_sound();
+        if(!curr_ball.fake)
+            play_wall_sound();
         cout << "handled collision wall 3" << endl;
     }
 }
@@ -377,102 +389,103 @@ void handle_collision_walls(ball_type &curr_ball)
 *@param i row of block
 *@param j column of block
 */
-void handle_collision_all_sides(int i, int j, ball_type &curr_ball)
+void handle_collision_all_sides(int i, int j, ball_type &curr_ball,
+                                vector<vector<block_type>> &curr_blocks, vector<vector<sf::RectangleShape>> &curr_blocks_graphics)
 {
     // margin for collisions for normal speed
     double collision_margin = curr_ball.speed;
 
     //hit top side
-    if(curr_ball.curr_y + curr_ball.size_radius * 2 > curr_gamestate.blocks[i][j].top_bside &&
-       (curr_ball.curr_y + curr_ball.size_radius * 2 < curr_gamestate.blocks[i][j].top_bside + collision_margin))
+    if(curr_ball.curr_y + curr_ball.size_radius * 2 > curr_blocks[i][j].top_bside &&
+       (curr_ball.curr_y + curr_ball.size_radius * 2 < curr_blocks[i][j].top_bside + collision_margin))
     {
-        if(curr_ball.curr_x + curr_ball.size_radius * 2 > curr_gamestate.blocks[i][j].blockX &&
-           curr_ball.curr_x < curr_gamestate.blocks[i][j].right_bside &&
-           curr_gamestate.blocks[i][j].active &&
-           last_collision != COLLISION_CASE_BOTTOM)
+        if(curr_ball.curr_x + curr_ball.size_radius * 2 > curr_blocks[i][j].blockX &&
+           curr_ball.curr_x < curr_blocks[i][j].right_bside &&
+           curr_blocks[i][j].active &&
+           curr_ball.last_collision != COLLISION_CASE_BOTTOM)
         {
 #ifdef DEBUG
             cout << "-------COLLISION CASE BOTTOM---------" << endl;
             cout << "current ball pos: " << curr_ball.curr_x << " | " << curr_ball.curr_y << endl;
-            cout << "top block side: " << curr_gamestate.blocks[i][j].top_bside << endl;
-            cout << "left block side: " << curr_gamestate.blocks[i][j].left_bside << endl;
-            cout << "bottom block side: " << curr_gamestate.blocks[i][j].bottom_bside << endl;
-            cout << "right block side: " << curr_gamestate.blocks[i][j].right_bside << endl;
+            cout << "top block side: " << curr_blocks[i][j].top_bside << endl;
+            cout << "left block side: " << curr_blocks[i][j].left_bside << endl;
+            cout << "bottom block side: " << curr_blocks[i][j].bottom_bside << endl;
+            cout << "right block side: " << curr_blocks[i][j].right_bside << endl;
 #endif
-            last_collision = COLLISION_CASE_BOTTOM;
+            curr_ball.last_collision = COLLISION_CASE_BOTTOM;
             handle_collision(COLLISION_CASE_BOTTOM,curr_ball);
-            hit_block(i, j);
+            hit_block(i, j, curr_blocks, curr_blocks_graphics, curr_ball);
             cout << "handled collision block top side" << endl;
         }
     }
     //hit left side
-    else if(curr_ball.curr_x + curr_ball.size_radius * 2 > curr_gamestate.blocks[i][j].left_bside &&
-            (curr_ball.curr_x + curr_ball.size_radius * 2 < curr_gamestate.blocks[i][j].left_bside + collision_margin))
+    else if(curr_ball.curr_x + curr_ball.size_radius * 2 > curr_blocks[i][j].left_bside &&
+            (curr_ball.curr_x + curr_ball.size_radius * 2 < curr_blocks[i][j].left_bside + collision_margin))
     {
-        if(curr_ball.curr_y + curr_ball.size_radius * 2 > curr_gamestate.blocks[i][j].top_bside &&
-           curr_ball.curr_y < curr_gamestate.blocks[i][j].bottom_bside &&
-           curr_gamestate.blocks[i][j].active &&
-           last_collision != COLLISION_CASE_RIGHT)
+        if(curr_ball.curr_y + curr_ball.size_radius * 2 > curr_blocks[i][j].top_bside &&
+           curr_ball.curr_y < curr_blocks[i][j].bottom_bside &&
+           curr_blocks[i][j].active &&
+           curr_ball.last_collision != COLLISION_CASE_RIGHT)
         {
 #ifdef DEBUG
             cout << "--------COLLISION CASE RIGHT---------" << endl;
             cout << "current ball pos: " << curr_ball.curr_x << " | " << curr_ball.curr_y + curr_ball.size_radius << endl;
-            cout << "top block side: " << curr_gamestate.blocks[i][j].top_bside << endl;
-            cout << "left block side: " << curr_gamestate.blocks[i][j].left_bside << endl;
-            cout << "bottom block side: " << curr_gamestate.blocks[i][j].bottom_bside << endl;
-            cout << "right block side: " << curr_gamestate.blocks[i][j].right_bside << endl;
+            cout << "top block side: " << curr_blocks[i][j].top_bside << endl;
+            cout << "left block side: " << curr_blocks[i][j].left_bside << endl;
+            cout << "bottom block side: " << curr_blocks[i][j].bottom_bside << endl;
+            cout << "right block side: " << curr_blocks[i][j].right_bside << endl;
 #endif
-            last_collision = COLLISION_CASE_RIGHT;
+            curr_ball.last_collision = COLLISION_CASE_RIGHT;
             handle_collision(COLLISION_CASE_RIGHT, curr_ball);
-            hit_block(i, j);
+            hit_block(i, j, curr_blocks, curr_blocks_graphics, curr_ball);
             cout << "handled collision block left side" << endl;
         }
     }
     //hit bottom side
-    else if(curr_ball.curr_y < curr_gamestate.blocks[i][j].bottom_bside &&
-            (curr_ball.curr_y > curr_gamestate.blocks[i][j].bottom_bside - collision_margin))
+    else if(curr_ball.curr_y < curr_blocks[i][j].bottom_bside &&
+            (curr_ball.curr_y > curr_blocks[i][j].bottom_bside - collision_margin))
     {
-        if(curr_ball.curr_x + curr_ball.size_radius * 2 > curr_gamestate.blocks[i][j].left_bside &&
-           curr_ball.curr_x < curr_gamestate.blocks[i][j].right_bside &&
-           curr_gamestate.blocks[i][j].active &&
-           last_collision != COLLISION_CASE_TOP)
+        if(curr_ball.curr_x + curr_ball.size_radius * 2 > curr_blocks[i][j].left_bside &&
+           curr_ball.curr_x < curr_blocks[i][j].right_bside &&
+           curr_blocks[i][j].active &&
+           curr_ball.last_collision != COLLISION_CASE_TOP)
         {
 #ifdef DEBUG
             cout << "----------COLLISION CASE TOP---------" << endl;
             cout << "current ball pos: " << curr_ball.curr_x << " | " << curr_ball.curr_y + curr_ball.size_radius << endl;
-            cout << "top block side: " << curr_gamestate.blocks[i][j].top_bside << endl;
-            cout << "left block side: " << curr_gamestate.blocks[i][j].left_bside << endl;
-            cout << "bottom block side: " << curr_gamestate.blocks[i][j].bottom_bside << endl;
-            cout << "right block side: " << curr_gamestate.blocks[i][j].right_bside << endl;
+            cout << "top block side: " << curr_blocks[i][j].top_bside << endl;
+            cout << "left block side: " << curr_blocks[i][j].left_bside << endl;
+            cout << "bottom block side: " << curr_blocks[i][j].bottom_bside << endl;
+            cout << "right block side: " << curr_blocks[i][j].right_bside << endl;
 #endif
-            last_collision = COLLISION_CASE_TOP;
+            curr_ball.last_collision = COLLISION_CASE_TOP;
             handle_collision(COLLISION_CASE_TOP, curr_ball);
-            hit_block(i, j);
+            hit_block(i, j, curr_blocks, curr_blocks_graphics, curr_ball);
             cout << "handled collision block bottom side" << endl;
 
         }
     }
     //hit right side
-    else if(curr_ball.curr_x <= curr_gamestate.blocks[i][j].right_bside &&
-            curr_ball.curr_x > curr_gamestate.blocks[i][j].right_bside - collision_margin)
+    else if(curr_ball.curr_x <= curr_blocks[i][j].right_bside &&
+            curr_ball.curr_x > curr_blocks[i][j].right_bside - collision_margin)
     {
-        if(curr_ball.curr_y + curr_ball.size_radius * 2 >= curr_gamestate.blocks[i][j].top_bside &&
-           curr_ball.curr_y <= curr_gamestate.blocks[i][j].bottom_bside &&
-           curr_gamestate.blocks[i][j].active &&
-           last_collision != COLLISION_CASE_LEFT)
+        if(curr_ball.curr_y + curr_ball.size_radius * 2 >= curr_blocks[i][j].top_bside &&
+           curr_ball.curr_y <= curr_blocks[i][j].bottom_bside &&
+           curr_blocks[i][j].active &&
+           curr_ball.last_collision != COLLISION_CASE_LEFT)
         {
 #ifdef DEBUG
             cout << "--------COLLISION CASE LEFT----------" << endl;
             cout << "current ball pos: " << curr_ball.curr_x << " | " << curr_ball.curr_y + curr_ball.size_radius << endl;
-            cout << "top block side: " << curr_gamestate.blocks[i][j].top_bside << endl;
-            cout << "left block side: " << curr_gamestate.blocks[i][j].left_bside << endl;
-            cout << "bottom block side: " << curr_gamestate.blocks[i][j].bottom_bside << endl;
-            cout << "right block side: " << curr_gamestate.blocks[i][j].right_bside << endl;
+            cout << "top block side: " << curr_blocks[i][j].top_bside << endl;
+            cout << "left block side: " << curr_blocks[i][j].left_bside << endl;
+            cout << "bottom block side: " << curr_blocks[i][j].bottom_bside << endl;
+            cout << "right block side: " << curr_blocks[i][j].right_bside << endl;
 #endif
-            last_collision = COLLISION_CASE_LEFT;
-            curr_ball.curr_x = curr_gamestate.blocks[i][j].right_bside;
+            curr_ball.last_collision = COLLISION_CASE_LEFT;
+            curr_ball.curr_x = curr_blocks[i][j].right_bside;
             handle_collision(COLLISION_CASE_LEFT, curr_ball);
-            hit_block(i, j);
+            hit_block(i, j, curr_blocks, curr_blocks_graphics, curr_ball);
             cout << "handled collision block right side" << endl;
         }
     }
@@ -485,63 +498,102 @@ void handle_collision_all_sides(int i, int j, ball_type &curr_ball)
 /**
 *@brief calls function to check all block side collisions
 */
-void handle_collision_block(ball_type &curr_ball)
+void handle_collision_block(ball_type &curr_ball,
+                            vector<vector<block_type>> &curr_blocks, vector<vector<sf::RectangleShape>> &curr_blocks_graphics)
 {
     for (int i = 0; i < block_rows; i++)
     {
         for(int j = 0; j < block_columns; j++)
         {
-            handle_collision_all_sides(i, j, curr_ball);
+            handle_collision_all_sides(i, j, curr_ball, curr_blocks, curr_blocks_graphics);
         }
     }
 }
 
 
-void predict_trajectory(sf::RenderWindow &main_window, ball_type &curr_ball, sf::CircleShape dupe_ball)
+void predict_trajectory(sf::RenderWindow &main_window, ball_type &curr_ball, sf::CircleShape dupe_ball,
+                        vector<vector<block_type>> &curr_blocks, vector<vector<sf::RectangleShape>> &curr_blocks_graphics, float curr_degrees)
 {
-    curr_gamestate.dupe_ball.speed = 10;
+    sf::VertexArray dots(sf::Points);
+
     curr_gamestate.dupe_ball.curr_x = curr_ball.curr_x;
     curr_gamestate.dupe_ball.curr_y = curr_ball.curr_y - curr_ball.speed;
 
     curr_gamestate.dupe_ball.recent_x = curr_ball.recent_x;
     curr_gamestate.dupe_ball.recent_y = curr_ball.recent_y;
 
+    curr_gamestate.dupe_ball.speed = 1.5;
+
     curr_gamestate.dupe_ball.alpha_x = curr_ball.alpha_x;
     curr_gamestate.dupe_ball.alpha_y = curr_ball.alpha_y;
 
-    cout << "curr x after: " << curr_ball.curr_x << endl;
-    cout << "curr y after: " << curr_ball.curr_y << endl;
-    cout << "------------------------" << endl;
 
 
+    curr_gamestate.dupe_ball.alpha_y = get_new_y(curr_degrees, curr_gamestate.dupe_ball) * (-1);
 
-    while(curr_gamestate.dupe_ball.curr_y < PLATFORM_INITIAL_Y)
+    cout << "half point of plat: " << SCREENSIZE_X - (curr_gamestate.platform.x + (curr_gamestate.platform.width / 2)) << endl;
+    cout << "dupe ball x: " << curr_gamestate.dupe_ball.curr_x << endl;
+    cout << "screensize: " << SCREENSIZE_X << endl;
+    cout << "platform x pos: " << curr_gamestate.platform.x << endl;
+    cout << "width / 2: " << curr_gamestate.platform.width / 2 << endl;
+
+    int var = SCREENSIZE_X - (SCREENSIZE_X - (curr_gamestate.platform.x + (curr_gamestate.platform.width / 2)));
+    if(var < curr_gamestate.dupe_ball.curr_x)
     {
+        cout << "right" << endl;
+        curr_gamestate.dupe_ball.alpha_x = get_new_x(curr_degrees, curr_gamestate.dupe_ball);
+    }
+    else
+    {
+        cout << "left" << endl;
+        curr_gamestate.dupe_ball.alpha_x = get_new_x(curr_degrees, curr_gamestate.dupe_ball) * (-1);
+    }
+
+
+
+    curr_gamestate.dupe_ball.last_collision = COLLISION_CASE_BOTTOM;
+    cout << "size of dupe blocks: " << curr_gamestate.dupe_blocks.size() << endl;
+    cout << "size of curr_blocks: " << curr_blocks.size() << endl;
+
+    curr_gamestate.dupe_blocks = curr_blocks;
+
+    curr_gamestate.dupe_blocks_graphics = curr_blocks_graphics;
+
+    while(curr_gamestate.dupe_ball.curr_y < PLATFORM_INITIAL_Y - curr_ball.size_radius * 2)
+    {
+        plat_movement(main_window);
+
+        plat.setPosition(curr_gamestate.platform.x, curr_gamestate.platform.y);
+
+        curr_gamestate.ball.curr_x += curr_gamestate.ball.alpha_x;
+        curr_gamestate.ball.curr_y += curr_gamestate.ball.alpha_y;
+
         curr_gamestate.dupe_ball.curr_x += curr_gamestate.dupe_ball.alpha_x;
         curr_gamestate.dupe_ball.curr_y += curr_gamestate.dupe_ball.alpha_y;
 
+        dots.append(sf::Vertex(sf::Vector2f(curr_gamestate.dupe_ball.curr_x, curr_gamestate.dupe_ball.curr_y), sf::Color::White));
+
+        ball.setPosition(curr_gamestate.ball.curr_x, curr_gamestate.ball.curr_y);
         dupe_ball.setPosition(curr_gamestate.dupe_ball.curr_x, curr_gamestate.dupe_ball.curr_y);
 
         handle_collision_walls(curr_gamestate.dupe_ball);
-        handle_collision_block(curr_gamestate.dupe_ball);
+        handle_collision_block(curr_gamestate.dupe_ball, curr_gamestate.dupe_blocks, curr_gamestate.dupe_blocks_graphics);
+        handle_collision_walls(curr_gamestate.ball);
+        handle_collision_block(curr_gamestate.ball, curr_gamestate.blocks, curr_gamestate.blocks_graphics);
+        handle_collision_powerup();
 
-        draw_ball(main_window, dupe_ball);
-
+        draw_everything(main_window);
+        main_window.draw(dots);
+#ifdef TP_DEBUG
+            draw_ball(main_window, dupe_ball);
+#endif
         main_window.display();
 
         // Clear screen
         main_window.clear();
-
-        // cout << "drawing ball" << endl;
-        /*
-        if(curr_gamestate.dupe_ball.curr_x > -100 && curr_gamestate.dupe_ball.curr_x < 1000)
-            cout << "duped ball x pos: " << curr_gamestate.dupe_ball.curr_x << endl;
-
-        if(curr_gamestate.dupe_ball.curr_y > -100 && curr_gamestate.dupe_ball.curr_y < 1000)
-            cout << "duped ball y pos: " << curr_gamestate.dupe_ball.curr_y << endl;
-        */
-
     }
+    curr_gamestate.ball.speed = BALL_SPEED;
+    cout << "speed of ball: " << curr_gamestate.ball.speed << endl;
     cout << "predicting x: " << curr_gamestate.dupe_ball.curr_x << endl;
     cout << "predicting y: " << curr_gamestate.dupe_ball.curr_y << endl;
     cout << "HURRAYYYY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
@@ -554,7 +606,8 @@ void predict_trajectory(sf::RenderWindow &main_window, ball_type &curr_ball, sf:
 /**
 *@brief handles platform collision
 */
-void handle_collision_platform(sf::RenderWindow &main_window, ball_type &curr_ball, sf::CircleShape dupe_ball)
+void handle_collision_platform(sf::RenderWindow &main_window, ball_type &curr_ball, sf::CircleShape dupe_ball,
+                               vector<vector<block_type>> &curr_blocks, vector<vector<sf::RectangleShape>> &curr_blocks_graphics)
 {
     double curr_mousespeed = get_mouse_vertical_speed();
 
@@ -572,26 +625,22 @@ void handle_collision_platform(sf::RenderWindow &main_window, ball_type &curr_ba
     {
         if (curr_ball.curr_x + curr_ball.size_radius > curr_gamestate.platform.x &&
             curr_ball.curr_x < curr_gamestate.platform.x + curr_gamestate.platform.width &&
-            last_collision != COLLISION_CASE_BOTTOM)
+            curr_ball.last_collision != COLLISION_CASE_BOTTOM)
         {
-            /*
-            cout << "joker_col_margin: " << curr_mousespeed << " + " << curr_ball.speed
-                      << " = " << curr_mousespeed + curr_ball.speed << endl;
-            cout << "alpha: " << alpha_y << endl;
-            */
-            last_collision = COLLISION_CASE_BOTTOM;
+            curr_ball.last_collision = COLLISION_CASE_BOTTOM;
             curr_degrees = get_new_angle(curr_ball);
+            //last point of updating everything
 
-            current_sound.setBuffer(buffer_platform);
-            current_sound.play();
+            if(!curr_ball.fake)
+            {
+                current_sound.setBuffer(buffer_platform);
+                current_sound.play();
+            }
 
-            //cout << "PLATFORM COLLISIONNN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
-            cout << "curr x before: " << curr_ball.curr_x << endl;
-            cout << "curr y before: " << curr_ball.curr_y << endl;
-            cout << "------------------------" << endl;
             if(trajectory_prediction_buff)
             {
-                predict_trajectory(main_window, curr_ball, dupe_ball);
+                cout << "curr degrees: " << curr_degrees << endl;
+                predict_trajectory(main_window, curr_ball, dupe_ball, curr_gamestate.blocks, curr_blocks_graphics, curr_degrees);
             }
         }
     }
@@ -623,7 +672,7 @@ void hit_barrier()
 /**
 *@brief handles barrier collision
 */
-void handle_collision_barrier(ball_type &curr_ball)
+void handle_collision_barrier(ball_type &curr_ball, vector<vector<block_type>> &curr_blocks)
 {
     if(curr_ball.curr_y + curr_ball.size_radius * 2 > barrier_obj.y)
     {
@@ -632,7 +681,7 @@ void handle_collision_barrier(ball_type &curr_ball)
             cout << "current ball pos: " << curr_ball.curr_x << " | " << curr_ball.curr_y + curr_ball.size_radius << endl;
             cout << "barrier y: " << barrier_obj.y << endl;
 #endif
-        last_collision = COLLISION_CASE_BOTTOM;
+        curr_ball.last_collision = COLLISION_CASE_BOTTOM;
         hit_barrier();
         handle_collision(COLLISION_CASE_BOTTOM, curr_ball);
     }

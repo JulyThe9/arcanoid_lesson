@@ -44,6 +44,7 @@ using namespace std;
 #define PLATFORM_WIDTH 160
 
 //#define DEBUG
+//#define TP_DEBUG
 //-------------------------------------------------------------------
 
 bool text_visible = false;
@@ -67,9 +68,11 @@ float bottom_wall = SCREENSIZE_Y;
 // angle of flight(ball)
 float curr_degrees = BALL_STARTER_DEG;
 
-// direction +/- of flight
-//float alpha_x = 0;
-//float alpha_y = 0;
+sf::RectangleShape plat;
+sf::RectangleShape barrier;
+sf::CircleShape ball;
+sf::RectangleShape status_bar;
+sf::RectangleShape status_bar_logo;
 
 
 //--------
@@ -286,7 +289,7 @@ std::map<double, powerup_debuff_effect_types> debuff_map =
 
 std::map<double, powerup_joker_effect_types> joker_map =
 {
-    {100, PLAT_Y_AXIS},
+    {0, PLAT_Y_AXIS},
     {30, REMIX_BLOCK_GENERATION}
 
 };
@@ -413,40 +416,6 @@ struct block_type
         block_sound = block_soundpar;
     }
 };
-
-/*
-powerup_effect_types get_powerup_effect(powerup_status type)
-{
-    int random_number = (std::rand() % 100);
-
-    if(type == BUFF_POWERUP)
-    {
-        if (random_number <= 34)
-            return BALL_DUPLICATION;
-        else if (random_number <= 67)
-            return TRAJECTORY_PREDICTION;
-        else
-            return LAZER;
-    }
-    else if(type == DEBUFF_POWERUP)
-    {
-        if (random_number <= 34)
-            return BALL_INVIS;
-        else if (random_number <= 67)
-            return REVERSE_CONTROLS;
-        else
-            return DIRECTION_RANDOMIZATION;
-    }
-    else
-    {
-        if (random_number <= 50)
-            return PLAT_Y_AXIS;
-        else
-            return REMIX_BLOCK_GENERATION;
-    }
-
-}
-*/
 
 
 sf::RectangleShape init_powerup(powerup_class_types type, int x, int y);
@@ -594,13 +563,17 @@ struct ball_type
     float alpha_x;
     float alpha_y;
 
+    bool fake;
+
     colour col;
+
+    collision_cases last_collision;
 
     ball_type(){};
 
 
     ball_type(float speedpar, int size_radiuspar, float curr_xpar, float curr_ypar, float recent_xpar, float recent_ypar,
-              float alpha_xpar, float alpha_ypar, colour colpar)
+              float alpha_xpar, float alpha_ypar, bool fakepar, colour colpar, collision_cases last_collisionpar)
     {
         speed = speedpar;
         size_radius = size_radiuspar;
@@ -610,7 +583,9 @@ struct ball_type
         recent_y = recent_ypar;
         alpha_x = alpha_xpar;
         alpha_y = alpha_ypar;
+        fake = fakepar;
         col = colpar;
+        last_collision = last_collisionpar;
     }
 };
 
@@ -625,8 +600,10 @@ struct GameState
     string score_number;
 
     vector<vector<block_type>> blocks;
+    vector<vector<block_type>> dupe_blocks;
 
     vector<vector<sf::RectangleShape>> blocks_graphics;
+    vector<vector<sf::RectangleShape>> dupe_blocks_graphics;
 
     int lives_amount;
     int block_amount;
@@ -754,8 +731,8 @@ void init_gamestate()
 {
     colour gcol(150, 250, 50); // green
     colour pcol(160, 32, 240); // purple
-    ball_type ball_data(BALL_SPEED, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY, 0, 0, gcol);
-    ball_type dupe_ball_data(BALL_SPEED, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY, 0, 0, pcol);
+    ball_type ball_data(BALL_SPEED, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY, 0, 0, false, gcol, COLLISION_CASE_RESET);
+    ball_type dupe_ball_data(BALL_SPEED, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY, 0, 0, true, pcol, COLLISION_CASE_RESET);
     platform_type platform(PLATFORM_INITIAL_X, PLATFORM_INITIAL_Y, PLATFORM_WIDTH, 12, 45, 25);
     curr_gamestate.init("000000", 3, block_rows * block_columns, dupe_ball_data, ball_data, platform);
 }
@@ -767,5 +744,3 @@ barrier_type barrier_obj(0, SCREENSIZE_Y - barrier_len - 5, SCREENSIZE_X, barrie
 
 //GAME STATUS
 game_status_type game_status = GAME_ACTIVE;
-
-collision_cases last_collision = COLLISION_CASE_RESET;

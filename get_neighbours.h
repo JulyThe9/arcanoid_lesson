@@ -39,7 +39,7 @@ bool is_valid_neighbour(int candidate_block_row, int candidate_block_col)
 
 *@return returns a vector of positions of blocks around current block as pairs(row|col)
 */
-vector<pair<int, int>> get_neighbours(int row, int col)
+vector<pair<int, int>> get_neighbours(int row, int col, vector<vector<block_type>> &curr_blocks)
 {
     bool valid;
     vector<pair<int, int>> block_neighbours;
@@ -76,7 +76,7 @@ vector<pair<int, int>> get_neighbours(int row, int col)
         block_neighbours.push_back({left_row, left_col});
     }
 
-    if(curr_gamestate.blocks[row][col].radius)
+    if(curr_blocks[row][col].radius)
     {
         int upper_right_row = row - 1;
         int upper_right_col = col + 1;
