@@ -186,12 +186,11 @@ void handle_deletion_powerup()
 *@param row current row of block that has been hit
 *@param col current column of block that has been hit
 */
-void hit_block(int row, int col, vector<vector<block_type>> &curr_blocks,
-               vector<vector<sf::RectangleShape>> &curr_blocks_graphics, ball_type &curr_ball)
+void hit_block(int row, int col, vector<vector<block_type>> &curr_blocks, vector<vector<sf::RectangleShape>> &curr_blocks_graphics, ball_type &curr_ball)
 {
     if(!curr_ball.fake)
     {
-        if(curr_gamestate.blocks[row][col].active)
+        if(curr_blocks[row][col].active)
             curr_gamestate.block_amount--;
     }
 
@@ -206,28 +205,31 @@ void hit_block(int row, int col, vector<vector<block_type>> &curr_blocks,
 
     for(unsigned int i = 0; i < neighbours.size(); i++)
     {
-        curr_gamestate.block_amount--;
-        int curr_row = neighbours[i].first;
-        int curr_col = neighbours[i].second;
-        //this line is used to set the active variable of neighbours of explosion block to false
-        curr_blocks[curr_row][curr_col].active = false;
-        curr_blocks_graphics[curr_row][curr_col].setFillColor(sf::Color(0, 0, 0));
-        add_to_score(curr_row, curr_col);
-        create_powerup(curr_row, curr_col);
-    }
-
-    for(unsigned int i = 0; i < neighbours.size(); i++)
-    {
         int curr_row = neighbours[i].first;
         int curr_col = neighbours[i].second;
 
-        if (curr_blocks[curr_row][curr_col].texturetype == TEXTURE_TYPE_EXPLOSION_SMALL ||
-             curr_blocks[curr_row][curr_col].texturetype == TEXTURE_TYPE_EXPLOSION_LARGE)
+        if (curr_blocks[curr_row][curr_col].active)
         {
-            hit_block(curr_row, curr_col, curr_blocks, curr_blocks_graphics, curr_ball);
+            if(!curr_ball.fake)
+                curr_gamestate.block_amount--;
+
+            curr_blocks[curr_row][curr_col].active = false;
+            curr_blocks_graphics[curr_row][curr_col].setFillColor(sf::Color(0, 0, 0));
+
+            if(!curr_ball.fake)
+            {
+                add_to_score(curr_row, curr_col);
+                create_powerup(curr_row, curr_col);
+            }
+
+            if (curr_blocks[curr_row][curr_col].texturetype == TEXTURE_TYPE_EXPLOSION_SMALL ||
+                curr_blocks[curr_row][curr_col].texturetype == TEXTURE_TYPE_EXPLOSION_LARGE)
+            {
+                hit_block(curr_row, curr_col, curr_blocks, curr_blocks_graphics, curr_ball);
+            }
         }
     }
-    //this line is used to set the active variable of explosion block to false
+
     curr_blocks_graphics[row][col].setFillColor(sf::Color(0, 0, 0));
 
     if(!curr_ball.fake)
@@ -236,17 +238,13 @@ void hit_block(int row, int col, vector<vector<block_type>> &curr_blocks,
         current_buffer = map_sounds(curr_gamestate.blocks[row][col].block_sound);
         current_sound.setBuffer(current_buffer);
         current_sound.play();
+        create_powerup(row, col);
     }
 
-
-    if(curr_gamestate.block_amount == 0)
+    if(!curr_ball.fake && curr_gamestate.block_amount == 0)
         set_game_won();
-
-    cout << "block amount: " << curr_gamestate.block_amount << endl;
-
-    if(!curr_ball.fake)
-        create_powerup(row, col);
 }
+
 
 
 sf::Vector2i lastMousePosition;
@@ -595,7 +593,8 @@ void predict_trajectory(sf::RenderWindow &main_window, ball_type &curr_ball, sf:
 
     float ball_start_prediction_y = curr_ball.curr_y;
     bool is_prediction_margin_valid;
-    if(ball_start_prediction_y > PLATFORM_INITIAL_Y)
+
+    if(ball_start_prediction_y > PLATFORM_INITIAL_Y - curr_ball.size_radius * 2)
         is_prediction_margin_valid = true;
 
     while(curr_gamestate.dupe_ball.curr_y < PLATFORM_INITIAL_Y - curr_ball.size_radius * 2 || is_prediction_margin_valid)
