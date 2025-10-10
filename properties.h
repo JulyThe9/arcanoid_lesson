@@ -289,8 +289,8 @@ std::map<double, powerup_debuff_effect_types> debuff_map =
 
 std::map<double, powerup_joker_effect_types> joker_map =
 {
-    {0, PLAT_Y_AXIS},
-    {30, REMIX_BLOCK_GENERATION}
+    {100, PLAT_Y_AXIS},
+    {10, REMIX_BLOCK_GENERATION}
 
 };
 

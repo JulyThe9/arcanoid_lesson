@@ -240,9 +240,7 @@ void hit_block(int row, int col, vector<vector<block_type>> &curr_blocks,
 
 
     if(curr_gamestate.block_amount == 0)
-    {
         set_game_won();
-    }
 
     cout << "block amount: " << curr_gamestate.block_amount << endl;
 
@@ -327,6 +325,21 @@ void handle_collision_powerup()
 }
 
 
+void move_ball_back(ball_type &ball, double overlap_distance)
+{
+    double direction_length = sqrt(ball.alpha_x * ball.alpha_x + ball.alpha_y * ball.alpha_y);
+
+    if(direction_length != 0)
+    {
+        double direction_x = ball.alpha_x / direction_length;
+        double direction_y = ball.alpha_y / direction_length;
+
+        ball.curr_x -= direction_x * overlap_distance;
+        ball.curr_y -= direction_y * overlap_distance;
+    }
+}
+
+
 // ---------------------------------
 // WALL COLLISION DETECTION HERE
 // ---------------------------------
@@ -341,6 +354,9 @@ void handle_collision_walls(ball_type &curr_ball)
         cout << "-------------RIGHT WALL--------------" << endl;
         cout << "current ball pos: " << curr_ball.curr_x << " | " << curr_ball.curr_y << endl;
 #endif
+        double overlap_distance = curr_ball.curr_x - (right_wall - curr_ball.size_radius * 2);
+        move_ball_back(curr_ball, overlap_distance);
+
         curr_ball.last_collision = COLLISION_CASE_RIGHT;
         handle_collision(COLLISION_CASE_RIGHT, curr_ball);
 
@@ -353,6 +369,9 @@ void handle_collision_walls(ball_type &curr_ball)
         cout << "-------------TOP WALL----------------" << endl;
         cout << "current ball pos: " << curr_ball.curr_x << " | " << curr_ball.curr_y << endl;
 #endif
+        double overlap_distance = status_bar_length - curr_ball.curr_y;
+        move_ball_back(curr_ball, overlap_distance);
+
         curr_ball.last_collision = COLLISION_CASE_TOP;
         handle_collision(COLLISION_CASE_TOP, curr_ball);
 
@@ -371,6 +390,9 @@ void handle_collision_walls(ball_type &curr_ball)
         cout << "-------------LEFT WALL---------------" << endl;
         cout << "current ball pos: " << curr_ball.curr_x << " | " << curr_ball.curr_y << endl;
 #endif
+        double overlap_distance = left_wall - curr_ball.curr_x;
+        move_ball_back(curr_ball, overlap_distance);
+
         curr_ball.last_collision = COLLISION_CASE_LEFT;
         handle_collision(COLLISION_CASE_LEFT, curr_ball);
 
@@ -393,7 +415,7 @@ void handle_collision_all_sides(int i, int j, ball_type &curr_ball,
                                 vector<vector<block_type>> &curr_blocks, vector<vector<sf::RectangleShape>> &curr_blocks_graphics)
 {
     // margin for collisions for normal speed
-    double collision_margin = curr_ball.speed;
+    double collision_margin = curr_ball.speed + 0.1;
 
     //hit top side
     if(curr_ball.curr_y + curr_ball.size_radius * 2 > curr_blocks[i][j].top_bside &&
@@ -412,8 +434,11 @@ void handle_collision_all_sides(int i, int j, ball_type &curr_ball,
             cout << "bottom block side: " << curr_blocks[i][j].bottom_bside << endl;
             cout << "right block side: " << curr_blocks[i][j].right_bside << endl;
 #endif
+            double overlap_distance = (curr_ball.curr_y + curr_ball.size_radius * 2) - curr_blocks[i][j].top_bside;
+            move_ball_back(curr_ball, overlap_distance);
+
             curr_ball.last_collision = COLLISION_CASE_BOTTOM;
-            handle_collision(COLLISION_CASE_BOTTOM,curr_ball);
+            handle_collision(COLLISION_CASE_BOTTOM, curr_ball);
             hit_block(i, j, curr_blocks, curr_blocks_graphics, curr_ball);
             cout << "handled collision block top side" << endl;
         }
@@ -435,6 +460,9 @@ void handle_collision_all_sides(int i, int j, ball_type &curr_ball,
             cout << "bottom block side: " << curr_blocks[i][j].bottom_bside << endl;
             cout << "right block side: " << curr_blocks[i][j].right_bside << endl;
 #endif
+            double overlap_distance = (curr_ball.curr_x + curr_ball.size_radius * 2) - curr_blocks[i][j].left_bside;
+            move_ball_back(curr_ball, overlap_distance);
+
             curr_ball.last_collision = COLLISION_CASE_RIGHT;
             handle_collision(COLLISION_CASE_RIGHT, curr_ball);
             hit_block(i, j, curr_blocks, curr_blocks_graphics, curr_ball);
@@ -458,6 +486,9 @@ void handle_collision_all_sides(int i, int j, ball_type &curr_ball,
             cout << "bottom block side: " << curr_blocks[i][j].bottom_bside << endl;
             cout << "right block side: " << curr_blocks[i][j].right_bside << endl;
 #endif
+            double overlap_distance = curr_blocks[i][j].bottom_bside - curr_ball.curr_y;
+            move_ball_back(curr_ball, overlap_distance);
+
             curr_ball.last_collision = COLLISION_CASE_TOP;
             handle_collision(COLLISION_CASE_TOP, curr_ball);
             hit_block(i, j, curr_blocks, curr_blocks_graphics, curr_ball);
@@ -482,6 +513,9 @@ void handle_collision_all_sides(int i, int j, ball_type &curr_ball,
             cout << "bottom block side: " << curr_blocks[i][j].bottom_bside << endl;
             cout << "right block side: " << curr_blocks[i][j].right_bside << endl;
 #endif
+            double overlap_distance = curr_blocks[i][j].right_bside - curr_ball.curr_x;
+            move_ball_back(curr_ball, overlap_distance);
+
             curr_ball.last_collision = COLLISION_CASE_LEFT;
             curr_ball.curr_x = curr_blocks[i][j].right_bside;
             handle_collision(COLLISION_CASE_LEFT, curr_ball);
@@ -559,8 +593,16 @@ void predict_trajectory(sf::RenderWindow &main_window, ball_type &curr_ball, sf:
 
     curr_gamestate.dupe_blocks_graphics = curr_blocks_graphics;
 
-    while(curr_gamestate.dupe_ball.curr_y < PLATFORM_INITIAL_Y - curr_ball.size_radius * 2)
+    float ball_start_prediction_y = curr_ball.curr_y;
+    bool is_prediction_margin_valid;
+    if(ball_start_prediction_y > PLATFORM_INITIAL_Y)
+        is_prediction_margin_valid = true;
+
+    while(curr_gamestate.dupe_ball.curr_y < PLATFORM_INITIAL_Y - curr_ball.size_radius * 2 || is_prediction_margin_valid)
     {
+        if(curr_ball.curr_y < PLATFORM_INITIAL_Y - curr_ball.size_radius * 2)
+            is_prediction_margin_valid = false;
+
         plat_movement(main_window);
 
         plat.setPosition(curr_gamestate.platform.x, curr_gamestate.platform.y);
