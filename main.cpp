@@ -53,7 +53,7 @@ int main()
     assert(curr_gamestate.isInitialized);
 
     ball = init_ball(curr_gamestate.ball);
-    sf::CircleShape dupe_ball = init_ball(curr_gamestate.dupe_ball);
+    //sf::CircleShape dupe_ball = init_ball(curr_gamestate.dupe_ball);
 
     barrier = init_barrier();
 
@@ -110,7 +110,8 @@ int main()
             // MAIN COLLISIONS
             handle_collision_walls(curr_gamestate.ball);
             handle_collision_block(curr_gamestate.ball, curr_gamestate.blocks, curr_gamestate.blocks_graphics);
-            handle_collision_platform(main_window, curr_gamestate.ball, dupe_ball, curr_gamestate.blocks, curr_gamestate.blocks_graphics);
+            //handle_collision_platform(main_window, curr_gamestate.ball, dupe_ball, curr_gamestate.blocks, curr_gamestate.blocks_graphics);
+            handle_collision_platform(main_window, curr_gamestate.ball, curr_gamestate.blocks, curr_gamestate.blocks_graphics);
             handle_collision_barrier(curr_gamestate.ball, curr_gamestate.blocks);
             handle_collision_powerup();
 
@@ -218,8 +219,8 @@ int main()
 
 
         draw_everything(main_window);
-        dupe_ball.setPosition(curr_gamestate.dupe_ball.curr_x, curr_gamestate.dupe_ball.curr_y);
-        draw_ball(main_window, dupe_ball);
+        //dupe_ball.setPosition(curr_gamestate.dupe_ball.curr_x, curr_gamestate.dupe_ball.curr_y);
+        //draw_ball(main_window, dupe_ball);
 
         main_window.display();
 

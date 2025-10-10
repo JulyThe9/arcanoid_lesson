@@ -543,7 +543,7 @@ void handle_collision_block(ball_type &curr_ball,
 }
 
 
-void predict_trajectory(sf::RenderWindow &main_window, ball_type &curr_ball, sf::CircleShape dupe_ball,
+void predict_trajectory(sf::RenderWindow &main_window, ball_type &curr_ball,
                         vector<vector<block_type>> &curr_blocks, vector<vector<sf::RectangleShape>> &curr_blocks_graphics, float curr_degrees)
 {
     sf::VertexArray dots(sf::Points);
@@ -615,7 +615,7 @@ void predict_trajectory(sf::RenderWindow &main_window, ball_type &curr_ball, sf:
         dots.append(sf::Vertex(sf::Vector2f(curr_gamestate.dupe_ball.curr_x, curr_gamestate.dupe_ball.curr_y), sf::Color::White));
 
         ball.setPosition(curr_gamestate.ball.curr_x, curr_gamestate.ball.curr_y);
-        dupe_ball.setPosition(curr_gamestate.dupe_ball.curr_x, curr_gamestate.dupe_ball.curr_y);
+        //dupe_ball.setPosition(curr_gamestate.dupe_ball.curr_x, curr_gamestate.dupe_ball.curr_y);
 
         handle_collision_walls(curr_gamestate.dupe_ball);
         handle_collision_block(curr_gamestate.dupe_ball, curr_gamestate.dupe_blocks, curr_gamestate.dupe_blocks_graphics);
@@ -647,7 +647,7 @@ void predict_trajectory(sf::RenderWindow &main_window, ball_type &curr_ball, sf:
 /**
 *@brief handles platform collision
 */
-void handle_collision_platform(sf::RenderWindow &main_window, ball_type &curr_ball, sf::CircleShape dupe_ball,
+void handle_collision_platform(sf::RenderWindow &main_window, ball_type &curr_ball,
                                vector<vector<block_type>> &curr_blocks, vector<vector<sf::RectangleShape>> &curr_blocks_graphics)
 {
     double curr_mousespeed = get_mouse_vertical_speed();
@@ -681,7 +681,7 @@ void handle_collision_platform(sf::RenderWindow &main_window, ball_type &curr_ba
             if(trajectory_prediction_buff)
             {
                 cout << "curr degrees: " << curr_degrees << endl;
-                predict_trajectory(main_window, curr_ball, dupe_ball, curr_gamestate.blocks, curr_blocks_graphics, curr_degrees);
+                predict_trajectory(main_window, curr_ball, curr_gamestate.blocks, curr_blocks_graphics, curr_degrees);
             }
         }
     }
