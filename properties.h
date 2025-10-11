@@ -44,6 +44,7 @@ using namespace std;
 #define PLATFORM_WIDTH 160
 
 #define PLATFORM_PREDICTION_APPEARENCE_PERIOD 500
+#define PLATFORM_PREDICTION_BLINK_PERIOD 10
 
 //#define DEBUG
 //#define TP_DEBUG
@@ -299,9 +300,9 @@ std::map<double, powerup_joker_effect_types> joker_map =
 
 std::map<double, powerup_class_types> powerup_class_map =
 {
-    {100, JOKER},
-    {50, BUFF},
-    {35, DEBUFF}
+    {20, JOKER},
+    {30, BUFF},
+    {0, DEBUFF}
 };
 
 
@@ -718,6 +719,8 @@ bool countdown_active = false;
 bool is_trajectory_prediction_shown = false;
 double predicting_x = 0;
 double predicting_y = 0;
+
+bool in_animation = false;
 
 std::chrono::time_point<std::chrono::high_resolution_clock> countdown_start_time;
 

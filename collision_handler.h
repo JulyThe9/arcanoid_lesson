@@ -85,7 +85,7 @@ void reset_powerups()
 void create_powerup(int row, int col)
 {
     int powerup_generation_chance = (std::rand() % 100);
-    if (powerup_generation_chance >= 70)
+    if (powerup_generation_chance >= 38)
     {
         falling_powerup_type curr_falling_powerup(0, 0, POWERUP_SPEED, curr_gamestate.blocks[row][col], BUFF);
 
@@ -554,7 +554,7 @@ void predict_trajectory(sf::RenderWindow &main_window, ball_type &curr_ball,
     curr_gamestate.dupe_ball.recent_x = curr_ball.recent_x;
     curr_gamestate.dupe_ball.recent_y = curr_ball.recent_y;
 
-    curr_gamestate.dupe_ball.speed = 1.5;
+    curr_gamestate.dupe_ball.speed = 3;
 
     curr_gamestate.dupe_ball.alpha_x = curr_ball.alpha_x;
     curr_gamestate.dupe_ball.alpha_y = curr_ball.alpha_y;
@@ -612,7 +612,7 @@ void predict_trajectory(sf::RenderWindow &main_window, ball_type &curr_ball,
         curr_gamestate.dupe_ball.curr_x += curr_gamestate.dupe_ball.alpha_x;
         curr_gamestate.dupe_ball.curr_y += curr_gamestate.dupe_ball.alpha_y;
 
-        dots.append(sf::Vertex(sf::Vector2f(curr_gamestate.dupe_ball.curr_x, curr_gamestate.dupe_ball.curr_y), sf::Color::White));
+        dots.append(sf::Vertex(sf::Vector2f(curr_gamestate.dupe_ball.curr_x, curr_gamestate.dupe_ball.curr_y), sf::Color::Yellow));
 
         ball.setPosition(curr_gamestate.ball.curr_x, curr_gamestate.ball.curr_y);
         //dupe_ball.setPosition(curr_gamestate.dupe_ball.curr_x, curr_gamestate.dupe_ball.curr_y);
@@ -637,6 +637,7 @@ void predict_trajectory(sf::RenderWindow &main_window, ball_type &curr_ball,
     predicting_y = curr_gamestate.dupe_ball.curr_y + curr_ball.size_radius * 2;
     is_trajectory_prediction_shown = true;
     curr_gamestate.ball.speed = BALL_SPEED;
+    in_animation = true;
     cout << "speed of ball: " << curr_gamestate.ball.speed << endl;
     cout << "predicting x: " << curr_gamestate.dupe_ball.curr_x << endl;
     cout << "predicting y: " << curr_gamestate.dupe_ball.curr_y << endl;

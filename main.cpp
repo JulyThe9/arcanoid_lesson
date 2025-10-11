@@ -124,7 +124,7 @@ int main()
             barrier.setPosition(barrier_obj.x, barrier_obj.y);
 
 
-            if (is_trajectory_prediction_shown)
+            if (is_trajectory_prediction_shown || in_animation == true)
             {
                 // if timer not started yet, start it once
                 if (predicting_plat_shown_time == std::chrono::time_point<std::chrono::high_resolution_clock>{})
@@ -135,13 +135,17 @@ int main()
                     std::chrono::duration_cast<std::chrono::milliseconds>(curTime - predicting_plat_shown_time);
 
                 predicting_plat.setPosition(predicting_x, predicting_y);
-                draw_predicting_plat(main_window, predicting_plat);
+                if(is_trajectory_prediction_shown)
+                    draw_predicting_plat(main_window, predicting_plat);
                 std::cout << "time: " << platform_prediction_passed_time.count() << std::endl;
+
+                platform_prediction_animation(platform_prediction_passed_time);
 
                 if (platform_prediction_passed_time.count() > PLATFORM_PREDICTION_APPEARENCE_PERIOD)
                 {
                     is_trajectory_prediction_shown = false;
                     predicting_plat_shown_time = {}; // reset timer
+                    in_animation = false;
                 }
             }
             else

@@ -147,6 +147,21 @@ void text_animation(std::chrono::time_point<std::chrono::high_resolution_clock> 
 }
 
 
+void platform_prediction_animation(auto prediction_total_passed_time)
+{
+    if(prediction_total_passed_time.count() / 10 % PLATFORM_PREDICTION_BLINK_PERIOD < 5)
+    {
+        cout << "in" << endl;
+        is_trajectory_prediction_shown = false;
+    }
+    else
+    {
+        cout << "in" << endl;
+        is_trajectory_prediction_shown = true;
+    }
+}
+
+
 void countdown_animation(std::chrono::time_point<std::chrono::high_resolution_clock> &curTtime)
 {
     auto timePassed = std::chrono::duration_cast<std::chrono::milliseconds>(curTtime - countdown_start_time);
