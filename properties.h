@@ -43,6 +43,8 @@ using namespace std;
 
 #define PLATFORM_WIDTH 160
 
+#define PLATFORM_PREDICTION_APPEARENCE_PERIOD 500
+
 //#define DEBUG
 //#define TP_DEBUG
 //-------------------------------------------------------------------
@@ -713,7 +715,12 @@ struct barrier_type
 countdown_type curr_countdown_num;
 bool countdown_active = false;
 
+bool is_trajectory_prediction_shown = false;
+double predicting_x = 0;
+double predicting_y = 0;
+
 std::chrono::time_point<std::chrono::high_resolution_clock> countdown_start_time;
+
 
 int block_rows = (SCREENSIZE_Y - (PLATFORM_INITIAL_Y / 1.2)) / BLOCK_LEN;
 int block_columns = (SCREENSIZE_X - 2 * BLOCK_WIDTH) / BLOCK_WIDTH - 1;

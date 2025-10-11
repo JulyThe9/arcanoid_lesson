@@ -633,6 +633,9 @@ void predict_trajectory(sf::RenderWindow &main_window, ball_type &curr_ball,
         // Clear screen
         main_window.clear();
     }
+    predicting_x = curr_gamestate.dupe_ball.curr_x - (curr_gamestate.platform.width / 2);
+    predicting_y = curr_gamestate.dupe_ball.curr_y + curr_ball.size_radius * 2;
+    is_trajectory_prediction_shown = true;
     curr_gamestate.ball.speed = BALL_SPEED;
     cout << "speed of ball: " << curr_gamestate.ball.speed << endl;
     cout << "predicting x: " << curr_gamestate.dupe_ball.curr_x << endl;

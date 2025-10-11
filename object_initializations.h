@@ -9,9 +9,23 @@ sf::RectangleShape init_platform()
 {
     sf::RectangleShape platform(sf::Vector2f(curr_gamestate.platform.width,
                                              curr_gamestate.platform.len));
+
     platform.setPosition(curr_gamestate.platform.x, curr_gamestate.platform.y);
 
     return platform;
+}
+
+
+sf::RectangleShape init_predicting_plat()
+{
+    sf::RectangleShape predicting_platform(sf::Vector2f(curr_gamestate.platform.width,
+                                             curr_gamestate.platform.len));
+
+    predicting_platform.setFillColor(sf::Color(255, 255, 0, 85));
+
+    predicting_platform.setPosition(predicting_x, predicting_y);
+
+    return predicting_platform;
 }
 
 /**

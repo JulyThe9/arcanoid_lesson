@@ -55,6 +55,8 @@ int main()
     ball = init_ball(curr_gamestate.ball);
     //sf::CircleShape dupe_ball = init_ball(curr_gamestate.dupe_ball);
 
+    sf::RectangleShape predicting_plat = init_predicting_plat();
+
     barrier = init_barrier();
 
     set_life_data();
@@ -66,8 +68,8 @@ int main()
 
     status_bar_logo = init_logo();
 
+    std::chrono::time_point<std::chrono::high_resolution_clock> predicting_plat_shown_time;
     std::chrono::time_point<std::chrono::high_resolution_clock> lastTime = high_resolution_clock::now();
-
     sf::Mouse::setPosition({curr_gamestate.platform.x, curr_gamestate.platform.y}, main_window); // window is a sf::Window
 
 
@@ -120,6 +122,33 @@ int main()
             ball.setPosition(curr_gamestate.ball.curr_x, curr_gamestate.ball.curr_y);
             plat.setPosition(curr_gamestate.platform.x, curr_gamestate.platform.y);
             barrier.setPosition(barrier_obj.x, barrier_obj.y);
+
+
+            if (is_trajectory_prediction_shown)
+            {
+                // if timer not started yet, start it once
+                if (predicting_plat_shown_time == std::chrono::time_point<std::chrono::high_resolution_clock>{})
+                    predicting_plat_shown_time = std::chrono::high_resolution_clock::now();
+
+                auto curTime = std::chrono::high_resolution_clock::now();
+                auto platform_prediction_passed_time =
+                    std::chrono::duration_cast<std::chrono::milliseconds>(curTime - predicting_plat_shown_time);
+
+                predicting_plat.setPosition(predicting_x, predicting_y);
+                draw_predicting_plat(main_window, predicting_plat);
+                std::cout << "time: " << platform_prediction_passed_time.count() << std::endl;
+
+                if (platform_prediction_passed_time.count() > PLATFORM_PREDICTION_APPEARENCE_PERIOD)
+                {
+                    is_trajectory_prediction_shown = false;
+                    predicting_plat_shown_time = {}; // reset timer
+                }
+            }
+            else
+            {
+                // if prediction not shown, reset timer just in case
+                predicting_plat_shown_time = {};
+            }
 
 
             check_gamestate();

@@ -135,6 +135,11 @@ void draw_heart_deduction_text(sf::RenderWindow &main_window)
     main_window.draw(heart_deduction_text);
 }
 
+void draw_predicting_plat(sf::RenderWindow &main_window, sf::RectangleShape predicting_plat)
+{
+    main_window.draw(predicting_plat);
+}
+
 
 //----------------------------------------------------------------------------------------------------
 void draw_powerup(sf::RenderWindow &main_window)

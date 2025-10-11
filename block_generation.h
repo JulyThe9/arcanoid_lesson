@@ -118,17 +118,17 @@ void generate_row(block_texture_types starterblock, int &localblockX, int &local
 
         int random_number = (std::rand() % 100);
         int random_block_type = (std::rand() % 100);
-        if(random_number >= 60)
+        if(random_number >= 65)
         {
-            if(random_block_type > 30)
+            if(random_block_type > 80)
             {
                 set_as_explosion();
             }
-            else if(random_block_type > 0)
+            else if(random_block_type > 65)
             {
                 set_as_explosion_large();
             }
-            else if(random_block_type > 20)
+            else if(random_block_type > 30)
             {
                 set_as_poison();
             }
