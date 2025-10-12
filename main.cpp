@@ -188,7 +188,6 @@ int main()
                 {
                     if (!countdown_started)
                     {
-
                         countdown_active = true;
                         countdown_start_time = std::chrono::high_resolution_clock::now();
                         curr_countdown_num = COUNTDOWN_THREE;
@@ -197,7 +196,6 @@ int main()
                         play_countdown_sound();
                     }
                 }
-                play_game_continue_sound();
             }
 
             countdown_animation(curTtime);

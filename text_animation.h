@@ -164,12 +164,14 @@ void countdown_animation(std::chrono::time_point<std::chrono::high_resolution_cl
 {
     auto timePassed = std::chrono::duration_cast<std::chrono::milliseconds>(curTtime - countdown_start_time);
 
-    if (timePassed.count() >= COUNTDOWN_PERIOD * 3)
+    if (timePassed.count() >= COUNTDOWN_PERIOD * 3 && countdown_active)
     {
+        cout << "time: " << timePassed.count() << endl;
+        play_game_continue_sound();
         countdown_active = false;
         return;
     }
-    else if (timePassed.count() >= COUNTDOWN_PERIOD * 2)
+    else if (timePassed.count() >= COUNTDOWN_PERIOD * 2 && countdown_active)
     {
         if (curr_countdown_num != COUNTDOWN_ONE)
         {
@@ -177,7 +179,7 @@ void countdown_animation(std::chrono::time_point<std::chrono::high_resolution_cl
             play_countdown_sound();
         }
     }
-    else if (timePassed.count() >= COUNTDOWN_PERIOD)
+    else if (timePassed.count() >= COUNTDOWN_PERIOD&& countdown_active)
     {
         if (curr_countdown_num != COUNTDOWN_TWO)
         {
