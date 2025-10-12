@@ -202,9 +202,12 @@ void create_blocks_data()
 
     block_texture_types starter_texture = TEXTURE_TYPE_DIRT;
 
-    if(block_rows * BLOCK_WIDTH > SCREENSIZE_X)
+    cout << "check left: " << block_rows * BLOCK_LEN << endl;
+    cout << "check right: " << PLATFORM_INITIAL_Y - 100 << endl;
+    if (block_rows * BLOCK_LEN + localblockY > PLATFORM_INITIAL_Y - 100)
     {
-        block_rows = (SCREENSIZE_Y - (curr_gamestate.platform.y/ 2)) / BLOCK_LEN;
+        block_rows = (PLATFORM_INITIAL_Y - 100) / BLOCK_LEN - (localblockY / BLOCK_LEN);
+        cout << "block rows: " << block_rows << endl;
     }
 
     for (int curr_row_number = 0; curr_row_number < block_rows; curr_row_number++)

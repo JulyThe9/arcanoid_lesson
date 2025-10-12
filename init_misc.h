@@ -91,7 +91,15 @@ void init_sounds()
     {
         throw std::runtime_error("Failed to load audio: sounds/dirt_sound.wav");
     }
-    else if (!music.openFromFile("sounds/background_music.mp3"))
+    else if(!buffer_countdown.loadFromFile("sounds/countdown_sound.wav"))
+    {
+        throw std::runtime_error("Failed to load audio: sounds/countdown_sound.wav");
+    }
+    else if(!buffer_game_continue.loadFromFile("sounds/game_continue_sound.wav"))
+    {
+        throw std::runtime_error("Failed to load audio: sounds/game_continue_sound.wav");
+    }
+    else if (!background_music.openFromFile("sounds/background_music2.mp3"))
     {
         throw std::runtime_error("Failed to load audio: sounds/background_music.mp3");
     }

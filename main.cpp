@@ -14,11 +14,15 @@
 #include "ball.h"
 #include "object_initializations.h"
 #include "block_generation.h"
+#include "plat_movement.h"
 #include "get_new_angle.h"
 #include "score_logic.h"
 #include "get_neighbours.h"
 #include "lives_generation.h"
+#include "sound.h"
 #include "text_animation.h"
+#include "powerups.h"
+#include "timers.h"
 #include "drawing.h"
 #include "collision_handler.h"
 #include "init_misc.h"
@@ -41,7 +45,7 @@ int main()
     init_fonts();
 
     init_music();
-    music.play();
+    background_music.play();
 
     //for random block generation
     std::srand(std::time(0));
@@ -124,7 +128,7 @@ int main()
             barrier.setPosition(barrier_obj.x, barrier_obj.y);
 
 
-            if (is_trajectory_prediction_shown || in_animation == true)
+            if (is_trajectory_prediction_shown || in_blinking_animation == true)
             {
                 // if timer not started yet, start it once
                 if (predicting_plat_shown_time == std::chrono::time_point<std::chrono::high_resolution_clock>{})
@@ -137,7 +141,6 @@ int main()
                 predicting_plat.setPosition(predicting_x, predicting_y);
                 if(is_trajectory_prediction_shown)
                     draw_predicting_plat(main_window, predicting_plat);
-                std::cout << "time: " << platform_prediction_passed_time.count() << std::endl;
 
                 platform_prediction_animation(platform_prediction_passed_time);
 
@@ -145,7 +148,7 @@ int main()
                 {
                     is_trajectory_prediction_shown = false;
                     predicting_plat_shown_time = {}; // reset timer
-                    in_animation = false;
+                    in_blinking_animation = false;
                 }
             }
             else
@@ -167,11 +170,11 @@ int main()
 
             if(countdown_started)
             {
-                text_visible = false;
+                user_status_text_visible = false;
                 reset_platform(plat, main_window);
                 reset_ball(ball);
             }
-            if (text_visible)
+            if (user_status_text_visible)
                 draw_heart_deduction_text(main_window);
 
             while (main_window.pollEvent(event))
@@ -191,8 +194,10 @@ int main()
                         curr_countdown_num = COUNTDOWN_THREE;
                         set_countdown_three();
                         countdown_started = true;
+                        play_countdown_sound();
                     }
                 }
+                play_game_continue_sound();
             }
 
             countdown_animation(curTtime);
@@ -218,7 +223,7 @@ int main()
         else if(game_status == HEARTS_GONE)
         {
             text_animation(lastTime, curTtime, timePassed);
-            if(text_visible)
+            if(user_status_text_visible)
                 draw_no_hearts_text(main_window);
             while (main_window.pollEvent(event))
             {
@@ -232,7 +237,7 @@ int main()
         {
             clean_up_timers();
             text_animation(lastTime, curTtime, timePassed);
-            if(text_visible)
+            if(user_status_text_visible)
                 draw_game_won_text(main_window);
             while (main_window.pollEvent(event))
             {
@@ -260,9 +265,9 @@ int main()
         // Clear screen
         main_window.clear();
 
-        if (music.getStatus() != sf::Music::Playing)
+        if (background_music.getStatus() != sf::Music::Playing)
         {
-            music.play();
+            background_music.play();
         }
     }
 

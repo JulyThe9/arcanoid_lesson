@@ -9,6 +9,7 @@ sf::RectangleShape init_platform()
 {
     sf::RectangleShape platform(sf::Vector2f(curr_gamestate.platform.width,
                                              curr_gamestate.platform.len));
+    platform.setFillColor(sf::Color(curr_gamestate.platform.col.r, curr_gamestate.platform.col.g, curr_gamestate.platform.col.b));
 
     platform.setPosition(curr_gamestate.platform.x, curr_gamestate.platform.y);
 
@@ -21,7 +22,7 @@ sf::RectangleShape init_predicting_plat()
     sf::RectangleShape predicting_platform(sf::Vector2f(curr_gamestate.platform.width,
                                              curr_gamestate.platform.len));
 
-    predicting_platform.setFillColor(sf::Color(255, 255, 0, 85));
+    predicting_platform.setFillColor(sf::Color(ycol_predicting_plat.r, ycol_predicting_plat.g, ycol_predicting_plat.b, ycol_predicting_plat.t));
 
     predicting_platform.setPosition(predicting_x, predicting_y);
 
@@ -127,14 +128,6 @@ void init_score()
     score.setStyle(sf::Text::Bold);
     score.setPosition(SCREENSIZE_X - 300, 25);
     score.setString(curr_gamestate.score_number);
-}
-
-
-void init_music()
-{
-    music.setLoop(true);
-    music.setPitch(1.0f);
-    music.setVolume(0.0f);
 }
 
 

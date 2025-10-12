@@ -115,7 +115,7 @@ void text_animation(std::chrono::time_point<std::chrono::high_resolution_clock> 
                    std::chrono::milliseconds &timePassed)
 {
     // text visible case
-    if (text_visible)
+    if (user_status_text_visible)
     {
         // text has has been visible for a time long enough,
         // make it hidden
@@ -125,7 +125,7 @@ void text_animation(std::chrono::time_point<std::chrono::high_resolution_clock> 
             cout << "-------------BLINK HIDDEN------------" << endl;
             cout << timePassed.count() << " ms passed, making text HIDDEN\n";
 #endif
-            text_visible = false;
+            user_status_text_visible = false;
             lastTime = curTtime;
         }
     }
@@ -140,7 +140,7 @@ void text_animation(std::chrono::time_point<std::chrono::high_resolution_clock> 
             cout << "-------------BLINK VISIBLE-----------" << endl;
             cout << timePassed.count() << " ms passed, making text VISIBLE\n";
 #endif
-            text_visible = true;
+            user_status_text_visible = true;
             lastTime = curTtime;
         }
     }
@@ -149,14 +149,12 @@ void text_animation(std::chrono::time_point<std::chrono::high_resolution_clock> 
 
 void platform_prediction_animation(auto prediction_total_passed_time)
 {
-    if(prediction_total_passed_time.count() / 10 % PLATFORM_PREDICTION_BLINK_PERIOD < 5)
+    if(prediction_total_passed_time.count() / 10 % PLATFORM_PREDICTION_BLINK_PERIOD < (PLATFORM_PREDICTION_BLINK_PERIOD / 2))
     {
-        cout << "in" << endl;
         is_trajectory_prediction_shown = false;
     }
     else
     {
-        cout << "in" << endl;
         is_trajectory_prediction_shown = true;
     }
 }
@@ -176,6 +174,7 @@ void countdown_animation(std::chrono::time_point<std::chrono::high_resolution_cl
         if (curr_countdown_num != COUNTDOWN_ONE)
         {
             set_countdown_one();
+            play_countdown_sound();
         }
     }
     else if (timePassed.count() >= COUNTDOWN_PERIOD)
@@ -183,6 +182,7 @@ void countdown_animation(std::chrono::time_point<std::chrono::high_resolution_cl
         if (curr_countdown_num != COUNTDOWN_TWO)
         {
             set_countdown_two();
+            play_countdown_sound();
         }
     }
     else

@@ -1,14 +1,3 @@
-
-
-void play_wall_sound()
-{
-    sound_wall.setBuffer(buffer_wall);
-    sound_wall.setVolume(10);
-    sound_wall.play();
-}
-
-
-
 /**
 *@file collision_handler.h
 *@brief handles collisions for blocks, walls, platform, etc.
@@ -17,47 +6,7 @@ void play_wall_sound()
 *@date [01.05.2025]
 */
 
-//--------------------------------------------------------------------------------------------------
-void does_timer_exist(bool &timer_exists, std::variant<powerup_buff_effect_types, powerup_debuff_effect_types, powerup_joker_effect_types> curr_spec_powerup)
-{
-    for (int i = 0; i < cooldown_bars.size(); ++i)
-    {
-        if (cooldown_bars[i].powerup_effect == curr_spec_powerup && cooldown_bars[i].timer_active)
-        {
-            cooldown_bars[i].powerup_clock.restart();
-            timer_exists = true;
-            break;
-        }
-    }
-}
 
-
-void create_new_timers(std::variant<powerup_buff_effect_types, powerup_debuff_effect_types, powerup_joker_effect_types> curr_spec_powerup, int i)
-{
-    int pos_x = SCREENSIZE_X - 110;
-    int pos_y = SCREENSIZE_Y - 50 - (cooldown_bars.size() * (TIMER_HEIGHT + 10));
-
-    timer_type new_timer(pos_x, pos_y, falling_powerups[i].type, curr_spec_powerup);
-    new_timer.timer_active = true;
-    cooldown_bars.push_back(new_timer);
-}
-
-
-void clean_up_timers()
-{
-    for (int i = 0; i < falling_powerups.size(); i++)
-    {
-        falling_powerups[i].powerup_active = false;
-    }
-    for (int i = 0; i < cooldown_bars.size(); i++)
-    {
-        cooldown_bars[i].timer_active = false;
-    }
-    cooldown_bars.clear();
-}
-
-
-//--------------------------------------------------------------------------------------------------
 void reset_platform(sf::RectangleShape &plat, sf::RenderWindow &main_window)
 {
     curr_gamestate.platform.width = PLATFORM_WIDTH;
@@ -74,104 +23,6 @@ void reset_ball(sf::CircleShape &ball)
     curr_gamestate.ball.curr_y = BALL_START_POSY;
     curr_degrees = BALL_STARTER_DEG;
     ball.setPosition(curr_gamestate.ball.curr_x, curr_gamestate.ball.curr_y);
-}
-
-//--------------------------------------------------------------------------------------------------
-void reset_powerups()
-{
-    plat_y_axis_joker = false;
-}
-
-void create_powerup(int row, int col)
-{
-    int powerup_generation_chance = (std::rand() % 100);
-    if (powerup_generation_chance >= 38)
-    {
-        falling_powerup_type curr_falling_powerup(0, 0, POWERUP_SPEED, curr_gamestate.blocks[row][col], BUFF);
-
-        powerup_class_types curr_powerup_type = get_weighted_random(powerup_class_map);
-        //cout << "type: " << curr_powerup_type << endl;
-
-        if (curr_powerup_type == BUFF)
-        {
-            powerup_buff_effect_types buff = get_weighted_random(buff_map);
-            //cout << "buff: " << buff << endl;
-            //cout << "---------" << endl;
-        }
-        else if (curr_powerup_type == DEBUFF)
-        {
-            powerup_debuff_effect_types debuff = get_weighted_random(debuff_map);
-            //cout << "debuff: " << debuff << endl;
-            //cout << "---------" << endl;
-        }
-        else
-        {
-            powerup_joker_effect_types joker = get_weighted_random(joker_map);
-            //cout << "joker: " << joker << endl;
-            //cout << "---------" << endl;
-        }
-
-        int curr_powerup_x = curr_gamestate.blocks[row][col].blockX + ((BLOCK_WIDTH - POWERUP_WIDTH) / 2);
-        int curr_powerup_y = curr_gamestate.blocks[row][col].blockY;
-
-        curr_falling_powerup = falling_powerup_type(curr_powerup_x,
-                                    curr_powerup_y,
-                                    POWERUP_SPEED,
-                                    curr_gamestate.blocks[row][col],
-                                    curr_powerup_type);
-
-        curr_falling_powerup.powerup_active = true;
-        falling_powerups.push_back(curr_falling_powerup);
-    }
-}
-
-
-void powerup_activity()
-{
-    for (int i = 0; i < cooldown_bars.size(); i++)
-    {
-        if (cooldown_bars[i].timer_active)
-        {
-            if(cooldown_bars[i].powerup_effect.index() == 0)
-            {
-                powerup_buff_effect_types buff_type = std::get<powerup_buff_effect_types>(cooldown_bars[i].powerup_effect);
-
-                if (buff_type == TRAJECTORY_PREDICTION)
-                {
-                    trajectory_prediction_buff = true;
-                    cout << "timer started :)" << endl;
-                }
-            }
-            else if(cooldown_bars[i].powerup_effect.index() == 1)
-            {
-                powerup_debuff_effect_types debuff_type = std::get<powerup_debuff_effect_types>(cooldown_bars[i].powerup_effect);
-            }
-            else if (cooldown_bars[i].powerup_effect.index() == 2)
-            {
-                powerup_joker_effect_types joker_type = std::get<powerup_joker_effect_types>(cooldown_bars[i].powerup_effect);
-
-                if (joker_type == PLAT_Y_AXIS)
-                {
-                    plat_y_axis_joker = true;
-                    cout << "timer started :)" << endl;
-                }
-            }
-        }
-    }
-}
-
-
-void handle_deletion_powerup()
-{
-    for(int i = 0; i < falling_powerups.size(); i++)
-    {
-        sf::Vector2f position = falling_powerups[i].rectangle.getPosition();
-        if(position.y > barrier_obj.y - POWERUP_LEN)
-        {
-            falling_powerups[i].powerup_active = false;
-            falling_powerups.erase(falling_powerups.begin() + i);
-        }
-    }
 }
 
 
@@ -285,7 +136,7 @@ void handle_collision_powerup()
 
     double collision_margin;
 
-    if (!plat_y_axis_joker)
+    if (!is_plat_y_axis_joker_active)
         collision_margin = curr_gamestate.ball.speed;
     else
     {
@@ -637,7 +488,7 @@ void predict_trajectory(sf::RenderWindow &main_window, ball_type &curr_ball,
     predicting_y = curr_gamestate.dupe_ball.curr_y + curr_ball.size_radius * 2;
     is_trajectory_prediction_shown = true;
     curr_gamestate.ball.speed = BALL_SPEED;
-    in_animation = true;
+    in_blinking_animation = true;
     cout << "speed of ball: " << curr_gamestate.ball.speed << endl;
     cout << "predicting x: " << curr_gamestate.dupe_ball.curr_x << endl;
     cout << "predicting y: " << curr_gamestate.dupe_ball.curr_y << endl;
@@ -658,7 +509,7 @@ void handle_collision_platform(sf::RenderWindow &main_window, ball_type &curr_ba
 
     double collision_margin;
 
-    if (!plat_y_axis_joker)
+    if (!is_plat_y_axis_joker_active)
     {
         collision_margin = curr_ball.speed;
     }
@@ -682,7 +533,7 @@ void handle_collision_platform(sf::RenderWindow &main_window, ball_type &curr_ba
                 current_sound.play();
             }
 
-            if(trajectory_prediction_buff)
+            if(is_trajectory_prediction_buff_active)
             {
                 cout << "curr degrees: " << curr_degrees << endl;
                 predict_trajectory(main_window, curr_ball, curr_gamestate.blocks, curr_blocks_graphics, curr_degrees);

@@ -44,43 +44,43 @@ using namespace std;
 #define PLATFORM_WIDTH 160
 
 #define PLATFORM_PREDICTION_APPEARENCE_PERIOD 500
-#define PLATFORM_PREDICTION_BLINK_PERIOD 10
+#define PLATFORM_PREDICTION_BLINK_PERIOD 8
 
 //#define DEBUG
 //#define TP_DEBUG
-//-------------------------------------------------------------------
 
-bool text_visible = false;
+
+//-------------------------------------------------------------------
+bool user_status_text_visible = false;
 
 const double PLATFORM_INITIAL_X = SCREENSIZE_X / 2 + PLATFORM_WIDTH;
 const double PLATFORM_INITIAL_Y = SCREENSIZE_Y - 120;
 
-
 const int BALL_START_POSX = SCREENSIZE_X / 2;
 const int BALL_START_POSY = SCREENSIZE_Y / 2 + 100;
 
-
-//--------
 // WALLS
-//--------
-float right_wall = SCREENSIZE_X;
-float left_wall = 0;
-float top_wall = 0;
-float bottom_wall = SCREENSIZE_Y;
+const float right_wall = SCREENSIZE_X;
+const float left_wall = 0;
+const float top_wall = 0;
+const float bottom_wall = SCREENSIZE_Y;
+
+// BLOCKS
+int block_rows = (SCREENSIZE_Y - (PLATFORM_INITIAL_Y / 1.2)) / BLOCK_LEN;
+int block_columns = (SCREENSIZE_X - 2 * BLOCK_WIDTH) / BLOCK_WIDTH - 1;
+
+bool game_active = true;
 
 // angle of flight(ball)
 float curr_degrees = BALL_STARTER_DEG;
 
 sf::RectangleShape plat;
-sf::RectangleShape barrier;
 sf::CircleShape ball;
+sf::RectangleShape barrier;
 sf::RectangleShape status_bar;
 sf::RectangleShape status_bar_logo;
 
-
-//--------
 // SOUNDS
-//--------
 sf::SoundBuffer buffer_dirt;
 sf::Sound sound_dirt;
 sf::SoundBuffer buffer_ice;
@@ -93,18 +93,17 @@ sf::SoundBuffer buffer_wall;
 sf::Sound sound_wall;
 sf::SoundBuffer buffer_platform;
 sf::Sound sound_platform;
+sf::SoundBuffer buffer_countdown;
+sf::Sound sound_countdown;
+sf::SoundBuffer buffer_game_continue;
+sf::Sound sound_game_continue;
+
 sf::Sound current_sound;
 sf::SoundBuffer current_buffer;
 
-sf::Music music;
+sf::Music background_music;
 
-sf::RectangleShape powerup;
-sf::RectangleShape timer;
-
-
-//--------
 // BLOCK TEXTURES
-//--------
 sf::Texture texture_ice;
 sf::Texture texture_poison;
 sf::Texture texture_dirt;
@@ -112,9 +111,7 @@ sf::Texture texture_dirt2;
 sf::Texture texture_explosion_small;
 sf::Texture texture_explosion_large;
 
-//--------
 // STATUS BAR
-//--------
 sf::Texture background_status_bar;
 sf::Texture arcanoid_logo;
 sf::Texture heart_texture_full;
@@ -125,24 +122,32 @@ sf::Font font;
 int status_bar_width = SCREENSIZE_X;
 int status_bar_length = 120;
 
-bool game_active = true;
-
-//--------
 // GAME STATUS TEXTS
-//--------
 sf::Text heart_deduction_text;
 sf::Text no_hearts_text;
 sf::Text game_won_text;
-
 
 sf::Text countdown_one;
 sf::Text countdown_two;
 sf::Text countdown_three;
 
-bool plat_y_axis_joker = false;
-bool mouse_reset_done = false;
+// POWERUPS
+sf::RectangleShape powerup;                         // powerup graphic
+sf::RectangleShape timer;                           // timer graphic
 
-bool trajectory_prediction_buff = true;
+bool is_plat_y_axis_joker_active = false;           //checker for platform y axis movement
+
+bool is_trajectory_prediction_buff_active = false;  //if the powerup is active
+bool is_trajectory_prediction_shown = false;        //if the platform for prediction is shown
+bool in_blinking_animation = false;                 //if the platform for prediction is in blinking stage
+                                                        //(used to turn on and off is_trajectory_prediction_shown without disturbing the appearence duration
+double predicting_x = 0;                            //predicting next x of platform collision
+double predicting_y = 0;                            //predicting next y of platform collision
+
+// COUNTDOWN
+bool countdown_active = false;
+std::chrono::time_point<std::chrono::high_resolution_clock> countdown_start_time;
+
 
 //-------------------------------------------------------------------
 /**
@@ -271,7 +276,6 @@ enum powerup_class_types
 };
 
 
-
 std::map<double, powerup_buff_effect_types> buff_map =
 {
     {25, BALL_DUPLICATION},
@@ -279,7 +283,6 @@ std::map<double, powerup_buff_effect_types> buff_map =
     {50, LAZER}
 
 };
-
 
 std::map<double, powerup_debuff_effect_types> debuff_map =
 {
@@ -289,14 +292,12 @@ std::map<double, powerup_debuff_effect_types> debuff_map =
 
 };
 
-
 std::map<double, powerup_joker_effect_types> joker_map =
 {
     {100, PLAT_Y_AXIS},
     {10, REMIX_BLOCK_GENERATION}
 
 };
-
 
 std::map<double, powerup_class_types> powerup_class_map =
 {
@@ -370,9 +371,8 @@ T get_weighted_random(const std::map<double, T> &powerup_chances) {
     return powerup_chances.begin()->second;
 }
 
+
 //-------------------------------------------------------------------
-
-
 /**
 *@brief a struct representing the block_type blocks logic
 */
@@ -423,7 +423,6 @@ struct block_type
 
 sf::RectangleShape init_powerup(powerup_class_types type, int x, int y);
 
-
 struct falling_powerup_type
 {
     bool powerup_active;
@@ -463,6 +462,7 @@ struct falling_powerup_type
     }
 };
 
+
 sf::RectangleShape init_timer_graphic(powerup_class_types type);
 
 struct timer_type
@@ -495,6 +495,33 @@ struct timer_type
     }
 };
 
+
+struct colour
+{
+    int r;
+    int g;
+    int b;
+    int t;
+
+    colour(){};
+
+    colour(int rpar, int gpar, int bpar)
+    {
+        r = rpar;
+        g = gpar;
+        b = bpar;
+    }
+
+    colour(int rpar, int gpar, int bpar, int tpar)
+    {
+        r = rpar;
+        g = gpar;
+        b = bpar;
+        t = tpar;
+    }
+};
+
+
 /**
 *@brief a struct representing the platform_type platform logic
 */
@@ -508,12 +535,14 @@ struct platform_type
 
     int plat_speed;
 
+    colour col;
+
     //used in get_new_angle() for sections of platform in each half to calculate new ball angle
     int reflection_steps;
 
     platform_type(){};
 
-    platform_type(float xpar, float ypar, int widthpar, int lenpar, int plat_speedpar, int reflection_stepspar)
+    platform_type(float xpar, float ypar, int widthpar, int lenpar, int plat_speedpar, colour colpar, int reflection_stepspar)
     {
         x = xpar;
         y = ypar;
@@ -523,27 +552,11 @@ struct platform_type
 
         plat_speed = plat_speedpar;
 
+        col = colpar;
+
         reflection_steps = reflection_stepspar;
     }
 
-};
-
-
-
-struct colour
-{
-    int r;
-    int g;
-    int b;
-
-    colour(){};
-
-    colour(int rpar, int gpar, int bpar)
-    {
-        r = rpar;
-        g = gpar;
-        b = bpar;
-    }
 };
 
 
@@ -712,38 +725,26 @@ struct barrier_type
 
 
 //-------------------------------------------------------------------
-
-countdown_type curr_countdown_num;
-bool countdown_active = false;
-
-bool is_trajectory_prediction_shown = false;
-double predicting_x = 0;
-double predicting_y = 0;
-
-bool in_animation = false;
-
-std::chrono::time_point<std::chrono::high_resolution_clock> countdown_start_time;
-
-
-int block_rows = (SCREENSIZE_Y - (PLATFORM_INITIAL_Y / 1.2)) / BLOCK_LEN;
-int block_columns = (SCREENSIZE_X - 2 * BLOCK_WIDTH) / BLOCK_WIDTH - 1;
-
 GameState curr_gamestate;
 
 vector<falling_powerup_type> falling_powerups;
 vector<timer_type> cooldown_bars;
 
+colour ycol_predicting_plat(255, 255, 0, 85);
+
+countdown_type curr_countdown_num;          //current number of countdown from enum
 
 /**
 *@brief initializes GameState(called in main)
 */
 void init_gamestate()
 {
-    colour gcol(150, 250, 50); // green
-    colour pcol(160, 32, 240); // purple
-    ball_type ball_data(BALL_SPEED, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY, 0, 0, false, gcol, COLLISION_CASE_RESET);
-    ball_type dupe_ball_data(BALL_SPEED, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY, 0, 0, true, pcol, COLLISION_CASE_RESET);
-    platform_type platform(PLATFORM_INITIAL_X, PLATFORM_INITIAL_Y, PLATFORM_WIDTH, 12, 45, 25);
+    colour gcol_ball(150, 250, 50); // green
+    colour pcol_ball(160, 32, 240); // purple
+    colour wcol_plat(255, 255, 255);
+    ball_type ball_data(BALL_SPEED, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY, 0, 0, false, gcol_ball, COLLISION_CASE_RESET);
+    ball_type dupe_ball_data(BALL_SPEED, 10, BALL_START_POSX, BALL_START_POSY, BALL_START_POSX, BALL_START_POSY, 0, 0, true, pcol_ball, COLLISION_CASE_RESET);
+    platform_type platform(PLATFORM_INITIAL_X, PLATFORM_INITIAL_Y, PLATFORM_WIDTH, 12, 45, wcol_plat, 25);
     curr_gamestate.init("000000", 3, block_rows * block_columns, dupe_ball_data, ball_data, platform);
 }
 
