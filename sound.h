@@ -10,7 +10,7 @@ void init_music()
 {
     background_music.setLoop(true);
     background_music.setPitch(1.0f);
-    background_music.setVolume(3.5f);
+    background_music.setVolume(100.0f);
 }
 
 
@@ -18,7 +18,7 @@ void init_music()
 void play_countdown_sound()
 {
     sound_countdown.setBuffer(buffer_countdown);
-    sound_countdown.setVolume(20);
+    sound_countdown.setVolume(50);
     sound_countdown.play();
 }
 

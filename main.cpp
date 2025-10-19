@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <thread>
 #include <chrono>
 #include <vector>
@@ -8,7 +9,7 @@
 #include <cstdlib>  // For rand() and srand()
 #include <ctime>    // For time()
 #include <chrono>
-#include <SFML/Audio.hpp>
+#include <fstream>
 
 #include "properties.h"
 #include "ball.h"
@@ -75,6 +76,8 @@ int main()
     std::chrono::time_point<std::chrono::high_resolution_clock> predicting_plat_shown_time;
     std::chrono::time_point<std::chrono::high_resolution_clock> lastTime = high_resolution_clock::now();
     sf::Mouse::setPosition({curr_gamestate.platform.x, curr_gamestate.platform.y}, main_window); // window is a sf::Window
+
+
 
 
 	// Start the game loop
@@ -227,6 +230,7 @@ int main()
             {
                 if(event.key.code == sf::Keyboard::Space)
                 {
+
                     game_active = false;
                 }
             }
@@ -241,6 +245,7 @@ int main()
             {
                 if(event.key.code == sf::Keyboard::Space)
                 {
+
                     game_active = false;
                 }
             }

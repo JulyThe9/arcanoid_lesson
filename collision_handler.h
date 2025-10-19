@@ -264,7 +264,7 @@ void handle_collision_all_sides(int i, int j, ball_type &curr_ball,
                                 vector<vector<block_type>> &curr_blocks, vector<vector<sf::RectangleShape>> &curr_blocks_graphics)
 {
     // margin for collisions for normal speed
-    double collision_margin = curr_ball.speed + 0.1;
+    double collision_margin = curr_ball.speed;
 
     //hit top side
     if(curr_ball.curr_y + curr_ball.size_radius * 2 > curr_blocks[i][j].top_bside &&
@@ -464,6 +464,8 @@ void predict_trajectory(sf::RenderWindow &main_window, ball_type &curr_ball,
         curr_gamestate.dupe_ball.curr_y += curr_gamestate.dupe_ball.alpha_y;
 
         dots.append(sf::Vertex(sf::Vector2f(curr_gamestate.dupe_ball.curr_x, curr_gamestate.dupe_ball.curr_y), sf::Color::Yellow));
+        dots.append(sf::Vertex(sf::Vector2f(curr_gamestate.dupe_ball.curr_x + 1, curr_gamestate.dupe_ball.curr_y + 1), sf::Color::Yellow));
+        dots.append(sf::Vertex(sf::Vector2f(curr_gamestate.dupe_ball.curr_x - 1, curr_gamestate.dupe_ball.curr_y - 1), sf::Color::Yellow));
 
         ball.setPosition(curr_gamestate.ball.curr_x, curr_gamestate.ball.curr_y);
         //dupe_ball.setPosition(curr_gamestate.dupe_ball.curr_x, curr_gamestate.dupe_ball.curr_y);

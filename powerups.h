@@ -94,4 +94,5 @@ void handle_deletion_powerup()
 void reset_powerups()
 {
     is_plat_y_axis_joker_active = false;
+    is_trajectory_prediction_buff_active = false;
 }

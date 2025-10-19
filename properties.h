@@ -44,7 +44,7 @@ using namespace std;
 #define PLATFORM_WIDTH 160
 
 #define PLATFORM_PREDICTION_APPEARENCE_PERIOD 500
-#define PLATFORM_PREDICTION_BLINK_PERIOD 8
+#define PLATFORM_PREDICTION_BLINK_PERIOD 8 //min of 2 for blinking
 
 //#define DEBUG
 //#define TP_DEBUG
@@ -147,6 +147,7 @@ double predicting_y = 0;                            //predicting next y of platf
 // COUNTDOWN
 bool countdown_active = false;
 std::chrono::time_point<std::chrono::high_resolution_clock> countdown_start_time;
+
 
 
 //-------------------------------------------------------------------
