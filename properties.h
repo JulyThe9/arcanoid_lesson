@@ -148,6 +148,9 @@ double predicting_y = 0;                            //predicting next y of platf
 bool countdown_active = false;
 std::chrono::time_point<std::chrono::high_resolution_clock> countdown_start_time;
 
+// TXT FILE SCORE VALUES
+string username = "WomanEnjoyer13756";
+string set_score_test;
 
 
 //-------------------------------------------------------------------

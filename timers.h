@@ -60,6 +60,7 @@ void check_specific_effect_timer_joker(powerup_joker_effect_types joker_type)
     if (joker_type == PLAT_Y_AXIS)
     {
         curr_gamestate.platform.y = PLATFORM_INITIAL_Y;
+        curr_gamestate.platform.width = PLATFORM_WIDTH;
         is_plat_y_axis_joker_active = false;
     }
 }

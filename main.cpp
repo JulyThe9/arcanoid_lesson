@@ -77,7 +77,7 @@ int main()
     std::chrono::time_point<std::chrono::high_resolution_clock> lastTime = high_resolution_clock::now();
     sf::Mouse::setPosition({curr_gamestate.platform.x, curr_gamestate.platform.y}, main_window); // window is a sf::Window
 
-
+    auto game_start_time = std::chrono::high_resolution_clock::now();
 
 
 	// Start the game loop
@@ -230,7 +230,20 @@ int main()
             {
                 if(event.key.code == sf::Keyboard::Space)
                 {
+                    auto game_end_time = std::chrono::high_resolution_clock::now();
+                    auto elapsed_seconds = std::chrono::duration_cast<std::chrono::seconds>(game_end_time - game_start_time).count();
 
+                    set_score_test = curr_gamestate.score_number;
+                    std::ofstream file("score_statistics.txt", std::ios::app);
+                    if (file.is_open())
+                    {
+                        file << username << "; " << set_score_test << "; " << elapsed_seconds << "; " << "loss" << endl;
+                        file.close();
+                    }
+                    else
+                    {
+                        cout << "Error: Could not open score_statistics.txt for writing." << endl;
+                    }
                     game_active = false;
                 }
             }
@@ -245,7 +258,19 @@ int main()
             {
                 if(event.key.code == sf::Keyboard::Space)
                 {
-
+                    auto game_end_time = std::chrono::high_resolution_clock::now();
+                    auto elapsed_seconds = std::chrono::duration_cast<std::chrono::seconds>(game_end_time - game_start_time).count();
+                    set_score_test = curr_gamestate.score_number;
+                    std::ofstream file("score_statistics.txt", std::ios::app);
+                    if (file.is_open())
+                    {
+                        file << username << "; " << set_score_test << "; " << elapsed_seconds << "; " << "win" << endl;
+                        file.close();
+                    }
+                    else
+                    {
+                        cout << "Error: Could not open score_statistics.txt for writing." << endl;
+                    }
                     game_active = false;
                 }
             }
