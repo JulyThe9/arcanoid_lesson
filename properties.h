@@ -32,7 +32,7 @@ using namespace std;
 #define BLOCK_LEN 30
 #define BLOCK_WIDTH 90
 
-#define BALL_SPEED 0.35
+#define BALL_SPEED 0.4
 
 #define POWERUP_SPEED 400
 #define POWERUP_WIDTH 30
@@ -126,6 +126,8 @@ int status_bar_length = 120;
 sf::Text heart_deduction_text;
 sf::Text no_hearts_text;
 sf::Text game_won_text;
+sf::Text username_input_request_text;
+sf::Text username_text;
 
 sf::Text countdown_one;
 sf::Text countdown_two;
@@ -149,8 +151,11 @@ bool countdown_active = false;
 std::chrono::time_point<std::chrono::high_resolution_clock> countdown_start_time;
 
 // TXT FILE SCORE VALUES
-string username = "WomanEnjoyer13756";
+string username;
+bool has_input_username = false;
+bool username_text_initialized = false;
 string set_score_test;
+
 
 
 //-------------------------------------------------------------------
@@ -227,6 +232,7 @@ enum game_status_type
     HEART_DEDUCTION,
     HEARTS_GONE,
     BLOCKS_GONE,
+    GAME_PAUSED,
 };
 
 

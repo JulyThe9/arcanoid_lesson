@@ -10,7 +10,7 @@ void init_music()
 {
     background_music.setLoop(true);
     background_music.setPitch(1.0f);
-    background_music.setVolume(100.0f);
+    background_music.setVolume(0.0f);
 }
 
 

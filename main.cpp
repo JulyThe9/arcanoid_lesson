@@ -221,33 +221,86 @@ int main()
                 curr_gamestate.ball.last_collision = COLLISION_CASE_RESET;
             }
         }
-        else if(game_status == HEARTS_GONE)
+        else if (game_status == HEARTS_GONE)
         {
-            text_animation(lastTime, curTtime, timePassed);
-            if(user_status_text_visible)
-                draw_no_hearts_text(main_window);
+            // draw username input request
+            if(!has_input_username)
+                draw_username_input_request(main_window);
+            // set username text only once
+            if (!username_text_initialized)
+                set_username_input();
+
+            // Always poll events
             while (main_window.pollEvent(event))
             {
-                if(event.key.code == sf::Keyboard::Space)
-                {
-                    auto game_end_time = std::chrono::high_resolution_clock::now();
-                    auto elapsed_seconds = std::chrono::duration_cast<std::chrono::seconds>(game_end_time - game_start_time).count();
+                if (event.type == sf::Event::Closed)
+                    main_window.close();
 
-                    set_score_test = curr_gamestate.score_number;
-                    std::ofstream file("score_statistics.txt", std::ios::app);
-                    if (file.is_open())
+                // ----------------------------------
+                // BEFORE entered username
+                // ----------------------------------
+                if (!has_input_username)
+                {
+                    if (event.type == sf::Event::TextEntered)
                     {
-                        file << username << "; " << set_score_test << "; " << elapsed_seconds << "; " << "loss" << endl;
-                        file.close();
+                        if (event.text.unicode == 8 && !username.empty()) // Backspace
+                        {
+                            username.pop_back();
+                        }
+                        else if (event.text.unicode >= 32 && event.text.unicode < 128)
+                        {
+                            username += static_cast<char>(event.text.unicode);
+                        }
+
+                        username_text.setString(username);
                     }
-                    else
+
+                    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter)
                     {
-                        cout << "Error: Could not open score_statistics.txt for writing." << endl;
+                        if (!username.empty())
+                            has_input_username = true;
                     }
-                    game_active = false;
+                }
+
+                // ----------------------------------
+                // AFTER entered username
+                // ----------------------------------
+                else
+                {
+                    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
+                    {
+                        std::cout << "hello" << std::endl;
+
+                        auto game_end_time = std::chrono::high_resolution_clock::now();
+                        auto elapsed_seconds = std::chrono::duration_cast<std::chrono::seconds>(game_end_time - game_start_time).count();
+                        set_score_test = curr_gamestate.score_number;
+                        std::ofstream file("score_statistics.txt", std::ios::app);
+
+                        int seconds = elapsed_seconds % 60;
+                        int minutes = (elapsed_seconds - seconds) / 60;
+
+                        if (file.is_open())
+                        {
+                            file << username << "; " << set_score_test << "; " << minutes << "m " << seconds << "s; loss" << std::endl;
+                            file.close();
+                        }
+
+                        game_active = false;
+                    }
                 }
             }
+            //drawing game loss
+            if (has_input_username)
+            {
+                text_animation(lastTime, curTtime, timePassed);
+                if (user_status_text_visible)
+                    draw_no_hearts_text(main_window);
+            }
+            //drawing username
+            if(!has_input_username)
+                main_window.draw(username_text);
         }
+
         else if(game_status == BLOCKS_GONE)
         {
             clean_up_timers();
@@ -262,14 +315,14 @@ int main()
                     auto elapsed_seconds = std::chrono::duration_cast<std::chrono::seconds>(game_end_time - game_start_time).count();
                     set_score_test = curr_gamestate.score_number;
                     std::ofstream file("score_statistics.txt", std::ios::app);
+
+                    int seconds = elapsed_seconds % 60;
+                    int minutes = (elapsed_seconds - seconds) / 60;
+
                     if (file.is_open())
                     {
-                        file << username << "; " << set_score_test << "; " << elapsed_seconds << "; " << "win" << endl;
+                        file << username << "; " << set_score_test << "; " << minutes << "m " << seconds << "s; win" << endl;
                         file.close();
-                    }
-                    else
-                    {
-                        cout << "Error: Could not open score_statistics.txt for writing." << endl;
                     }
                     game_active = false;
                 }

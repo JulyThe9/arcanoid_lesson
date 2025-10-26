@@ -405,7 +405,7 @@ void predict_trajectory(sf::RenderWindow &main_window, ball_type &curr_ball,
     curr_gamestate.dupe_ball.recent_x = curr_ball.recent_x;
     curr_gamestate.dupe_ball.recent_y = curr_ball.recent_y;
 
-    curr_gamestate.dupe_ball.speed = 3;
+    curr_gamestate.dupe_ball.speed = 2;
 
     curr_gamestate.dupe_ball.alpha_x = curr_ball.alpha_x;
     curr_gamestate.dupe_ball.alpha_y = curr_ball.alpha_y;
@@ -555,13 +555,14 @@ void handle_collision_platform(sf::RenderWindow &main_window, ball_type &curr_ba
 void hit_barrier()
 {
     static int heart_number = curr_gamestate.lives_amount - 1;
-
+    cout << "hearts remaining: " << vector_life_data.size() << endl;
     if(heart_number != 0)
     {
         set_loss_of_life(heart_number);
     }
     else
     {
+        set_username_input_request();
         set_game_loss(heart_number);
     }
 }

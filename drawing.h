@@ -141,6 +141,11 @@ void draw_predicting_plat(sf::RenderWindow &main_window, sf::RectangleShape pred
 }
 
 
+void draw_username_input_request(sf::RenderWindow &main_window)
+{
+    main_window.draw(username_input_request_text);
+}
+
 //----------------------------------------------------------------------------------------------------
 void draw_powerup(sf::RenderWindow &main_window)
 {
