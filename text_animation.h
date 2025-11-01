@@ -50,7 +50,7 @@ void set_username_input_request()
     username_input_request_text.setCharacterSize(45);
     username_input_request_text.setFillColor(sf::Color::Yellow);
     username_input_request_text.setStyle(sf::Text::Bold);
-    username_input_request_text.setPosition(SCREENSIZE_X / 2 - 400, 700);
+    username_input_request_text.setPosition(SCREENSIZE_X / 2 - 500, 700);
     username_input_request_text.setString("Please input username: ");
 }
 
@@ -62,8 +62,7 @@ void set_username_input()
     username_text.setFillColor(sf::Color::White);
     username_text.setStyle(sf::Text::Bold);
 
-    // Position it right after the prompt text
-    float base_x = SCREENSIZE_X / 2 - 400;
+    float base_x = SCREENSIZE_X / 2 - 500;
     float base_y = 700;
     float prompt_width = username_input_request_text.getGlobalBounds().width;
     username_text.setPosition(base_x + prompt_width + 10, base_y);

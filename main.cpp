@@ -27,7 +27,7 @@
 #include "drawing.h"
 #include "collision_handler.h"
 #include "init_misc.h"
-
+#include "statistics.h"
 
 using namespace std::chrono;
 
@@ -226,11 +226,11 @@ int main()
             // draw username input request
             if(!has_input_username)
                 draw_username_input_request(main_window);
+
             // set username text only once
             if (!username_text_initialized)
                 set_username_input();
 
-            // Always poll events
             while (main_window.pollEvent(event))
             {
                 if (event.type == sf::Event::Closed)
@@ -241,52 +241,14 @@ int main()
                 // ----------------------------------
                 if (!has_input_username)
                 {
-                    if (event.type == sf::Event::TextEntered)
-                    {
-                        if (event.text.unicode == 8 && !username.empty()) // Backspace
-                        {
-                            username.pop_back();
-                        }
-                        else if (event.text.unicode >= 32 && event.text.unicode < 128)
-                        {
-                            username += static_cast<char>(event.text.unicode);
-                        }
-
-                        username_text.setString(username);
-                    }
-
-                    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter)
-                    {
-                        if (!username.empty())
-                            has_input_username = true;
-                    }
+                    request_user_input(event);
                 }
-
                 // ----------------------------------
                 // AFTER entered username
                 // ----------------------------------
                 else
                 {
-                    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
-                    {
-                        std::cout << "hello" << std::endl;
-
-                        auto game_end_time = std::chrono::high_resolution_clock::now();
-                        auto elapsed_seconds = std::chrono::duration_cast<std::chrono::seconds>(game_end_time - game_start_time).count();
-                        set_score_test = curr_gamestate.score_number;
-                        std::ofstream file("score_statistics.txt", std::ios::app);
-
-                        int seconds = elapsed_seconds % 60;
-                        int minutes = (elapsed_seconds - seconds) / 60;
-
-                        if (file.is_open())
-                        {
-                            file << username << "; " << set_score_test << "; " << minutes << "m " << seconds << "s; loss" << std::endl;
-                            file.close();
-                        }
-
-                        game_active = false;
-                    }
+                    save_stats_to_file(event, game_start_time);
                 }
             }
             //drawing game loss
@@ -296,42 +258,63 @@ int main()
                 if (user_status_text_visible)
                     draw_no_hearts_text(main_window);
             }
+
             //drawing username
             if(!has_input_username)
                 main_window.draw(username_text);
         }
 
-        else if(game_status == BLOCKS_GONE)
+        else if (game_status == BLOCKS_GONE)
         {
+            has_user_won = true;
             clean_up_timers();
-            text_animation(lastTime, curTtime, timePassed);
-            if(user_status_text_visible)
-                draw_game_won_text(main_window);
+
+            // draw username input request
+            if (!has_input_username)
+                draw_username_input_request(main_window);
+
+
+            // set username text only once
+            if (!username_text_initialized)
+                set_username_input();
+
             while (main_window.pollEvent(event))
             {
-                if(event.key.code == sf::Keyboard::Space)
+                if (event.type == sf::Event::Closed)
+                    main_window.close();
+
+                // ----------------------------------
+                // BEFORE entered username
+                // ----------------------------------
+                if (!has_input_username)
                 {
-                    auto game_end_time = std::chrono::high_resolution_clock::now();
-                    auto elapsed_seconds = std::chrono::duration_cast<std::chrono::seconds>(game_end_time - game_start_time).count();
-                    set_score_test = curr_gamestate.score_number;
-                    std::ofstream file("score_statistics.txt", std::ios::app);
-
-                    int seconds = elapsed_seconds % 60;
-                    int minutes = (elapsed_seconds - seconds) / 60;
-
-                    if (file.is_open())
-                    {
-                        file << username << "; " << set_score_test << "; " << minutes << "m " << seconds << "s; win" << endl;
-                        file.close();
-                    }
-                    game_active = false;
+                    request_user_input(event);
+                }
+                // ----------------------------------
+                // AFTER entered username
+                // ----------------------------------
+                else
+                {
+                    save_stats_to_file(event, game_start_time);
                 }
             }
+
+            // drawing "game won" text
+            if (has_input_username)
+            {
+                text_animation(lastTime, curTtime, timePassed);
+                if (user_status_text_visible)
+                    draw_game_won_text(main_window);
+            }
+
+            // drawing username input
+            if (!has_input_username)
+                main_window.draw(username_text);
         }
 
 
-        //cout << "alpha x: " << curr_gamestate.ball.alpha_x << endl;
-        //cout << "alpha y: " << curr_gamestate.ball.alpha_y << endl;
+        // cout << "alpha x: " << curr_gamestate.ball.alpha_x << endl;
+        // cout << "alpha y: " << curr_gamestate.ball.alpha_y << endl;
         // cout << "curr_pos_x: " << curr_gamestate.ball.curr_x << endl;
         // cout << "curr degrees: " << curr_degrees << endl;
         // cout << "-----------------" << endl;

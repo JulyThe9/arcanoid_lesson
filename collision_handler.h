@@ -93,7 +93,10 @@ void hit_block(int row, int col, vector<vector<block_type>> &curr_blocks, vector
     }
 
     if(!curr_ball.fake && curr_gamestate.block_amount == 0)
+    {
+        set_username_input_request();
         set_game_won();
+    }
 }
 
 

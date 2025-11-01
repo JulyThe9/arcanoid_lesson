@@ -46,6 +46,8 @@ using namespace std;
 #define PLATFORM_PREDICTION_APPEARENCE_PERIOD 500
 #define PLATFORM_PREDICTION_BLINK_PERIOD 8 //min of 2 for blinking
 
+#define SHORT_BLINK_USERNAME_INPUT 50
+
 //#define DEBUG
 //#define TP_DEBUG
 
@@ -66,8 +68,8 @@ const float top_wall = 0;
 const float bottom_wall = SCREENSIZE_Y;
 
 // BLOCKS
-int block_rows = (SCREENSIZE_Y - (PLATFORM_INITIAL_Y / 1.2)) / BLOCK_LEN;
-int block_columns = (SCREENSIZE_X - 2 * BLOCK_WIDTH) / BLOCK_WIDTH - 1;
+int block_rows = (SCREENSIZE_Y - (PLATFORM_INITIAL_Y / 1.2)) / BLOCK_LEN - 7;
+int block_columns = (SCREENSIZE_X - 2 * BLOCK_WIDTH) / BLOCK_WIDTH - 2 - 7;
 
 bool game_active = true;
 
@@ -142,7 +144,7 @@ bool is_plat_y_axis_joker_active = false;           //checker for platform y axi
 bool is_trajectory_prediction_buff_active = false;  //if the powerup is active
 bool is_trajectory_prediction_shown = false;        //if the platform for prediction is shown
 bool in_blinking_animation = false;                 //if the platform for prediction is in blinking stage
-                                                        //(used to turn on and off is_trajectory_prediction_shown without disturbing the appearence duration
+                                                    //(used to turn on and off is_trajectory_prediction_shown without disturbing the appearence duration
 double predicting_x = 0;                            //predicting next x of platform collision
 double predicting_y = 0;                            //predicting next y of platform collision
 
@@ -154,7 +156,10 @@ std::chrono::time_point<std::chrono::high_resolution_clock> countdown_start_time
 string username;
 bool has_input_username = false;
 bool username_text_initialized = false;
+bool is_username_input_request_visible = true;
 string set_score_test;
+
+bool has_user_won = false;
 
 
 
