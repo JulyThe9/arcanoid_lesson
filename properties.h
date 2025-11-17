@@ -68,8 +68,8 @@ const float top_wall = 0;
 const float bottom_wall = SCREENSIZE_Y;
 
 // BLOCKS
-int block_rows = (SCREENSIZE_Y - (PLATFORM_INITIAL_Y / 1.2)) / BLOCK_LEN - 7;
-int block_columns = (SCREENSIZE_X - 2 * BLOCK_WIDTH) / BLOCK_WIDTH - 2 - 7;
+int block_rows = (SCREENSIZE_Y - (PLATFORM_INITIAL_Y / 1.2)) / BLOCK_LEN;
+int block_columns = (SCREENSIZE_X - 2 * BLOCK_WIDTH) / BLOCK_WIDTH - 2;
 
 bool game_active = true;
 
@@ -128,6 +128,7 @@ int status_bar_length = 120;
 sf::Text heart_deduction_text;
 sf::Text no_hearts_text;
 sf::Text game_won_text;
+sf::Text game_paused_text;
 sf::Text username_input_request_text;
 sf::Text username_text;
 
@@ -160,8 +161,7 @@ bool is_username_input_request_visible = true;
 string set_score_test;
 
 bool has_user_won = false;
-
-
+bool have_read_from_file = false;
 
 //-------------------------------------------------------------------
 /**
@@ -386,6 +386,13 @@ T get_weighted_random(const std::map<double, T> &powerup_chances) {
     return powerup_chances.begin()->second;
 }
 
+
+struct PlayerStats {
+    string username;
+    string score;
+    int time_s;
+    string status;
+};
 
 //-------------------------------------------------------------------
 /**

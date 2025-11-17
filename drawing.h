@@ -71,6 +71,14 @@ void draw_score(sf::RenderWindow &main_window)
     main_window.draw(score);
 }
 
+
+void draw_game_paused_text(sf::RenderWindow &main_window)
+{
+    if(game_status == GAME_PAUSED)
+        main_window.draw(game_paused_text);
+}
+
+
 /**
 *@brief draws blocks
 
@@ -246,6 +254,7 @@ void draw_timer(sf::RenderWindow &main_window)
 
 void draw_everything(sf::RenderWindow &main_window)
 {
+    draw_game_paused_text(main_window);
     draw_blocks(main_window);
     draw_powerup(main_window);
     draw_timer(main_window);

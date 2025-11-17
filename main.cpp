@@ -10,6 +10,7 @@
 #include <ctime>    // For time()
 #include <chrono>
 #include <fstream>
+#include <curl/curl.h>
 
 #include "properties.h"
 #include "ball.h"
@@ -88,7 +89,37 @@ int main()
 
         plat = init_platform();
 
-        if(game_status == GAME_ACTIVE)
+        if (game_status == GAME_PAUSED)
+        {
+            // --- Handle events during pause ---
+            while (main_window.pollEvent(event))
+            {
+                if (event.type == sf::Event::Closed)
+                {
+                    main_window.close();
+                }
+
+                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::P)
+                {
+                    game_status = GAME_ACTIVE;
+                    background_music.play();
+                }
+            }
+
+            static bool has_pause_text_been_initialized = false;
+            if(!has_pause_text_been_initialized)
+            {
+                set_game_paused();
+                has_pause_text_been_initialized = true;
+            }
+
+
+
+            draw_everything(main_window);
+            main_window.display();
+            main_window.clear();
+        }
+        else if (game_status == GAME_ACTIVE)
         {
             while (main_window.pollEvent(event))
             {
@@ -96,9 +127,16 @@ int main()
                 {
                     main_window.close();
                 }
+
+                // --- TOGGLE PAUSE ---
+                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::P)
+                {
+                    game_status = GAME_PAUSED;
+                    background_music.pause();
+                }
+
                 plat_movement(main_window);
             }
-
 
             // ---------------------------------
             // CORE GAME LOOP FROM HERE
@@ -119,7 +157,6 @@ int main()
             // MAIN COLLISIONS
             handle_collision_walls(curr_gamestate.ball);
             handle_collision_block(curr_gamestate.ball, curr_gamestate.blocks, curr_gamestate.blocks_graphics);
-            //handle_collision_platform(main_window, curr_gamestate.ball, dupe_ball, curr_gamestate.blocks, curr_gamestate.blocks_graphics);
             handle_collision_platform(main_window, curr_gamestate.ball, curr_gamestate.blocks, curr_gamestate.blocks_graphics);
             handle_collision_barrier(curr_gamestate.ball, curr_gamestate.blocks);
             handle_collision_powerup();
@@ -129,7 +166,6 @@ int main()
             ball.setPosition(curr_gamestate.ball.curr_x, curr_gamestate.ball.curr_y);
             plat.setPosition(curr_gamestate.platform.x, curr_gamestate.platform.y);
             barrier.setPosition(barrier_obj.x, barrier_obj.y);
-
 
             if (is_trajectory_prediction_shown || in_blinking_animation == true)
             {
@@ -142,7 +178,7 @@ int main()
                     std::chrono::duration_cast<std::chrono::milliseconds>(curTime - predicting_plat_shown_time);
 
                 predicting_plat.setPosition(predicting_x, predicting_y);
-                if(is_trajectory_prediction_shown)
+                if (is_trajectory_prediction_shown)
                     draw_predicting_plat(main_window, predicting_plat);
 
                 platform_prediction_animation(platform_prediction_passed_time);
@@ -160,9 +196,7 @@ int main()
                 predicting_plat_shown_time = {};
             }
 
-
             check_gamestate();
-
         }
         else if (game_status == HEART_DEDUCTION)
         {
@@ -248,7 +282,11 @@ int main()
                 // ----------------------------------
                 else
                 {
-                    save_stats_to_file(event, game_start_time);
+                    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
+                    {
+                        save_stats_to_file(game_start_time);
+                        set_new_score(game_start_time);
+                    }
                 }
             }
             //drawing game loss
@@ -295,7 +333,11 @@ int main()
                 // ----------------------------------
                 else
                 {
-                    save_stats_to_file(event, game_start_time);
+                    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
+                    {
+                        save_stats_to_file(game_start_time);
+                        set_new_score(game_start_time);
+                    }
                 }
             }
 
@@ -321,6 +363,7 @@ int main()
 
 
         draw_everything(main_window);
+
         //dupe_ball.setPosition(curr_gamestate.dupe_ball.curr_x, curr_gamestate.dupe_ball.curr_y);
         //draw_ball(main_window, dupe_ball);
 

@@ -44,14 +44,25 @@ void set_game_loss(int heart_number)
 }
 
 
+void set_game_paused()
+{
+    game_paused_text.setFont(font);
+    game_paused_text.setCharacterSize(40);
+    game_paused_text.setFillColor(sf::Color::White);
+    game_paused_text.setStyle(sf::Text::Bold);
+    game_paused_text.setString("GAME PAUSED; Press P to Resume...");
+    game_paused_text.setPosition(SCREENSIZE_X / 2 - 350, 700);
+}
+
+
 void set_username_input_request()
 {
     username_input_request_text.setFont(font);
     username_input_request_text.setCharacterSize(45);
     username_input_request_text.setFillColor(sf::Color::Yellow);
     username_input_request_text.setStyle(sf::Text::Bold);
-    username_input_request_text.setPosition(SCREENSIZE_X / 2 - 500, 700);
     username_input_request_text.setString("Please input username: ");
+    username_input_request_text.setPosition(SCREENSIZE_X / 2 - 500, 700);
 }
 
 
@@ -62,10 +73,8 @@ void set_username_input()
     username_text.setFillColor(sf::Color::White);
     username_text.setStyle(sf::Text::Bold);
 
-    float base_x = SCREENSIZE_X / 2 - 500;
-    float base_y = 700;
     float prompt_width = username_input_request_text.getGlobalBounds().width;
-    username_text.setPosition(base_x + prompt_width + 10, base_y);
+    username_text.setPosition(SCREENSIZE_X / 2 - 500 + prompt_width + 10, 700);
 
     username_text_initialized = true;
 }
